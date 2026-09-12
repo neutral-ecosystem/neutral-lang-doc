@@ -1,0 +1,16 @@
+{
+  "name": "neutral-api-documentation",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.18.0",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "pnpm build && wrangler dev",
+    "preview": "pnpm build && wrangler dev",
+    "preview:cloudflare": "pnpm build && wrangler dev",
+    "deploy": "pnpm build && wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.121.0"
+  }
+}
