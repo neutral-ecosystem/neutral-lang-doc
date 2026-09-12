@@ -2,6 +2,8 @@
 
 # Neutral API documentation website
 
+🌐 [Website](https://neutral-lang-doc.younesrabeh.workers.dev/)
+
 > [!WARNING]
 > #### Auto-generated directory
 >
