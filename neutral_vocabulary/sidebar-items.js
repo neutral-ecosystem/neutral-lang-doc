@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["VOCABULARY_ENCODING_VERSION","VOCABULARY_SCHEMA_VERSION"],"enum":["VocabularyError","VocabularyType","VocabularyValue"],"fn":["validate_captured_bundle"],"struct":["LogicalVocabulary","ValidatedVocabularyBundle","VocabularyField","VocabularyLimits","VocabularyLock","VocabularyRecordValueField","VocabularyTypeDefinition"]};

@@ -1,0 +1,468 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Stable diagnostic identifiers emitted by compiler validation."><title>neutral_compiler::diagnostics - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-1ed95124.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="neutral_compiler" data-themes="" data-resource-suffix="" data-rustdoc-version="1.98.1 (48a229cea 2026-09-01)" data-channel="1.98.1" data-search-js="search-9944d736.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"><!-- SPDX-License-Identifier: Apache-2.0 -->
+<style>
+  :root,
+  :root:not([data-theme]),
+  :root[data-theme="light"] {
+    --neutral-nav-background: rgb(246 247 248 / 94%);
+    --neutral-nav-border: #d9dee4;
+    --neutral-surface: #ffffff;
+    --neutral-surface-raised: #f2f4f6;
+    --neutral-code-surface: #edf1f3;
+    --neutral-code-border: #cdd5dc;
+    --neutral-muted: #59636e;
+    --neutral-accent: #147d74;
+    --neutral-accent-soft: #d9efeb;
+    --neutral-focus: #a66500;
+    --main-background-color: #f7f8f9;
+    --main-color: #22272d;
+    --sidebar-background-color: #eef1f3;
+    --sidebar-background-color-hover: #e3e8eb;
+    --sidebar-border-color: #d1d8dd;
+    --sidebar-link-color: #344a52;
+    --sidebar-current-link-background-color: #dce6e7;
+    --code-block-background-color: #edf1f3;
+    --headings-border-bottom-color: #d9dee4;
+    --border-color: #cdd5dc;
+    --link-color: #0b766e;
+    --type-link-color: #087d78;
+    --trait-link-color: #7550a3;
+    --assoc-item-link-color: #946100;
+    --function-link-color: #187447;
+    --right-side-color: #59636e;
+  }
+
+  :root[data-theme="dark"],
+  :root[data-theme="ayu"] {
+    --neutral-nav-background: rgb(18 22 27 / 94%);
+    --neutral-nav-border: #303943;
+    --neutral-surface: #1d2329;
+    --neutral-surface-raised: #242b32;
+    --neutral-code-surface: #20272e;
+    --neutral-code-border: #394550;
+    --neutral-muted: #aeb8c2;
+    --neutral-accent: #62d2c2;
+    --neutral-accent-soft: #1d3b39;
+    --neutral-focus: #f0b64a;
+    --main-background-color: #171b20;
+    --main-color: #e8edf2;
+    --sidebar-background-color: #12171c;
+    --sidebar-background-color-hover: #222a31;
+    --sidebar-border-color: #303943;
+    --sidebar-link-color: #c3cdd6;
+    --sidebar-current-link-background-color: #253238;
+    --code-block-background-color: #20272e;
+    --headings-border-bottom-color: #303943;
+    --border-color: #394550;
+    --link-color: #73d8ca;
+    --type-link-color: #51c9c1;
+    --trait-link-color: #c099f4;
+    --assoc-item-link-color: #e8bc62;
+    --function-link-color: #62c98c;
+    --right-side-color: #aeb8c2;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+      --neutral-nav-background: rgb(18 22 27 / 94%);
+      --neutral-nav-border: #303943;
+      --neutral-surface: #1d2329;
+      --neutral-surface-raised: #242b32;
+      --neutral-code-surface: #20272e;
+      --neutral-code-border: #394550;
+      --neutral-muted: #aeb8c2;
+      --neutral-accent: #62d2c2;
+      --neutral-accent-soft: #1d3b39;
+      --neutral-focus: #f0b64a;
+      --main-background-color: #171b20;
+      --main-color: #e8edf2;
+      --sidebar-background-color: #12171c;
+      --sidebar-background-color-hover: #222a31;
+      --sidebar-border-color: #303943;
+      --sidebar-link-color: #c3cdd6;
+      --sidebar-current-link-background-color: #253238;
+      --code-block-background-color: #20272e;
+      --headings-border-bottom-color: #303943;
+      --border-color: #394550;
+      --link-color: #73d8ca;
+      --type-link-color: #51c9c1;
+      --trait-link-color: #c099f4;
+      --assoc-item-link-color: #e8bc62;
+      --function-link-color: #62c98c;
+      --right-side-color: #aeb8c2;
+    }
+  }
+
+  body.rustdoc {
+    padding-top: 3.65rem;
+  }
+
+  #neutral-docs-nav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 10000;
+    display: flex;
+    min-height: 3.65rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.55rem 1rem;
+    color: var(--main-color);
+    background: var(--neutral-nav-background);
+    border-bottom: 1px solid var(--neutral-nav-border);
+    backdrop-filter: blur(14px);
+  }
+
+  .neutral-docs-brand,
+  .neutral-docs-actions,
+  .neutral-docs-context {
+    display: flex;
+    align-items: center;
+  }
+
+  .neutral-docs-brand {
+    min-width: 0;
+    gap: 0.7rem;
+    color: var(--main-color);
+    font: 650 0.9rem/1.2 var(--font-family);
+    text-decoration: none;
+  }
+
+  .neutral-docs-brand img {
+    width: 2.15rem;
+    height: 2.15rem;
+    border-radius: 0.65rem;
+    box-shadow: 0 0.3rem 0.9rem rgb(0 0 0 / 22%);
+  }
+
+  .neutral-docs-context {
+    min-width: 0;
+    gap: 0.55rem;
+    color: var(--neutral-muted);
+    font: 500 0.8rem/1.2 var(--font-family-code);
+  }
+
+  .neutral-docs-context::before {
+    width: 1px;
+    height: 1.1rem;
+    margin-right: 0.1rem;
+    background: var(--neutral-nav-border);
+    content: "";
+  }
+
+  .neutral-docs-actions {
+    flex: 0 0 auto;
+    gap: 0.4rem;
+  }
+
+  .neutral-docs-actions a {
+    min-height: 2.15rem;
+    padding: 0.46rem 0.78rem;
+    color: var(--main-color);
+    background: var(--neutral-surface-raised);
+    border: 1px solid var(--neutral-nav-border);
+    border-radius: 0.5rem;
+    font: 600 0.8rem/1.2 var(--font-family);
+    text-decoration: none;
+  }
+
+  .neutral-docs-actions a:hover {
+    color: var(--neutral-accent);
+    border-color: var(--neutral-accent);
+  }
+
+  .sidebar {
+    top: 3.65rem;
+    height: calc(100vh - 3.65rem);
+    border-right-color: var(--neutral-nav-border);
+  }
+
+  .sidebar-resizer {
+    top: 3.65rem;
+    height: calc(100% - 3.65rem);
+    color: var(--neutral-nav-border);
+  }
+
+  .sidebar-crate {
+    margin-top: 1.15rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .sidebar-crate h2 a {
+    color: var(--main-color);
+    font-weight: 650;
+  }
+
+  .sidebar .version {
+    display: inline-block;
+    margin-top: 0.2rem;
+    color: var(--neutral-muted);
+    font-size: 0.75rem;
+  }
+
+  .sidebar h3 {
+    margin: 1.2rem 0 0.35rem;
+    color: var(--neutral-muted);
+    font-size: 0.78rem;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .sidebar-elems a,
+  .sidebar > h2 a {
+    margin-block: 0.08rem;
+    border-radius: 0.34rem;
+  }
+
+  .sidebar-elems .block {
+    margin-bottom: 1.4rem;
+  }
+
+  body.rustdoc > main {
+    padding: 2.2rem clamp(1.4rem, 4vw, 4rem) 5rem;
+  }
+
+  .width-limiter {
+    max-width: 72rem;
+  }
+
+  .main-heading {
+    margin-bottom: 1.7rem;
+    padding-bottom: 1.15rem;
+    border-bottom: 1px solid var(--neutral-nav-border);
+  }
+
+  .main-heading h1 {
+    font-size: clamp(1.75rem, 3vw, 2.45rem);
+    font-weight: 650;
+    letter-spacing: -0.025em;
+  }
+
+  .rustdoc-breadcrumbs,
+  .rustdoc-breadcrumbs a {
+    color: var(--neutral-muted);
+  }
+
+  .docblock {
+    color: var(--main-color);
+    font-size: 1rem;
+    line-height: 1.72;
+  }
+
+  .content h2,
+  .top-doc .docblock > h3,
+  .top-doc .docblock > h4 {
+    margin-top: 2.5rem;
+    border-bottom-color: var(--neutral-nav-border);
+    font-weight: 650;
+    letter-spacing: -0.015em;
+  }
+
+  .docblock :not(pre) > code,
+  .item-table dd code,
+  .item-info code {
+    padding: 0.1em 0.34em;
+    color: var(--main-color);
+    background: var(--neutral-code-surface);
+    border: 1px solid var(--neutral-code-border);
+    border-radius: 0.28rem;
+    font-weight: 550;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  .impl > .code-header,
+  .method > .code-header,
+  .trait-impl > .code-header,
+  pre.item-decl,
+  .docblock pre {
+    background: var(--neutral-code-surface);
+    border: 1px solid var(--neutral-code-border);
+    border-left: 3px solid var(--neutral-accent);
+    border-radius: 0.45rem;
+    box-shadow: none;
+  }
+
+  .impl > .code-header,
+  .method > .code-header,
+  .trait-impl > .code-header {
+    padding: 0.62rem 0.78rem;
+  }
+
+  .impl-items > details.toggle,
+  .methods > details.toggle,
+  .implementors-toggle {
+    margin-bottom: 0.7rem;
+  }
+
+  details.toggle > summary {
+    border-radius: 0.45rem;
+  }
+
+  a.src,
+  .impl a.src.rightside,
+  .impl .rightside a.src {
+    display: inline-block;
+    padding: 0.2rem 0.48rem;
+    color: var(--neutral-accent) !important;
+    background: var(--neutral-accent-soft);
+    border: 1px solid color-mix(in srgb, var(--neutral-accent) 48%, transparent);
+    border-radius: 0.32rem;
+    font-weight: 650;
+  }
+
+  a.src:hover,
+  a.src:focus-visible {
+    color: var(--main-color) !important;
+    border-color: var(--neutral-accent);
+  }
+
+  .stab {
+    padding: 0.2rem 0.45rem;
+    color: var(--neutral-muted);
+    background: var(--neutral-surface-raised);
+    border: 1px solid var(--neutral-code-border);
+    border-radius: 0.32rem;
+  }
+
+  .stab code,
+  .since a {
+    color: var(--neutral-muted) !important;
+    font-weight: 650;
+  }
+
+  #copy-path {
+    color: var(--neutral-muted);
+    border-radius: 0.35rem;
+  }
+
+  .item-table > dt,
+  .item-table > dd {
+    padding-block: 0.65rem;
+    border-bottom: 1px solid var(--neutral-nav-border);
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  summary:focus-visible,
+  input:focus-visible {
+    outline: 2px solid var(--neutral-focus) !important;
+    outline-offset: 3px;
+  }
+
+  :target {
+    scroll-margin-top: 5rem;
+  }
+
+  @media (max-width: 700px) {
+    body.rustdoc {
+      padding-top: 3.35rem;
+    }
+
+    #neutral-docs-nav {
+      min-height: 3.35rem;
+      padding: 0.42rem 0.65rem;
+    }
+
+    .neutral-docs-brand img {
+      width: 1.95rem;
+      height: 1.95rem;
+    }
+
+    .neutral-docs-brand span,
+    .neutral-docs-context {
+      display: none;
+    }
+
+    .neutral-docs-actions a {
+      min-height: 2rem;
+      padding: 0.4rem 0.62rem;
+    }
+
+    rustdoc-topbar {
+      top: 3.35rem;
+    }
+
+    .sidebar {
+      top: calc(3.35rem + var(--topbar-height));
+      height: calc(100vh - 3.35rem - var(--topbar-height));
+    }
+
+    body.rustdoc > main {
+      padding: 1.3rem 1rem 4rem;
+    }
+
+    .main-heading h1 {
+      font-size: 1.65rem;
+    }
+  }
+
+  @media print {
+    body.rustdoc {
+      padding-top: 0;
+    }
+
+    #neutral-docs-nav {
+      display: none;
+    }
+  }
+</style>
+<script>
+  "use strict";
+
+  /** Builds the shared Neutral navigation and favicon for one Rustdoc page. */
+  function configureNeutralDocumentation() {
+    const rustdocVariables = document.querySelector('meta[name="rustdoc-vars"]');
+    if (!rustdocVariables || document.getElementById("neutral-docs-nav")) {
+      return;
+    }
+    const rootPath = rustdocVariables.dataset.rootPath || "./";
+    const favicon = document.createElement("link");
+    favicon.rel = "icon";
+    favicon.type = "image/png";
+    favicon.href = `${rootPath}assets/neutral-logo-rounded.png`;
+    document.head.append(favicon);
+
+    const navigation = document.createElement("nav");
+    navigation.id = "neutral-docs-nav";
+    navigation.setAttribute("aria-label", "Documentation navigation");
+
+    const brand = document.createElement("a");
+    brand.className = "neutral-docs-brand";
+    brand.href = `${rootPath}index.html`;
+    brand.setAttribute("aria-label", "Neutral documentation home");
+
+    const logo = document.createElement("img");
+    logo.src = `${rootPath}assets/neutral-logo.png`;
+    logo.alt = "";
+    logo.width = 34;
+    logo.height = 34;
+    brand.append(logo);
+
+    const brandName = document.createElement("span");
+    brandName.textContent = "Neutral documentation";
+    brand.append(brandName);
+
+    const context = document.createElement("span");
+    context.className = "neutral-docs-context";
+    context.textContent = rustdocVariables.dataset.currentCrate
+      ? rustdocVariables.dataset.currentCrate.replaceAll("_", "-")
+      : "Rust API";
+    brand.append(context);
+
+    const actions = document.createElement("div");
+    actions.className = "neutral-docs-actions";
+    const workspace = document.createElement("a");
+    workspace.href = `${rootPath}index.html`;
+    workspace.textContent = "Workspace";
+    actions.append(workspace);
+
+    navigation.append(brand, actions);
+    document.body.prepend(navigation);
+  }
+
+  document.addEventListener("DOMContentLoaded", configureNeutralDocumentation);
+</script>
+
+</head><body class="rustdoc mod"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module diagnostics</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../neutral_compiler/index.html">neutral_<wbr>compiler</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module diagnostics</a></h2><h3><a href="#constants">Module Items</a></h3><ul class="block"><li><a href="#constants" title="Constants">Constants</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="../index.html">In crate neutral_<wbr>compiler</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../index.html">neutral_compiler</a></div><h1>Module <span>diagnostics</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/neutral_compiler/lib.rs.html#26">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Stable diagnostic identifiers emitted by compiler validation.</p>
+</div></details><h2 id="constants" class="section-header">Constants<a href="#constants" class="anchor">§</a></h2><dl class="item-table"><dt><a class="constant" href="constant.DUPLICATE_DECLARATION.html" title="constant neutral_compiler::diagnostics::DUPLICATE_DECLARATION">DUPLICATE_<wbr>DECLARATION</a></dt><dd>Duplicate root declaration diagnostic.</dd><dt><a class="constant" href="constant.DUPLICATE_RECORD_FIELD.html" title="constant neutral_compiler::diagnostics::DUPLICATE_RECORD_FIELD">DUPLICATE_<wbr>RECORD_<wbr>FIELD</a></dt><dd>Duplicate record schema field diagnostic.</dd><dt><a class="constant" href="constant.DUPLICATE_VALUE_FIELD.html" title="constant neutral_compiler::diagnostics::DUPLICATE_VALUE_FIELD">DUPLICATE_<wbr>VALUE_<wbr>FIELD</a></dt><dd>Duplicate contextual-record value field diagnostic.</dd><dt><a class="constant" href="constant.DUPLICATE_VOCABULARY_FIELD.html" title="constant neutral_compiler::diagnostics::DUPLICATE_VOCABULARY_FIELD">DUPLICATE_<wbr>VOCABULARY_<wbr>FIELD</a></dt><dd>A vocabulary payload repeated one field.</dd><dt><a class="constant" href="constant.EMBEDDED_RECORD_RECURSION.html" title="constant neutral_compiler::diagnostics::EMBEDDED_RECORD_RECURSION">EMBEDDED_<wbr>RECORD_<wbr>RECURSION</a></dt><dd>Embedded nominal record recursion diagnostic.</dd><dt><a class="constant" href="constant.EXECUTABLE_VOCABULARY_MEMBER.html" title="constant neutral_compiler::diagnostics::EXECUTABLE_VOCABULARY_MEMBER">EXECUTABLE_<wbr>VOCABULARY_<wbr>MEMBER</a></dt><dd>Captured bundle content attempted to introduce executable behavior.</dd><dt><a class="constant" href="constant.INVALID_NAME.html" title="constant neutral_compiler::diagnostics::INVALID_NAME">INVALID_<wbr>NAME</a></dt><dd>Invalid identifier name diagnostic.</dd><dt><a class="constant" href="constant.INVALID_NUMBER.html" title="constant neutral_compiler::diagnostics::INVALID_NUMBER">INVALID_<wbr>NUMBER</a></dt><dd>Invalid exact numeric value diagnostic.</dd><dt><a class="constant" href="constant.INVALID_STRING_LITERAL.html" title="constant neutral_compiler::diagnostics::INVALID_STRING_LITERAL">INVALID_<wbr>STRING_<wbr>LITERAL</a></dt><dd>Invalid string literal diagnostic.</dd><dt><a class="constant" href="constant.INVALID_VOCABULARY_BUNDLE.html" title="constant neutral_compiler::diagnostics::INVALID_VOCABULARY_BUNDLE">INVALID_<wbr>VOCABULARY_<wbr>BUNDLE</a></dt><dd>A captured bundle violated its closed data-only schema.</dd><dt><a class="constant" href="constant.LIST_LIMIT_EXCEEDED.html" title="constant neutral_compiler::diagnostics::LIST_LIMIT_EXCEEDED">LIST_<wbr>LIMIT_<wbr>EXCEEDED</a></dt><dd>List item, nesting, or traversal resource-limit diagnostic.</dd><dt><a class="constant" href="constant.MALFORMED_BOUNDARY.html" title="constant neutral_compiler::diagnostics::MALFORMED_BOUNDARY">MALFORMED_<wbr>BOUNDARY</a></dt><dd>Malformed lexical or layout boundary diagnostic.</dd><dt><a class="constant" href="constant.MISSING_MODULE_HEADER.html" title="constant neutral_compiler::diagnostics::MISSING_MODULE_HEADER">MISSING_<wbr>MODULE_<wbr>HEADER</a></dt><dd>Missing module header diagnostic.</dd><dt><a class="constant" href="constant.MISSING_RECORD_FIELD.html" title="constant neutral_compiler::diagnostics::MISSING_RECORD_FIELD">MISSING_<wbr>RECORD_<wbr>FIELD</a></dt><dd>Missing required contextual-record field diagnostic.</dd><dt><a class="constant" href="constant.MISSING_VOCABULARY.html" title="constant neutral_compiler::diagnostics::MISSING_VOCABULARY">MISSING_<wbr>VOCABULARY</a></dt><dd>A source vocabulary requirement had no exact captured input.</dd><dt><a class="constant" href="constant.MISSING_VOCABULARY_FIELD.html" title="constant neutral_compiler::diagnostics::MISSING_VOCABULARY_FIELD">MISSING_<wbr>VOCABULARY_<wbr>FIELD</a></dt><dd>A vocabulary payload omitted a required field.</dd><dt><a class="constant" href="constant.NON_CONSTANT_DEFAULT.html" title="constant neutral_compiler::diagnostics::NON_CONSTANT_DEFAULT">NON_<wbr>CONSTANT_<wbr>DEFAULT</a></dt><dd>A user-record default was not a closed constant.</dd><dt><a class="constant" href="constant.NUMBER_LIMIT_EXCEEDED.html" title="constant neutral_compiler::diagnostics::NUMBER_LIMIT_EXCEEDED">NUMBER_<wbr>LIMIT_<wbr>EXCEEDED</a></dt><dd>Exact numeric resource-limit diagnostic.</dd><dt><a class="constant" href="constant.PROTECTED_NAME.html" title="constant neutral_compiler::diagnostics::PROTECTED_NAME">PROTECTED_<wbr>NAME</a></dt><dd>Protected core name diagnostic.</dd><dt><a class="constant" href="constant.RECORD_LIMIT_EXCEEDED.html" title="constant neutral_compiler::diagnostics::RECORD_LIMIT_EXCEEDED">RECORD_<wbr>LIMIT_<wbr>EXCEEDED</a></dt><dd>Record structure resource-limit diagnostic.</dd><dt><a class="constant" href="constant.REFERENCE_TARGET_TYPE_MISMATCH.html" title="constant neutral_compiler::diagnostics::REFERENCE_TARGET_TYPE_MISMATCH">REFERENCE_<wbr>TARGET_<wbr>TYPE_<wbr>MISMATCH</a></dt><dd>An identity-reference target binding had a non-exact resolved type.</dd><dt><a class="constant" href="constant.STRING_LIMIT_EXCEEDED.html" title="constant neutral_compiler::diagnostics::STRING_LIMIT_EXCEEDED">STRING_<wbr>LIMIT_<wbr>EXCEEDED</a></dt><dd>Decoded string resource-limit diagnostic.</dd><dt><a class="constant" href="constant.TYPE_MISMATCH.html" title="constant neutral_compiler::diagnostics::TYPE_MISMATCH">TYPE_<wbr>MISMATCH</a></dt><dd>Explicit scalar type/value mismatch diagnostic.</dd><dt><a class="constant" href="constant.UNKNOWN_RECORD_FIELD.html" title="constant neutral_compiler::diagnostics::UNKNOWN_RECORD_FIELD">UNKNOWN_<wbr>RECORD_<wbr>FIELD</a></dt><dd>Unknown contextual-record field diagnostic.</dd><dt><a class="constant" href="constant.UNKNOWN_REFERENCE_TARGET.html" title="constant neutral_compiler::diagnostics::UNKNOWN_REFERENCE_TARGET">UNKNOWN_<wbr>REFERENCE_<wbr>TARGET</a></dt><dd>An identity-reference target name did not resolve to a declaration.</dd><dt><a class="constant" href="constant.UNKNOWN_TYPE.html" title="constant neutral_compiler::diagnostics::UNKNOWN_TYPE">UNKNOWN_<wbr>TYPE</a></dt><dd>Unknown nominal type diagnostic.</dd><dt><a class="constant" href="constant.UNKNOWN_VALUE.html" title="constant neutral_compiler::diagnostics::UNKNOWN_VALUE">UNKNOWN_<wbr>VALUE</a></dt><dd>An ordinary immutable value name did not resolve to a declaration.</dd><dt><a class="constant" href="constant.UNKNOWN_VOCABULARY_FEATURE.html" title="constant neutral_compiler::diagnostics::UNKNOWN_VOCABULARY_FEATURE">UNKNOWN_<wbr>VOCABULARY_<wbr>FEATURE</a></dt><dd>A captured bundle required an unknown structural feature.</dd><dt><a class="constant" href="constant.UNKNOWN_VOCABULARY_FIELD.html" title="constant neutral_compiler::diagnostics::UNKNOWN_VOCABULARY_FIELD">UNKNOWN_<wbr>VOCABULARY_<wbr>FIELD</a></dt><dd>A vocabulary payload contained an unknown field.</dd><dt><a class="constant" href="constant.UNKNOWN_VOCABULARY_TYPE.html" title="constant neutral_compiler::diagnostics::UNKNOWN_VOCABULARY_TYPE">UNKNOWN_<wbr>VOCABULARY_<wbr>TYPE</a></dt><dd>A qualified source type was absent from the captured contract.</dd><dt><a class="constant" href="constant.UNSUPPORTED_LANGUAGE_VERSION.html" title="constant neutral_compiler::diagnostics::UNSUPPORTED_LANGUAGE_VERSION">UNSUPPORTED_<wbr>LANGUAGE_<wbr>VERSION</a></dt><dd>Unsupported language version diagnostic.</dd><dt><a class="constant" href="constant.UNSUPPORTED_SYMBOL.html" title="constant neutral_compiler::diagnostics::UNSUPPORTED_SYMBOL">UNSUPPORTED_<wbr>SYMBOL</a></dt><dd>Unsupported source symbol diagnostic.</dd><dt><a class="constant" href="constant.UNTERMINATED_BLOCK_COMMENT.html" title="constant neutral_compiler::diagnostics::UNTERMINATED_BLOCK_COMMENT">UNTERMINATED_<wbr>BLOCK_<wbr>COMMENT</a></dt><dd>Unterminated block comment diagnostic.</dd><dt><a class="constant" href="constant.UNTERMINATED_STRING_LITERAL.html" title="constant neutral_compiler::diagnostics::UNTERMINATED_STRING_LITERAL">UNTERMINATED_<wbr>STRING_<wbr>LITERAL</a></dt><dd>Unterminated string literal diagnostic.</dd><dt><a class="constant" href="constant.VALUE_CYCLE.html" title="constant neutral_compiler::diagnostics::VALUE_CYCLE">VALUE_<wbr>CYCLE</a></dt><dd>Ordinary immutable-value dependencies formed a cycle.</dd><dt><a class="constant" href="constant.VALUE_TRAVERSAL_LIMIT_EXCEEDED.html" title="constant neutral_compiler::diagnostics::VALUE_TRAVERSAL_LIMIT_EXCEEDED">VALUE_<wbr>TRAVERSAL_<wbr>LIMIT_<wbr>EXCEEDED</a></dt><dd>Immutable-value dependency traversal exceeded the captured bound.</dd><dt><a class="constant" href="constant.VOCABULARY_FIELD_TYPE_MISMATCH.html" title="constant neutral_compiler::diagnostics::VOCABULARY_FIELD_TYPE_MISMATCH">VOCABULARY_<wbr>FIELD_<wbr>TYPE_<wbr>MISMATCH</a></dt><dd>A vocabulary payload field did not satisfy its captured type.</dd><dt><a class="constant" href="constant.VOCABULARY_LOCK_MISMATCH.html" title="constant neutral_compiler::diagnostics::VOCABULARY_LOCK_MISMATCH">VOCABULARY_<wbr>LOCK_<wbr>MISMATCH</a></dt><dd>Captured bytes or identity facts disagreed with the exact lock.</dd><dt><a class="constant" href="constant.VOCABULARY_NAME_COLLISION.html" title="constant neutral_compiler::diagnostics::VOCABULARY_NAME_COLLISION">VOCABULARY_<wbr>NAME_<wbr>COLLISION</a></dt><dd>A vocabulary namespace collided with a root declaration.</dd><dt><a class="constant" href="constant.WRONG_DECLARATION_KIND.html" title="constant neutral_compiler::diagnostics::WRONG_DECLARATION_KIND">WRONG_<wbr>DECLARATION_<wbr>KIND</a></dt><dd>A declaration name was used with the wrong kind.</dd><dt><a class="constant" href="constant.WRONG_REFERENCE_TARGET_KIND.html" title="constant neutral_compiler::diagnostics::WRONG_REFERENCE_TARGET_KIND">WRONG_<wbr>REFERENCE_<wbr>TARGET_<wbr>KIND</a></dt><dd>An identity reference targeted a non-binding declaration.</dd></dl></section></div></main></body></html>

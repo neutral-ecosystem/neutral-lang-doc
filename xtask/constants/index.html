@@ -1,0 +1,468 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Shared names for Neutral automation commands, packages, and output."><title>xtask::constants - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-1ed95124.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="xtask" data-themes="" data-resource-suffix="" data-rustdoc-version="1.98.1 (48a229cea 2026-09-01)" data-channel="1.98.1" data-search-js="search-9944d736.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"><!-- SPDX-License-Identifier: Apache-2.0 -->
+<style>
+  :root,
+  :root:not([data-theme]),
+  :root[data-theme="light"] {
+    --neutral-nav-background: rgb(246 247 248 / 94%);
+    --neutral-nav-border: #d9dee4;
+    --neutral-surface: #ffffff;
+    --neutral-surface-raised: #f2f4f6;
+    --neutral-code-surface: #edf1f3;
+    --neutral-code-border: #cdd5dc;
+    --neutral-muted: #59636e;
+    --neutral-accent: #147d74;
+    --neutral-accent-soft: #d9efeb;
+    --neutral-focus: #a66500;
+    --main-background-color: #f7f8f9;
+    --main-color: #22272d;
+    --sidebar-background-color: #eef1f3;
+    --sidebar-background-color-hover: #e3e8eb;
+    --sidebar-border-color: #d1d8dd;
+    --sidebar-link-color: #344a52;
+    --sidebar-current-link-background-color: #dce6e7;
+    --code-block-background-color: #edf1f3;
+    --headings-border-bottom-color: #d9dee4;
+    --border-color: #cdd5dc;
+    --link-color: #0b766e;
+    --type-link-color: #087d78;
+    --trait-link-color: #7550a3;
+    --assoc-item-link-color: #946100;
+    --function-link-color: #187447;
+    --right-side-color: #59636e;
+  }
+
+  :root[data-theme="dark"],
+  :root[data-theme="ayu"] {
+    --neutral-nav-background: rgb(18 22 27 / 94%);
+    --neutral-nav-border: #303943;
+    --neutral-surface: #1d2329;
+    --neutral-surface-raised: #242b32;
+    --neutral-code-surface: #20272e;
+    --neutral-code-border: #394550;
+    --neutral-muted: #aeb8c2;
+    --neutral-accent: #62d2c2;
+    --neutral-accent-soft: #1d3b39;
+    --neutral-focus: #f0b64a;
+    --main-background-color: #171b20;
+    --main-color: #e8edf2;
+    --sidebar-background-color: #12171c;
+    --sidebar-background-color-hover: #222a31;
+    --sidebar-border-color: #303943;
+    --sidebar-link-color: #c3cdd6;
+    --sidebar-current-link-background-color: #253238;
+    --code-block-background-color: #20272e;
+    --headings-border-bottom-color: #303943;
+    --border-color: #394550;
+    --link-color: #73d8ca;
+    --type-link-color: #51c9c1;
+    --trait-link-color: #c099f4;
+    --assoc-item-link-color: #e8bc62;
+    --function-link-color: #62c98c;
+    --right-side-color: #aeb8c2;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+      --neutral-nav-background: rgb(18 22 27 / 94%);
+      --neutral-nav-border: #303943;
+      --neutral-surface: #1d2329;
+      --neutral-surface-raised: #242b32;
+      --neutral-code-surface: #20272e;
+      --neutral-code-border: #394550;
+      --neutral-muted: #aeb8c2;
+      --neutral-accent: #62d2c2;
+      --neutral-accent-soft: #1d3b39;
+      --neutral-focus: #f0b64a;
+      --main-background-color: #171b20;
+      --main-color: #e8edf2;
+      --sidebar-background-color: #12171c;
+      --sidebar-background-color-hover: #222a31;
+      --sidebar-border-color: #303943;
+      --sidebar-link-color: #c3cdd6;
+      --sidebar-current-link-background-color: #253238;
+      --code-block-background-color: #20272e;
+      --headings-border-bottom-color: #303943;
+      --border-color: #394550;
+      --link-color: #73d8ca;
+      --type-link-color: #51c9c1;
+      --trait-link-color: #c099f4;
+      --assoc-item-link-color: #e8bc62;
+      --function-link-color: #62c98c;
+      --right-side-color: #aeb8c2;
+    }
+  }
+
+  body.rustdoc {
+    padding-top: 3.65rem;
+  }
+
+  #neutral-docs-nav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 10000;
+    display: flex;
+    min-height: 3.65rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.55rem 1rem;
+    color: var(--main-color);
+    background: var(--neutral-nav-background);
+    border-bottom: 1px solid var(--neutral-nav-border);
+    backdrop-filter: blur(14px);
+  }
+
+  .neutral-docs-brand,
+  .neutral-docs-actions,
+  .neutral-docs-context {
+    display: flex;
+    align-items: center;
+  }
+
+  .neutral-docs-brand {
+    min-width: 0;
+    gap: 0.7rem;
+    color: var(--main-color);
+    font: 650 0.9rem/1.2 var(--font-family);
+    text-decoration: none;
+  }
+
+  .neutral-docs-brand img {
+    width: 2.15rem;
+    height: 2.15rem;
+    border-radius: 0.65rem;
+    box-shadow: 0 0.3rem 0.9rem rgb(0 0 0 / 22%);
+  }
+
+  .neutral-docs-context {
+    min-width: 0;
+    gap: 0.55rem;
+    color: var(--neutral-muted);
+    font: 500 0.8rem/1.2 var(--font-family-code);
+  }
+
+  .neutral-docs-context::before {
+    width: 1px;
+    height: 1.1rem;
+    margin-right: 0.1rem;
+    background: var(--neutral-nav-border);
+    content: "";
+  }
+
+  .neutral-docs-actions {
+    flex: 0 0 auto;
+    gap: 0.4rem;
+  }
+
+  .neutral-docs-actions a {
+    min-height: 2.15rem;
+    padding: 0.46rem 0.78rem;
+    color: var(--main-color);
+    background: var(--neutral-surface-raised);
+    border: 1px solid var(--neutral-nav-border);
+    border-radius: 0.5rem;
+    font: 600 0.8rem/1.2 var(--font-family);
+    text-decoration: none;
+  }
+
+  .neutral-docs-actions a:hover {
+    color: var(--neutral-accent);
+    border-color: var(--neutral-accent);
+  }
+
+  .sidebar {
+    top: 3.65rem;
+    height: calc(100vh - 3.65rem);
+    border-right-color: var(--neutral-nav-border);
+  }
+
+  .sidebar-resizer {
+    top: 3.65rem;
+    height: calc(100% - 3.65rem);
+    color: var(--neutral-nav-border);
+  }
+
+  .sidebar-crate {
+    margin-top: 1.15rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .sidebar-crate h2 a {
+    color: var(--main-color);
+    font-weight: 650;
+  }
+
+  .sidebar .version {
+    display: inline-block;
+    margin-top: 0.2rem;
+    color: var(--neutral-muted);
+    font-size: 0.75rem;
+  }
+
+  .sidebar h3 {
+    margin: 1.2rem 0 0.35rem;
+    color: var(--neutral-muted);
+    font-size: 0.78rem;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .sidebar-elems a,
+  .sidebar > h2 a {
+    margin-block: 0.08rem;
+    border-radius: 0.34rem;
+  }
+
+  .sidebar-elems .block {
+    margin-bottom: 1.4rem;
+  }
+
+  body.rustdoc > main {
+    padding: 2.2rem clamp(1.4rem, 4vw, 4rem) 5rem;
+  }
+
+  .width-limiter {
+    max-width: 72rem;
+  }
+
+  .main-heading {
+    margin-bottom: 1.7rem;
+    padding-bottom: 1.15rem;
+    border-bottom: 1px solid var(--neutral-nav-border);
+  }
+
+  .main-heading h1 {
+    font-size: clamp(1.75rem, 3vw, 2.45rem);
+    font-weight: 650;
+    letter-spacing: -0.025em;
+  }
+
+  .rustdoc-breadcrumbs,
+  .rustdoc-breadcrumbs a {
+    color: var(--neutral-muted);
+  }
+
+  .docblock {
+    color: var(--main-color);
+    font-size: 1rem;
+    line-height: 1.72;
+  }
+
+  .content h2,
+  .top-doc .docblock > h3,
+  .top-doc .docblock > h4 {
+    margin-top: 2.5rem;
+    border-bottom-color: var(--neutral-nav-border);
+    font-weight: 650;
+    letter-spacing: -0.015em;
+  }
+
+  .docblock :not(pre) > code,
+  .item-table dd code,
+  .item-info code {
+    padding: 0.1em 0.34em;
+    color: var(--main-color);
+    background: var(--neutral-code-surface);
+    border: 1px solid var(--neutral-code-border);
+    border-radius: 0.28rem;
+    font-weight: 550;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  .impl > .code-header,
+  .method > .code-header,
+  .trait-impl > .code-header,
+  pre.item-decl,
+  .docblock pre {
+    background: var(--neutral-code-surface);
+    border: 1px solid var(--neutral-code-border);
+    border-left: 3px solid var(--neutral-accent);
+    border-radius: 0.45rem;
+    box-shadow: none;
+  }
+
+  .impl > .code-header,
+  .method > .code-header,
+  .trait-impl > .code-header {
+    padding: 0.62rem 0.78rem;
+  }
+
+  .impl-items > details.toggle,
+  .methods > details.toggle,
+  .implementors-toggle {
+    margin-bottom: 0.7rem;
+  }
+
+  details.toggle > summary {
+    border-radius: 0.45rem;
+  }
+
+  a.src,
+  .impl a.src.rightside,
+  .impl .rightside a.src {
+    display: inline-block;
+    padding: 0.2rem 0.48rem;
+    color: var(--neutral-accent) !important;
+    background: var(--neutral-accent-soft);
+    border: 1px solid color-mix(in srgb, var(--neutral-accent) 48%, transparent);
+    border-radius: 0.32rem;
+    font-weight: 650;
+  }
+
+  a.src:hover,
+  a.src:focus-visible {
+    color: var(--main-color) !important;
+    border-color: var(--neutral-accent);
+  }
+
+  .stab {
+    padding: 0.2rem 0.45rem;
+    color: var(--neutral-muted);
+    background: var(--neutral-surface-raised);
+    border: 1px solid var(--neutral-code-border);
+    border-radius: 0.32rem;
+  }
+
+  .stab code,
+  .since a {
+    color: var(--neutral-muted) !important;
+    font-weight: 650;
+  }
+
+  #copy-path {
+    color: var(--neutral-muted);
+    border-radius: 0.35rem;
+  }
+
+  .item-table > dt,
+  .item-table > dd {
+    padding-block: 0.65rem;
+    border-bottom: 1px solid var(--neutral-nav-border);
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  summary:focus-visible,
+  input:focus-visible {
+    outline: 2px solid var(--neutral-focus) !important;
+    outline-offset: 3px;
+  }
+
+  :target {
+    scroll-margin-top: 5rem;
+  }
+
+  @media (max-width: 700px) {
+    body.rustdoc {
+      padding-top: 3.35rem;
+    }
+
+    #neutral-docs-nav {
+      min-height: 3.35rem;
+      padding: 0.42rem 0.65rem;
+    }
+
+    .neutral-docs-brand img {
+      width: 1.95rem;
+      height: 1.95rem;
+    }
+
+    .neutral-docs-brand span,
+    .neutral-docs-context {
+      display: none;
+    }
+
+    .neutral-docs-actions a {
+      min-height: 2rem;
+      padding: 0.4rem 0.62rem;
+    }
+
+    rustdoc-topbar {
+      top: 3.35rem;
+    }
+
+    .sidebar {
+      top: calc(3.35rem + var(--topbar-height));
+      height: calc(100vh - 3.35rem - var(--topbar-height));
+    }
+
+    body.rustdoc > main {
+      padding: 1.3rem 1rem 4rem;
+    }
+
+    .main-heading h1 {
+      font-size: 1.65rem;
+    }
+  }
+
+  @media print {
+    body.rustdoc {
+      padding-top: 0;
+    }
+
+    #neutral-docs-nav {
+      display: none;
+    }
+  }
+</style>
+<script>
+  "use strict";
+
+  /** Builds the shared Neutral navigation and favicon for one Rustdoc page. */
+  function configureNeutralDocumentation() {
+    const rustdocVariables = document.querySelector('meta[name="rustdoc-vars"]');
+    if (!rustdocVariables || document.getElementById("neutral-docs-nav")) {
+      return;
+    }
+    const rootPath = rustdocVariables.dataset.rootPath || "./";
+    const favicon = document.createElement("link");
+    favicon.rel = "icon";
+    favicon.type = "image/png";
+    favicon.href = `${rootPath}assets/neutral-logo-rounded.png`;
+    document.head.append(favicon);
+
+    const navigation = document.createElement("nav");
+    navigation.id = "neutral-docs-nav";
+    navigation.setAttribute("aria-label", "Documentation navigation");
+
+    const brand = document.createElement("a");
+    brand.className = "neutral-docs-brand";
+    brand.href = `${rootPath}index.html`;
+    brand.setAttribute("aria-label", "Neutral documentation home");
+
+    const logo = document.createElement("img");
+    logo.src = `${rootPath}assets/neutral-logo.png`;
+    logo.alt = "";
+    logo.width = 34;
+    logo.height = 34;
+    brand.append(logo);
+
+    const brandName = document.createElement("span");
+    brandName.textContent = "Neutral documentation";
+    brand.append(brandName);
+
+    const context = document.createElement("span");
+    context.className = "neutral-docs-context";
+    context.textContent = rustdocVariables.dataset.currentCrate
+      ? rustdocVariables.dataset.currentCrate.replaceAll("_", "-")
+      : "Rust API";
+    brand.append(context);
+
+    const actions = document.createElement("div");
+    actions.className = "neutral-docs-actions";
+    const workspace = document.createElement("a");
+    workspace.href = `${rootPath}index.html`;
+    workspace.textContent = "Workspace";
+    actions.append(workspace);
+
+    navigation.append(brand, actions);
+    document.body.prepend(navigation);
+  }
+
+  document.addEventListener("DOMContentLoaded", configureNeutralDocumentation);
+</script>
+
+</head><body class="rustdoc mod"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module constants</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../xtask/index.html">xtask</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module constants</a></h2><h3><a href="#constants">Module Items</a></h3><ul class="block"><li><a href="#constants" title="Constants">Constants</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="../index.html">In crate xtask</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../index.html">xtask</a></div><h1>Module <span>constants</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/xtask/constants.rs.html#3-209">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Shared names for Neutral automation commands, packages, and output.</p>
+</div></details><h2 id="constants" class="section-header">Constants<a href="#constants" class="anchor">§</a></h2><dl class="item-table"><dt><a class="constant" href="constant.ASSET_DIRECTORY.html" title="constant xtask::constants::ASSET_DIRECTORY">ASSET_<wbr>DIRECTORY</a></dt><dd>Repository-owned source directory for shared visual assets.</dd><dt><a class="constant" href="constant.CARGO_COMMAND.html" title="constant xtask::constants::CARGO_COMMAND">CARGO_<wbr>COMMAND</a></dt><dd>Cargo executable used by workspace automation.</dd><dt><a class="constant" href="constant.CARGO_ENCODED_RUSTDOCFLAGS.html" title="constant xtask::constants::CARGO_ENCODED_RUSTDOCFLAGS">CARGO_<wbr>ENCODED_<wbr>RUSTDOCFLAGS</a></dt><dd>Environment variable carrying delimiter-separated rustdoc flags.</dd><dt><a class="constant" href="constant.CARGO_LOCK_FILE.html" title="constant xtask::constants::CARGO_LOCK_FILE">CARGO_<wbr>LOCK_<wbr>FILE</a></dt><dd>Root dependency lock relative to the workspace root.</dd><dt><a class="constant" href="constant.CARGO_METADATA_PLACEHOLDER.html" title="constant xtask::constants::CARGO_METADATA_PLACEHOLDER">CARGO_<wbr>METADATA_<wbr>PLACEHOLDER</a></dt><dd>Cargo metadata placeholder replaced while generating the rustdoc landing page.</dd><dt><a class="constant" href="constant.CARGO_RELEASE_DIRECTORY.html" title="constant xtask::constants::CARGO_RELEASE_DIRECTORY">CARGO_<wbr>RELEASE_<wbr>DIRECTORY</a></dt><dd>Cargo release output directory relative to the workspace root.</dd><dt><a class="constant" href="constant.CONFORMANCE_MANIFEST_FILE.html" title="constant xtask::constants::CONFORMANCE_MANIFEST_FILE">CONFORMANCE_<wbr>MANIFEST_<wbr>FILE</a></dt><dd>Executable v0.1.0 conformance manifest relative to the workspace root.</dd><dt><a class="constant" href="constant.CONTRACT_FREEZE_FILE.html" title="constant xtask::constants::CONTRACT_FREEZE_FILE">CONTRACT_<wbr>FREEZE_<wbr>FILE</a></dt><dd>Approved v0.1.0 contract-freeze manifest relative to the workspace root.</dd><dt><a class="constant" href="constant.COVERAGE_HTML_DIRECTORY.html" title="constant xtask::constants::COVERAGE_HTML_DIRECTORY">COVERAGE_<wbr>HTML_<wbr>DIRECTORY</a></dt><dd>Human-readable LLVM coverage directory relative to the result root.</dd><dt><a class="constant" href="constant.COVERAGE_JSON_FILE.html" title="constant xtask::constants::COVERAGE_JSON_FILE">COVERAGE_<wbr>JSON_<wbr>FILE</a></dt><dd>Machine-readable LLVM coverage file relative to the result root.</dd><dt><a class="constant" href="constant.CURL_COMMAND.html" title="constant xtask::constants::CURL_COMMAND">CURL_<wbr>COMMAND</a></dt><dd>TLS-capable transfer executable required by verified setup procedures.</dd><dt><a class="constant" href="constant.CURRENT_TEST_PROFILE.html" title="constant xtask::constants::CURRENT_TEST_PROFILE">CURRENT_<wbr>TEST_<wbr>PROFILE</a></dt><dd>Durable test-minimum profile used by normal commands.</dd><dt><a class="constant" href="constant.DEPENDENCY_SOURCES_FILE.html" title="constant xtask::constants::DEPENDENCY_SOURCES_FILE">DEPENDENCY_<wbr>SOURCES_<wbr>FILE</a></dt><dd>Declared dependency-source policy relative to the workspace root.</dd><dt><a class="constant" href="constant.DOCUMENTATION_ASSET_DIRECTORY.html" title="constant xtask::constants::DOCUMENTATION_ASSET_DIRECTORY">DOCUMENTATION_<wbr>ASSET_<wbr>DIRECTORY</a></dt><dd>Documentation-site directory containing copied visual assets.</dd><dt><a class="constant" href="constant.DOCUMENTATION_ASSET_FILES.html" title="constant xtask::constants::DOCUMENTATION_ASSET_FILES">DOCUMENTATION_<wbr>ASSET_<wbr>FILES</a></dt><dd>Official Neutral assets copied into generated documentation.</dd><dt><a class="constant" href="constant.DOCUMENTATION_SITE_DIRECTORY.html" title="constant xtask::constants::DOCUMENTATION_SITE_DIRECTORY">DOCUMENTATION_<wbr>SITE_<wbr>DIRECTORY</a></dt><dd>Tracked static documentation site directory relative to the workspace root.</dd><dt><a class="constant" href="constant.DOCUMENTATION_SITE_NOJEKYLL_FILE.html" title="constant xtask::constants::DOCUMENTATION_SITE_NOJEKYLL_FILE">DOCUMENTATION_<wbr>SITE_<wbr>NOJEKYLL_<wbr>FILE</a></dt><dd>GitHub Pages marker that preserves Rustdoc static paths.</dd><dt><a class="constant" href="constant.DOCUMENTATION_SITE_README_FILE.html" title="constant xtask::constants::DOCUMENTATION_SITE_README_FILE">DOCUMENTATION_<wbr>SITE_<wbr>README_<wbr>FILE</a></dt><dd>Generated documentation-site ownership guide filename.</dd><dt><a class="constant" href="constant.ERROR.html" title="constant xtask::constants::ERROR">ERROR</a></dt><dd>Error output category prefix.</dd><dt><a class="constant" href="constant.FIXTURE_DIRECTORY.html" title="constant xtask::constants::FIXTURE_DIRECTORY">FIXTURE_<wbr>DIRECTORY</a></dt><dd>Immutable v0.1.0 fixture root relative to the workspace root.</dd><dt><a class="constant" href="constant.GENERATED_OUTPUTS_FILE.html" title="constant xtask::constants::GENERATED_OUTPUTS_FILE">GENERATED_<wbr>OUTPUTS_<wbr>FILE</a></dt><dd>Generated-output ownership inventory relative to the workspace root.</dd><dt><a class="constant" href="constant.GIT_COMMAND.html" title="constant xtask::constants::GIT_COMMAND">GIT_<wbr>COMMAND</a></dt><dd>Git executable required for repository and release identity checks.</dd><dt><a class="constant" href="constant.INFO.html" title="constant xtask::constants::INFO">INFO</a></dt><dd>Informational output category prefix.</dd><dt><a class="constant" href="constant.LICENSE_FILE.html" title="constant xtask::constants::LICENSE_FILE">LICENSE_<wbr>FILE</a></dt><dd>Repository license file included in binary distributions.</dd><dt><a class="constant" href="constant.MANIFEST.html" title="constant xtask::constants::MANIFEST">MANIFEST</a></dt><dd>Machine-readable manifest output category prefix.</dd><dt><a class="constant" href="constant.NEUTRAL_BENCH.html" title="constant xtask::constants::NEUTRAL_BENCH">NEUTRAL_<wbr>BENCH</a></dt><dd>Workspace package name for benchmarks.</dd><dt><a class="constant" href="constant.NEUTRAL_CLI.html" title="constant xtask::constants::NEUTRAL_CLI">NEUTRAL_<wbr>CLI</a></dt><dd>Workspace package name for the command-line shell.</dd><dt><a class="constant" href="constant.NEUTRAL_CLI_BINARY.html" title="constant xtask::constants::NEUTRAL_CLI_BINARY">NEUTRAL_<wbr>CLI_<wbr>BINARY</a></dt><dd>Release binary filename for the Neutral host command line.</dd><dt><a class="constant" href="constant.NEUTRAL_COMPILER.html" title="constant xtask::constants::NEUTRAL_COMPILER">NEUTRAL_<wbr>COMPILER</a></dt><dd>Workspace package name for the compiler.</dd><dt><a class="constant" href="constant.NEUTRAL_CORE.html" title="constant xtask::constants::NEUTRAL_CORE">NEUTRAL_<wbr>CORE</a></dt><dd>Workspace package name for the core contract types.</dd><dt><a class="constant" href="constant.NEUTRAL_ENCODING.html" title="constant xtask::constants::NEUTRAL_ENCODING">NEUTRAL_<wbr>ENCODING</a></dt><dd>Workspace package name for external artifact encoding.</dd><dt><a class="constant" href="constant.NEUTRAL_IR.html" title="constant xtask::constants::NEUTRAL_IR">NEUTRAL_<wbr>IR</a></dt><dd>Workspace package name for the intermediate representation.</dd><dt><a class="constant" href="constant.NEUTRAL_LOGO_FILE.html" title="constant xtask::constants::NEUTRAL_LOGO_FILE">NEUTRAL_<wbr>LOGO_<wbr>FILE</a></dt><dd>Official square Neutral logo filename.</dd><dt><a class="constant" href="constant.NEUTRAL_PROBE.html" title="constant xtask::constants::NEUTRAL_PROBE">NEUTRAL_<wbr>PROBE</a></dt><dd>Workspace package name for the probe executable.</dd><dt><a class="constant" href="constant.NEUTRAL_PROBE_BINARY.html" title="constant xtask::constants::NEUTRAL_PROBE_BINARY">NEUTRAL_<wbr>PROBE_<wbr>BINARY</a></dt><dd>Release binary filename for the standalone Neutral probe.</dd><dt><a class="constant" href="constant.NEUTRAL_READER.html" title="constant xtask::constants::NEUTRAL_READER">NEUTRAL_<wbr>READER</a></dt><dd>Workspace package name for the reader.</dd><dt><a class="constant" href="constant.NEUTRAL_ROUNDED_LOGO_FILE.html" title="constant xtask::constants::NEUTRAL_ROUNDED_LOGO_FILE">NEUTRAL_<wbr>ROUNDED_<wbr>LOGO_<wbr>FILE</a></dt><dd>Official rounded Neutral favicon filename.</dd><dt><a class="constant" href="constant.NEUTRAL_TEST_SUITE.html" title="constant xtask::constants::NEUTRAL_TEST_SUITE">NEUTRAL_<wbr>TEST_<wbr>SUITE</a></dt><dd>Workspace package name for the test suite.</dd><dt><a class="constant" href="constant.NEUTRAL_TEST_SUPPORT.html" title="constant xtask::constants::NEUTRAL_TEST_SUPPORT">NEUTRAL_<wbr>TEST_<wbr>SUPPORT</a></dt><dd>Workspace package name for test support.</dd><dt><a class="constant" href="constant.NEUTRAL_TRANSPARENT_LOGO_FILE.html" title="constant xtask::constants::NEUTRAL_TRANSPARENT_LOGO_FILE">NEUTRAL_<wbr>TRANSPARENT_<wbr>LOGO_<wbr>FILE</a></dt><dd>Official transparent Neutral brand-mark filename.</dd><dt><a class="constant" href="constant.NEUTRAL_VOCABULARY.html" title="constant xtask::constants::NEUTRAL_VOCABULARY">NEUTRAL_<wbr>VOCABULARY</a></dt><dd>Workspace package name for vocabulary definitions.</dd><dt><a class="constant" href="constant.ORACLE_DIRECTORY.html" title="constant xtask::constants::ORACLE_DIRECTORY">ORACLE_<wbr>DIRECTORY</a></dt><dd>Immutable v0.1.0 oracle root relative to the workspace root.</dd><dt><a class="constant" href="constant.PORTABLE_CONFORMANCE_MANIFEST_FILE.html" title="constant xtask::constants::PORTABLE_CONFORMANCE_MANIFEST_FILE">PORTABLE_<wbr>CONFORMANCE_<wbr>MANIFEST_<wbr>FILE</a></dt><dd>Active portable conformance manifest relative to the workspace root.</dd><dt><a class="constant" href="constant.PORTABLE_CONTRACT_FREEZE_FILE.html" title="constant xtask::constants::PORTABLE_CONTRACT_FREEZE_FILE">PORTABLE_<wbr>CONTRACT_<wbr>FREEZE_<wbr>FILE</a></dt><dd>Active portable contract-freeze manifest relative to the workspace root.</dd><dt><a class="constant" href="constant.PORTABLE_DIRECTORY.html" title="constant xtask::constants::PORTABLE_DIRECTORY">PORTABLE_<wbr>DIRECTORY</a></dt><dd>Active portable root relative to the workspace root.</dd><dt><a class="constant" href="constant.PORTABLE_FIXTURE_DIRECTORY.html" title="constant xtask::constants::PORTABLE_FIXTURE_DIRECTORY">PORTABLE_<wbr>FIXTURE_<wbr>DIRECTORY</a></dt><dd>Active portable fixture root relative to the workspace root.</dd><dt><a class="constant" href="constant.PORTABLE_LIFECYCLE_FILE.html" title="constant xtask::constants::PORTABLE_LIFECYCLE_FILE">PORTABLE_<wbr>LIFECYCLE_<wbr>FILE</a></dt><dd>Active portable lifecycle identity relative to the workspace root.</dd><dt><a class="constant" href="constant.PORTABLE_ORACLE_DIRECTORY.html" title="constant xtask::constants::PORTABLE_ORACLE_DIRECTORY">PORTABLE_<wbr>ORACLE_<wbr>DIRECTORY</a></dt><dd>Active portable oracle root relative to the workspace root.</dd><dt><a class="constant" href="constant.PORTABLE_PLAN_FILE.html" title="constant xtask::constants::PORTABLE_PLAN_FILE">PORTABLE_<wbr>PLAN_<wbr>FILE</a></dt><dd>Active portable plan relative to the workspace root.</dd><dt><a class="constant" href="constant.PORTABLE_REQUIREMENTS_FILE.html" title="constant xtask::constants::PORTABLE_REQUIREMENTS_FILE">PORTABLE_<wbr>REQUIREMENTS_<wbr>FILE</a></dt><dd>Active portable requirements relative to the workspace root.</dd><dt><a class="constant" href="constant.PORTABLE_SNAPSHOT_DIRECTORY.html" title="constant xtask::constants::PORTABLE_SNAPSHOT_DIRECTORY">PORTABLE_<wbr>SNAPSHOT_<wbr>DIRECTORY</a></dt><dd>Generated portable snapshot root relative to the result root.</dd><dt><a class="constant" href="constant.PORTABLE_SYNTAX_CHECKLIST_FILE.html" title="constant xtask::constants::PORTABLE_SYNTAX_CHECKLIST_FILE">PORTABLE_<wbr>SYNTAX_<wbr>CHECKLIST_<wbr>FILE</a></dt><dd>Active portable syntax checklist relative to the workspace root.</dd><dt><a class="constant" href="constant.PORTABLE_SYNTAX_CONTRACT_FILE.html" title="constant xtask::constants::PORTABLE_SYNTAX_CONTRACT_FILE">PORTABLE_<wbr>SYNTAX_<wbr>CONTRACT_<wbr>FILE</a></dt><dd>Active portable syntax contract relative to the workspace root.</dd><dt><a class="constant" href="constant.PORTABLE_TRACEABILITY_FILE.html" title="constant xtask::constants::PORTABLE_TRACEABILITY_FILE">PORTABLE_<wbr>TRACEABILITY_<wbr>FILE</a></dt><dd>Active portable traceability matrix relative to the workspace root.</dd><dt><a class="constant" href="constant.POSIX_SHELL_COMMAND.html" title="constant xtask::constants::POSIX_SHELL_COMMAND">POSIX_<wbr>SHELL_<wbr>COMMAND</a></dt><dd>POSIX shell executable required by the supported Linux adapter.</dd><dt><a class="constant" href="constant.QUALITY_EVALUATION_DIRECTORY.html" title="constant xtask::constants::QUALITY_EVALUATION_DIRECTORY">QUALITY_<wbr>EVALUATION_<wbr>DIRECTORY</a></dt><dd>Ignored commit-bound quality evaluations relative to the result root.</dd><dt><a class="constant" href="constant.QUALITY_EVIDENCE_DIRECTORY.html" title="constant xtask::constants::QUALITY_EVIDENCE_DIRECTORY">QUALITY_<wbr>EVIDENCE_<wbr>DIRECTORY</a></dt><dd>Versioned durable quality evidence root relative to the workspace root.</dd><dt><a class="constant" href="constant.QUALITY_GATES_FILE.html" title="constant xtask::constants::QUALITY_GATES_FILE">QUALITY_<wbr>GATES_<wbr>FILE</a></dt><dd>Stage 9 quality-gate configuration relative to the workspace root.</dd><dt><a class="constant" href="constant.QUALITY_MANIFEST_FILE.html" title="constant xtask::constants::QUALITY_MANIFEST_FILE">QUALITY_<wbr>MANIFEST_<wbr>FILE</a></dt><dd>Durable quality-document inventory relative to the workspace root.</dd><dt><a class="constant" href="constant.QUALITY_STATUS_FILE.html" title="constant xtask::constants::QUALITY_STATUS_FILE">QUALITY_<wbr>STATUS_<wbr>FILE</a></dt><dd>Generated human-readable quality status relative to the workspace root.</dd><dt><a class="constant" href="constant.RELEASE_CHECKSUM_FILE.html" title="constant xtask::constants::RELEASE_CHECKSUM_FILE">RELEASE_<wbr>CHECKSUM_<wbr>FILE</a></dt><dd>Generated distribution checksums filename.</dd><dt><a class="constant" href="constant.RELEASE_CONFIG_FILE.html" title="constant xtask::constants::RELEASE_CONFIG_FILE">RELEASE_<wbr>CONFIG_<wbr>FILE</a></dt><dd>Stage 10 release-selection configuration relative to the workspace root.</dd><dt><a class="constant" href="constant.RELEASE_INSTALL_FILE.html" title="constant xtask::constants::RELEASE_INSTALL_FILE">RELEASE_<wbr>INSTALL_<wbr>FILE</a></dt><dd>Generated installation guide filename.</dd><dt><a class="constant" href="constant.RELEASE_MANIFEST_FILE.html" title="constant xtask::constants::RELEASE_MANIFEST_FILE">RELEASE_<wbr>MANIFEST_<wbr>FILE</a></dt><dd>Generated distribution manifest filename.</dd><dt><a class="constant" href="constant.RELEASE_PROVENANCE_FILE.html" title="constant xtask::constants::RELEASE_PROVENANCE_FILE">RELEASE_<wbr>PROVENANCE_<wbr>FILE</a></dt><dd>Generated build-provenance filename.</dd><dt><a class="constant" href="constant.RELEASE_RESULT_DIRECTORY.html" title="constant xtask::constants::RELEASE_RESULT_DIRECTORY">RELEASE_<wbr>RESULT_<wbr>DIRECTORY</a></dt><dd>Relative root for generated release preparation and packages.</dd><dt><a class="constant" href="constant.RELEASE_SBOM_FILE.html" title="constant xtask::constants::RELEASE_SBOM_FILE">RELEASE_<wbr>SBOM_<wbr>FILE</a></dt><dd>Exact locked dependency inventory shipped as the v0 SBOM.</dd><dt><a class="constant" href="constant.REPOSITORY_LAYOUT_FILE.html" title="constant xtask::constants::REPOSITORY_LAYOUT_FILE">REPOSITORY_<wbr>LAYOUT_<wbr>FILE</a></dt><dd>Repository-directory ownership inventory relative to the workspace root.</dd><dt><a class="constant" href="constant.REQUIREMENTS_FILE.html" title="constant xtask::constants::REQUIREMENTS_FILE">REQUIREMENTS_<wbr>FILE</a></dt><dd>Accepted v0.1.0 release requirements relative to the workspace root.</dd><dt><a class="constant" href="constant.RESIDUAL_RISKS_FILE.html" title="constant xtask::constants::RESIDUAL_RISKS_FILE">RESIDUAL_<wbr>RISKS_<wbr>FILE</a></dt><dd>Approved Stage 9 residual-risk record relative to the workspace root.</dd><dt><a class="constant" href="constant.ROOT_README_FILE.html" title="constant xtask::constants::ROOT_README_FILE">ROOT_<wbr>README_<wbr>FILE</a></dt><dd>Repository overview included in binary distributions.</dd><dt><a class="constant" href="constant.RUSTC_COMMAND.html" title="constant xtask::constants::RUSTC_COMMAND">RUSTC_<wbr>COMMAND</a></dt><dd>Rust compiler executable used for toolchain verification.</dd><dt><a class="constant" href="constant.RUSTDOC_FLAG_SEPARATOR.html" title="constant xtask::constants::RUSTDOC_FLAG_SEPARATOR">RUSTDOC_<wbr>FLAG_<wbr>SEPARATOR</a></dt><dd>Separator used by Cargo’s encoded compiler-flag environment variables.</dd><dt><a class="constant" href="constant.RUSTDOC_HEADER_CFG_PREFIX.html" title="constant xtask::constants::RUSTDOC_HEADER_CFG_PREFIX">RUSTDOC_<wbr>HEADER_<wbr>CFG_<wbr>PREFIX</a></dt><dd>Rust configuration prefix used to invalidate cached docs after header changes.</dd><dt><a class="constant" href="constant.RUSTDOC_HEADER_FILE.html" title="constant xtask::constants::RUSTDOC_HEADER_FILE">RUSTDOC_<wbr>HEADER_<wbr>FILE</a></dt><dd>Rustdoc HTML header fragment relative to the workspace root.</dd><dt><a class="constant" href="constant.RUSTDOC_HEADER_HASH_OFFSET.html" title="constant xtask::constants::RUSTDOC_HEADER_HASH_OFFSET">RUSTDOC_<wbr>HEADER_<wbr>HASH_<wbr>OFFSET</a></dt><dd>FNV-1a offset basis used for the non-security rustdoc cache token.</dd><dt><a class="constant" href="constant.RUSTDOC_HEADER_HASH_PRIME.html" title="constant xtask::constants::RUSTDOC_HEADER_HASH_PRIME">RUSTDOC_<wbr>HEADER_<wbr>HASH_<wbr>PRIME</a></dt><dd>FNV-1a prime used for the non-security rustdoc cache token.</dd><dt><a class="constant" href="constant.RUSTDOC_HTML_HEADER_FLAG.html" title="constant xtask::constants::RUSTDOC_HTML_HEADER_FLAG">RUSTDOC_<wbr>HTML_<wbr>HEADER_<wbr>FLAG</a></dt><dd>Rustdoc option that injects shared markup into every generated page.</dd><dt><a class="constant" href="constant.RUSTDOC_INDEX_FILE.html" title="constant xtask::constants::RUSTDOC_INDEX_FILE">RUSTDOC_<wbr>INDEX_<wbr>FILE</a></dt><dd>Generated workspace rustdoc landing-page filename.</dd><dt><a class="constant" href="constant.RUSTDOC_OUTPUT_DIRECTORY.html" title="constant xtask::constants::RUSTDOC_OUTPUT_DIRECTORY">RUSTDOC_<wbr>OUTPUT_<wbr>DIRECTORY</a></dt><dd>Generated rustdoc output directory relative to the workspace root.</dd><dt><a class="constant" href="constant.RUSTFMT_COMMAND.html" title="constant xtask::constants::RUSTFMT_COMMAND">RUSTFMT_<wbr>COMMAND</a></dt><dd>Rust formatter executable used for environment verification.</dd><dt><a class="constant" href="constant.RUSTUP_COMMAND.html" title="constant xtask::constants::RUSTUP_COMMAND">RUSTUP_<wbr>COMMAND</a></dt><dd>Rust toolchain manager used to isolate analysis-only nightly tools.</dd><dt><a class="constant" href="constant.SHA256_COMMAND.html" title="constant xtask::constants::SHA256_COMMAND">SHA256_<wbr>COMMAND</a></dt><dd>SHA-256 executable required by verified setup and release procedures.</dd><dt><a class="constant" href="constant.STAGE9_BENCHMARK.html" title="constant xtask::constants::STAGE9_BENCHMARK">STAG<wbr>E9_<wbr>BENCHMARK</a></dt><dd>Harness-free Stage 9 benchmark target name.</dd><dt><a class="constant" href="constant.SYNTAX_CHECKLIST_FILE.html" title="constant xtask::constants::SYNTAX_CHECKLIST_FILE">SYNTAX_<wbr>CHECKLIST_<wbr>FILE</a></dt><dd>Checked v0.1.0 syntax implementation mirror relative to the workspace root.</dd><dt><a class="constant" href="constant.SYNTAX_CONTRACT_FILE.html" title="constant xtask::constants::SYNTAX_CONTRACT_FILE">SYNTAX_<wbr>CONTRACT_<wbr>FILE</a></dt><dd>Authoritative v0.1.0 syntax contract relative to the workspace root.</dd><dt><a class="constant" href="constant.TAR_COMMAND.html" title="constant xtask::constants::TAR_COMMAND">TAR_<wbr>COMMAND</a></dt><dd>Archive executable required for release assembly.</dd><dt><a class="constant" href="constant.TEST_CONFIGURATION_MARKER.html" title="constant xtask::constants::TEST_CONFIGURATION_MARKER">TEST_<wbr>CONFIGURATION_<wbr>MARKER</a></dt><dd>Rust marker that identifies a test-only source declaration.</dd><dt><a class="constant" href="constant.TEST_LEVELS_FILE.html" title="constant xtask::constants::TEST_LEVELS_FILE">TEST_<wbr>LEVELS_<wbr>FILE</a></dt><dd>Durable test-level ownership inventory relative to the workspace root.</dd><dt><a class="constant" href="constant.TEST_PATH_ATTRIBUTE_MARKER.html" title="constant xtask::constants::TEST_PATH_ATTRIBUTE_MARKER">TEST_<wbr>PATH_<wbr>ATTRIBUTE_<wbr>MARKER</a></dt><dd>Rust marker proving a test module body is stored outside production source.</dd><dt><a class="constant" href="constant.TRACEABILITY_FILE.html" title="constant xtask::constants::TRACEABILITY_FILE">TRACEABILITY_<wbr>FILE</a></dt><dd>Complete v0.1.0 implementation evidence index relative to the workspace root.</dd><dt><a class="constant" href="constant.UNAME_COMMAND.html" title="constant xtask::constants::UNAME_COMMAND">UNAME_<wbr>COMMAND</a></dt><dd>Kernel/host identification executable used in environment evidence.</dd><dt><a class="constant" href="constant.VALGRIND_COMMAND.html" title="constant xtask::constants::VALGRIND_COMMAND">VALGRIND_<wbr>COMMAND</a></dt><dd>Valgrind executable used for release allocation and memory review.</dd><dt><a class="constant" href="constant.VERSION_RESULT_DIRECTORY.html" title="constant xtask::constants::VERSION_RESULT_DIRECTORY">VERSION_<wbr>RESULT_<wbr>DIRECTORY</a></dt><dd>Generated version-plan directory relative to the result root.</dd><dt><a class="constant" href="constant.WARN.html" title="constant xtask::constants::WARN">WARN</a></dt><dd>Warning output category prefix.</dd><dt><a class="constant" href="constant.WORKFLOW_EVENTS_FILE.html" title="constant xtask::constants::WORKFLOW_EVENTS_FILE">WORKFLOW_<wbr>EVENTS_<wbr>FILE</a></dt><dd>Append-only event-log filename within one workflow run.</dd><dt><a class="constant" href="constant.WORKFLOW_RESULT_DIRECTORY.html" title="constant xtask::constants::WORKFLOW_RESULT_DIRECTORY">WORKFLOW_<wbr>RESULT_<wbr>DIRECTORY</a></dt><dd>Generated aggregate workflow-log directory relative to the result root.</dd><dt><a class="constant" href="constant.WORKFLOW_SUMMARY_FILE.html" title="constant xtask::constants::WORKFLOW_SUMMARY_FILE">WORKFLOW_<wbr>SUMMARY_<wbr>FILE</a></dt><dd>Current workflow-summary filename within one workflow run.</dd><dt><a class="constant" href="constant.WORKSPACE_MANIFEST_FILE.html" title="constant xtask::constants::WORKSPACE_MANIFEST_FILE">WORKSPACE_<wbr>MANIFEST_<wbr>FILE</a></dt><dd>Root workspace manifest relative to the workspace root.</dd><dt><a class="constant" href="constant.XTASK.html" title="constant xtask::constants::XTASK">XTASK</a></dt><dd>Workspace package name for this automation crate.</dd></dl></section></div></main></body></html>

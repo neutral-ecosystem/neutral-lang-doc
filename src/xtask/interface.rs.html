@@ -1,0 +1,844 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `xtask/src/interface.rs`."><title>interface.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-1ed95124.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="xtask" data-themes="" data-resource-suffix="" data-rustdoc-version="1.98.1 (48a229cea 2026-09-01)" data-channel="1.98.1" data-search-js="search-9944d736.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"><!-- SPDX-License-Identifier: Apache-2.0 -->
+<style>
+  :root,
+  :root:not([data-theme]),
+  :root[data-theme="light"] {
+    --neutral-nav-background: rgb(246 247 248 / 94%);
+    --neutral-nav-border: #d9dee4;
+    --neutral-surface: #ffffff;
+    --neutral-surface-raised: #f2f4f6;
+    --neutral-code-surface: #edf1f3;
+    --neutral-code-border: #cdd5dc;
+    --neutral-muted: #59636e;
+    --neutral-accent: #147d74;
+    --neutral-accent-soft: #d9efeb;
+    --neutral-focus: #a66500;
+    --main-background-color: #f7f8f9;
+    --main-color: #22272d;
+    --sidebar-background-color: #eef1f3;
+    --sidebar-background-color-hover: #e3e8eb;
+    --sidebar-border-color: #d1d8dd;
+    --sidebar-link-color: #344a52;
+    --sidebar-current-link-background-color: #dce6e7;
+    --code-block-background-color: #edf1f3;
+    --headings-border-bottom-color: #d9dee4;
+    --border-color: #cdd5dc;
+    --link-color: #0b766e;
+    --type-link-color: #087d78;
+    --trait-link-color: #7550a3;
+    --assoc-item-link-color: #946100;
+    --function-link-color: #187447;
+    --right-side-color: #59636e;
+  }
+
+  :root[data-theme="dark"],
+  :root[data-theme="ayu"] {
+    --neutral-nav-background: rgb(18 22 27 / 94%);
+    --neutral-nav-border: #303943;
+    --neutral-surface: #1d2329;
+    --neutral-surface-raised: #242b32;
+    --neutral-code-surface: #20272e;
+    --neutral-code-border: #394550;
+    --neutral-muted: #aeb8c2;
+    --neutral-accent: #62d2c2;
+    --neutral-accent-soft: #1d3b39;
+    --neutral-focus: #f0b64a;
+    --main-background-color: #171b20;
+    --main-color: #e8edf2;
+    --sidebar-background-color: #12171c;
+    --sidebar-background-color-hover: #222a31;
+    --sidebar-border-color: #303943;
+    --sidebar-link-color: #c3cdd6;
+    --sidebar-current-link-background-color: #253238;
+    --code-block-background-color: #20272e;
+    --headings-border-bottom-color: #303943;
+    --border-color: #394550;
+    --link-color: #73d8ca;
+    --type-link-color: #51c9c1;
+    --trait-link-color: #c099f4;
+    --assoc-item-link-color: #e8bc62;
+    --function-link-color: #62c98c;
+    --right-side-color: #aeb8c2;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+      --neutral-nav-background: rgb(18 22 27 / 94%);
+      --neutral-nav-border: #303943;
+      --neutral-surface: #1d2329;
+      --neutral-surface-raised: #242b32;
+      --neutral-code-surface: #20272e;
+      --neutral-code-border: #394550;
+      --neutral-muted: #aeb8c2;
+      --neutral-accent: #62d2c2;
+      --neutral-accent-soft: #1d3b39;
+      --neutral-focus: #f0b64a;
+      --main-background-color: #171b20;
+      --main-color: #e8edf2;
+      --sidebar-background-color: #12171c;
+      --sidebar-background-color-hover: #222a31;
+      --sidebar-border-color: #303943;
+      --sidebar-link-color: #c3cdd6;
+      --sidebar-current-link-background-color: #253238;
+      --code-block-background-color: #20272e;
+      --headings-border-bottom-color: #303943;
+      --border-color: #394550;
+      --link-color: #73d8ca;
+      --type-link-color: #51c9c1;
+      --trait-link-color: #c099f4;
+      --assoc-item-link-color: #e8bc62;
+      --function-link-color: #62c98c;
+      --right-side-color: #aeb8c2;
+    }
+  }
+
+  body.rustdoc {
+    padding-top: 3.65rem;
+  }
+
+  #neutral-docs-nav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 10000;
+    display: flex;
+    min-height: 3.65rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.55rem 1rem;
+    color: var(--main-color);
+    background: var(--neutral-nav-background);
+    border-bottom: 1px solid var(--neutral-nav-border);
+    backdrop-filter: blur(14px);
+  }
+
+  .neutral-docs-brand,
+  .neutral-docs-actions,
+  .neutral-docs-context {
+    display: flex;
+    align-items: center;
+  }
+
+  .neutral-docs-brand {
+    min-width: 0;
+    gap: 0.7rem;
+    color: var(--main-color);
+    font: 650 0.9rem/1.2 var(--font-family);
+    text-decoration: none;
+  }
+
+  .neutral-docs-brand img {
+    width: 2.15rem;
+    height: 2.15rem;
+    border-radius: 0.65rem;
+    box-shadow: 0 0.3rem 0.9rem rgb(0 0 0 / 22%);
+  }
+
+  .neutral-docs-context {
+    min-width: 0;
+    gap: 0.55rem;
+    color: var(--neutral-muted);
+    font: 500 0.8rem/1.2 var(--font-family-code);
+  }
+
+  .neutral-docs-context::before {
+    width: 1px;
+    height: 1.1rem;
+    margin-right: 0.1rem;
+    background: var(--neutral-nav-border);
+    content: "";
+  }
+
+  .neutral-docs-actions {
+    flex: 0 0 auto;
+    gap: 0.4rem;
+  }
+
+  .neutral-docs-actions a {
+    min-height: 2.15rem;
+    padding: 0.46rem 0.78rem;
+    color: var(--main-color);
+    background: var(--neutral-surface-raised);
+    border: 1px solid var(--neutral-nav-border);
+    border-radius: 0.5rem;
+    font: 600 0.8rem/1.2 var(--font-family);
+    text-decoration: none;
+  }
+
+  .neutral-docs-actions a:hover {
+    color: var(--neutral-accent);
+    border-color: var(--neutral-accent);
+  }
+
+  .sidebar {
+    top: 3.65rem;
+    height: calc(100vh - 3.65rem);
+    border-right-color: var(--neutral-nav-border);
+  }
+
+  .sidebar-resizer {
+    top: 3.65rem;
+    height: calc(100% - 3.65rem);
+    color: var(--neutral-nav-border);
+  }
+
+  .sidebar-crate {
+    margin-top: 1.15rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .sidebar-crate h2 a {
+    color: var(--main-color);
+    font-weight: 650;
+  }
+
+  .sidebar .version {
+    display: inline-block;
+    margin-top: 0.2rem;
+    color: var(--neutral-muted);
+    font-size: 0.75rem;
+  }
+
+  .sidebar h3 {
+    margin: 1.2rem 0 0.35rem;
+    color: var(--neutral-muted);
+    font-size: 0.78rem;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .sidebar-elems a,
+  .sidebar > h2 a {
+    margin-block: 0.08rem;
+    border-radius: 0.34rem;
+  }
+
+  .sidebar-elems .block {
+    margin-bottom: 1.4rem;
+  }
+
+  body.rustdoc > main {
+    padding: 2.2rem clamp(1.4rem, 4vw, 4rem) 5rem;
+  }
+
+  .width-limiter {
+    max-width: 72rem;
+  }
+
+  .main-heading {
+    margin-bottom: 1.7rem;
+    padding-bottom: 1.15rem;
+    border-bottom: 1px solid var(--neutral-nav-border);
+  }
+
+  .main-heading h1 {
+    font-size: clamp(1.75rem, 3vw, 2.45rem);
+    font-weight: 650;
+    letter-spacing: -0.025em;
+  }
+
+  .rustdoc-breadcrumbs,
+  .rustdoc-breadcrumbs a {
+    color: var(--neutral-muted);
+  }
+
+  .docblock {
+    color: var(--main-color);
+    font-size: 1rem;
+    line-height: 1.72;
+  }
+
+  .content h2,
+  .top-doc .docblock > h3,
+  .top-doc .docblock > h4 {
+    margin-top: 2.5rem;
+    border-bottom-color: var(--neutral-nav-border);
+    font-weight: 650;
+    letter-spacing: -0.015em;
+  }
+
+  .docblock :not(pre) > code,
+  .item-table dd code,
+  .item-info code {
+    padding: 0.1em 0.34em;
+    color: var(--main-color);
+    background: var(--neutral-code-surface);
+    border: 1px solid var(--neutral-code-border);
+    border-radius: 0.28rem;
+    font-weight: 550;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  .impl > .code-header,
+  .method > .code-header,
+  .trait-impl > .code-header,
+  pre.item-decl,
+  .docblock pre {
+    background: var(--neutral-code-surface);
+    border: 1px solid var(--neutral-code-border);
+    border-left: 3px solid var(--neutral-accent);
+    border-radius: 0.45rem;
+    box-shadow: none;
+  }
+
+  .impl > .code-header,
+  .method > .code-header,
+  .trait-impl > .code-header {
+    padding: 0.62rem 0.78rem;
+  }
+
+  .impl-items > details.toggle,
+  .methods > details.toggle,
+  .implementors-toggle {
+    margin-bottom: 0.7rem;
+  }
+
+  details.toggle > summary {
+    border-radius: 0.45rem;
+  }
+
+  a.src,
+  .impl a.src.rightside,
+  .impl .rightside a.src {
+    display: inline-block;
+    padding: 0.2rem 0.48rem;
+    color: var(--neutral-accent) !important;
+    background: var(--neutral-accent-soft);
+    border: 1px solid color-mix(in srgb, var(--neutral-accent) 48%, transparent);
+    border-radius: 0.32rem;
+    font-weight: 650;
+  }
+
+  a.src:hover,
+  a.src:focus-visible {
+    color: var(--main-color) !important;
+    border-color: var(--neutral-accent);
+  }
+
+  .stab {
+    padding: 0.2rem 0.45rem;
+    color: var(--neutral-muted);
+    background: var(--neutral-surface-raised);
+    border: 1px solid var(--neutral-code-border);
+    border-radius: 0.32rem;
+  }
+
+  .stab code,
+  .since a {
+    color: var(--neutral-muted) !important;
+    font-weight: 650;
+  }
+
+  #copy-path {
+    color: var(--neutral-muted);
+    border-radius: 0.35rem;
+  }
+
+  .item-table > dt,
+  .item-table > dd {
+    padding-block: 0.65rem;
+    border-bottom: 1px solid var(--neutral-nav-border);
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  summary:focus-visible,
+  input:focus-visible {
+    outline: 2px solid var(--neutral-focus) !important;
+    outline-offset: 3px;
+  }
+
+  :target {
+    scroll-margin-top: 5rem;
+  }
+
+  @media (max-width: 700px) {
+    body.rustdoc {
+      padding-top: 3.35rem;
+    }
+
+    #neutral-docs-nav {
+      min-height: 3.35rem;
+      padding: 0.42rem 0.65rem;
+    }
+
+    .neutral-docs-brand img {
+      width: 1.95rem;
+      height: 1.95rem;
+    }
+
+    .neutral-docs-brand span,
+    .neutral-docs-context {
+      display: none;
+    }
+
+    .neutral-docs-actions a {
+      min-height: 2rem;
+      padding: 0.4rem 0.62rem;
+    }
+
+    rustdoc-topbar {
+      top: 3.35rem;
+    }
+
+    .sidebar {
+      top: calc(3.35rem + var(--topbar-height));
+      height: calc(100vh - 3.35rem - var(--topbar-height));
+    }
+
+    body.rustdoc > main {
+      padding: 1.3rem 1rem 4rem;
+    }
+
+    .main-heading h1 {
+      font-size: 1.65rem;
+    }
+  }
+
+  @media print {
+    body.rustdoc {
+      padding-top: 0;
+    }
+
+    #neutral-docs-nav {
+      display: none;
+    }
+  }
+</style>
+<script>
+  "use strict";
+
+  /** Builds the shared Neutral navigation and favicon for one Rustdoc page. */
+  function configureNeutralDocumentation() {
+    const rustdocVariables = document.querySelector('meta[name="rustdoc-vars"]');
+    if (!rustdocVariables || document.getElementById("neutral-docs-nav")) {
+      return;
+    }
+    const rootPath = rustdocVariables.dataset.rootPath || "./";
+    const favicon = document.createElement("link");
+    favicon.rel = "icon";
+    favicon.type = "image/png";
+    favicon.href = `${rootPath}assets/neutral-logo-rounded.png`;
+    document.head.append(favicon);
+
+    const navigation = document.createElement("nav");
+    navigation.id = "neutral-docs-nav";
+    navigation.setAttribute("aria-label", "Documentation navigation");
+
+    const brand = document.createElement("a");
+    brand.className = "neutral-docs-brand";
+    brand.href = `${rootPath}index.html`;
+    brand.setAttribute("aria-label", "Neutral documentation home");
+
+    const logo = document.createElement("img");
+    logo.src = `${rootPath}assets/neutral-logo.png`;
+    logo.alt = "";
+    logo.width = 34;
+    logo.height = 34;
+    brand.append(logo);
+
+    const brandName = document.createElement("span");
+    brandName.textContent = "Neutral documentation";
+    brand.append(brandName);
+
+    const context = document.createElement("span");
+    context.className = "neutral-docs-context";
+    context.textContent = rustdocVariables.dataset.currentCrate
+      ? rustdocVariables.dataset.currentCrate.replaceAll("_", "-")
+      : "Rust API";
+    brand.append(context);
+
+    const actions = document.createElement("div");
+    actions.className = "neutral-docs-actions";
+    const workspace = document.createElement("a");
+    workspace.href = `${rootPath}index.html`;
+    workspace.textContent = "Workspace";
+    actions.append(workspace);
+
+    navigation.append(brand, actions);
+    document.body.prepend(navigation);
+  }
+
+  document.addEventListener("DOMContentLoaded", configureNeutralDocumentation);
+</script>
+
+</head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">xtask/</div>interface.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// SPDX-License-Identifier: Apache-2.0
+<a href=#2 id=2 data-nosnippet>2</a>
+<a href=#3 id=3 data-nosnippet>3</a></span><span class="doccomment">//! Stable, stage-free command grammar for repository automation.
+<a href=#4 id=4 data-nosnippet>4</a>
+<a href=#5 id=5 data-nosnippet>5</a></span><span class="kw">use </span>std::path::PathBuf;
+<a href=#6 id=6 data-nosnippet>6</a>
+<a href=#7 id=7 data-nosnippet>7</a><span class="doccomment">/// Stable command name for repository formatting.
+<a href=#8 id=8 data-nosnippet>8</a></span><span class="kw">const </span>FORMAT_COMMAND: <span class="kw-2">&amp;</span>str = <span class="string">"fmt"</span>;
+<a href=#9 id=9 data-nosnippet>9</a><span class="doccomment">/// Stable command name for linting.
+<a href=#10 id=10 data-nosnippet>10</a></span><span class="kw">const </span>LINT_COMMAND: <span class="kw-2">&amp;</span>str = <span class="string">"lint"</span>;
+<a href=#11 id=11 data-nosnippet>11</a><span class="doccomment">/// Stable command name for repository checks.
+<a href=#12 id=12 data-nosnippet>12</a></span><span class="kw">const </span>CHECK_COMMAND: <span class="kw-2">&amp;</span>str = <span class="string">"check"</span>;
+<a href=#13 id=13 data-nosnippet>13</a><span class="doccomment">/// Stable command name for tests.
+<a href=#14 id=14 data-nosnippet>14</a></span><span class="kw">const </span>TEST_COMMAND: <span class="kw-2">&amp;</span>str = <span class="string">"test"</span>;
+<a href=#15 id=15 data-nosnippet>15</a><span class="doccomment">/// Stable command name for coverage.
+<a href=#16 id=16 data-nosnippet>16</a></span><span class="kw">const </span>COVERAGE_COMMAND: <span class="kw-2">&amp;</span>str = <span class="string">"coverage"</span>;
+<a href=#17 id=17 data-nosnippet>17</a><span class="doccomment">/// Stable command name for fuzzing.
+<a href=#18 id=18 data-nosnippet>18</a></span><span class="kw">const </span>FUZZ_COMMAND: <span class="kw-2">&amp;</span>str = <span class="string">"fuzz"</span>;
+<a href=#19 id=19 data-nosnippet>19</a><span class="doccomment">/// Stable command name for aggregate quality checks.
+<a href=#20 id=20 data-nosnippet>20</a></span><span class="kw">const </span>QUALITY_COMMAND: <span class="kw-2">&amp;</span>str = <span class="string">"quality"</span>;
+<a href=#21 id=21 data-nosnippet>21</a><span class="doccomment">/// Stable command name for builds.
+<a href=#22 id=22 data-nosnippet>22</a></span><span class="kw">const </span>BUILD_COMMAND: <span class="kw-2">&amp;</span>str = <span class="string">"build"</span>;
+<a href=#23 id=23 data-nosnippet>23</a><span class="doccomment">/// Stable command name for artifact validation.
+<a href=#24 id=24 data-nosnippet>24</a></span><span class="kw">const </span>VALIDATE_COMMAND: <span class="kw-2">&amp;</span>str = <span class="string">"validate"</span>;
+<a href=#25 id=25 data-nosnippet>25</a><span class="doccomment">/// Stable command name for distribution assembly.
+<a href=#26 id=26 data-nosnippet>26</a></span><span class="kw">const </span>PACKAGE_COMMAND: <span class="kw-2">&amp;</span>str = <span class="string">"package"</span>;
+<a href=#27 id=27 data-nosnippet>27</a><span class="doccomment">/// Stable command name for release preparation.
+<a href=#28 id=28 data-nosnippet>28</a></span><span class="kw">const </span>RELEASE_COMMAND: <span class="kw-2">&amp;</span>str = <span class="string">"release"</span>;
+<a href=#29 id=29 data-nosnippet>29</a><span class="doccomment">/// Stable command name for package-version operations.
+<a href=#30 id=30 data-nosnippet>30</a></span><span class="kw">const </span>VERSION_COMMAND: <span class="kw-2">&amp;</span>str = <span class="string">"version"</span>;
+<a href=#31 id=31 data-nosnippet>31</a><span class="doccomment">/// Stable command name for the active portable lifecycle.
+<a href=#32 id=32 data-nosnippet>32</a></span><span class="kw">const </span>PORTABLE_COMMAND: <span class="kw-2">&amp;</span>str = <span class="string">"portable"</span>;
+<a href=#33 id=33 data-nosnippet>33</a><span class="doccomment">/// Stable command name for generated-output cleanup.
+<a href=#34 id=34 data-nosnippet>34</a></span><span class="kw">const </span>CLEAN_COMMAND: <span class="kw-2">&amp;</span>str = <span class="string">"clean"</span>;
+<a href=#35 id=35 data-nosnippet>35</a><span class="doccomment">/// Internal command name used only by CI wrappers.
+<a href=#36 id=36 data-nosnippet>36</a></span><span class="kw">const </span>CI_COMMAND: <span class="kw-2">&amp;</span>str = <span class="string">"ci"</span>;
+<a href=#37 id=37 data-nosnippet>37</a><span class="doccomment">/// Contributor bootstrap command name.
+<a href=#38 id=38 data-nosnippet>38</a></span><span class="kw">const </span>BOOTSTRAP_COMMAND: <span class="kw-2">&amp;</span>str = <span class="string">"bootstrap"</span>;
+<a href=#39 id=39 data-nosnippet>39</a><span class="doccomment">/// Environment inspection command name.
+<a href=#40 id=40 data-nosnippet>40</a></span><span class="kw">const </span>ENVIRONMENT_COMMAND: <span class="kw-2">&amp;</span>str = <span class="string">"environment"</span>;
+<a href=#41 id=41 data-nosnippet>41</a><span class="doccomment">/// Workspace documentation command name.
+<a href=#42 id=42 data-nosnippet>42</a></span><span class="kw">const </span>DOCS_COMMAND: <span class="kw-2">&amp;</span>str = <span class="string">"docs"</span>;
+<a href=#43 id=43 data-nosnippet>43</a><span class="doccomment">/// Ordered local-development workflow command name.
+<a href=#44 id=44 data-nosnippet>44</a></span><span class="kw">const </span>DEV_COMMAND: <span class="kw-2">&amp;</span>str = <span class="string">"dev"</span>;
+<a href=#45 id=45 data-nosnippet>45</a><span class="doccomment">/// Mutation-analysis command name.
+<a href=#46 id=46 data-nosnippet>46</a></span><span class="kw">const </span>MUTATE_COMMAND: <span class="kw-2">&amp;</span>str = <span class="string">"mutate"</span>;
+<a href=#47 id=47 data-nosnippet>47</a><span class="doccomment">/// Help option accepted at the root command boundary.
+<a href=#48 id=48 data-nosnippet>48</a></span><span class="kw">const </span>HELP_OPTION: <span class="kw-2">&amp;</span>str = <span class="string">"--help"</span>;
+<a href=#49 id=49 data-nosnippet>49</a><span class="doccomment">/// Short help option accepted at the root command boundary.
+<a href=#50 id=50 data-nosnippet>50</a></span><span class="kw">const </span>SHORT_HELP_OPTION: <span class="kw-2">&amp;</span>str = <span class="string">"-h"</span>;
+<a href=#51 id=51 data-nosnippet>51</a><span class="doccomment">/// Profile selector shared by profiled commands.
+<a href=#52 id=52 data-nosnippet>52</a></span><span class="kw">const </span>PROFILE_OPTION: <span class="kw-2">&amp;</span>str = <span class="string">"--profile"</span>;
+<a href=#53 id=53 data-nosnippet>53</a>
+<a href=#54 id=54 data-nosnippet>54</a><span class="doccomment">/// Complete help rendered by `cargo xtask --help`.
+<a href=#55 id=55 data-nosnippet>55</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>HELP: <span class="kw-2">&amp;</span>str = <span class="string">"Neutral repository automation\n\n\
+<a href=#56 id=56 data-nosnippet>56</a>Usage: cargo xtask &lt;command&gt; [options]\n\n\
+<a href=#57 id=57 data-nosnippet>57</a>Stable commands:\n\
+<a href=#58 id=58 data-nosnippet>58</a>  bootstrap                                      verify the host workspace\n\
+<a href=#59 id=59 data-nosnippet>59</a>  dev                                            format, check, lint, test, and document\n\
+<a href=#60 id=60 data-nosnippet>60</a>  environment verify|manifest                    inspect the selected tools\n\
+<a href=#61 id=61 data-nosnippet>61</a>  fmt [--write]                                  check or apply Rust formatting\n\
+<a href=#62 id=62 data-nosnippet>62</a>  lint                                           run warning-free workspace linting\n\
+<a href=#63 id=63 data-nosnippet>63</a>  check                                          check code and repository contracts\n\
+<a href=#64 id=64 data-nosnippet>64</a>  test unit|smoke|integration|system|conformance|property|security|all\n\
+<a href=#65 id=65 data-nosnippet>65</a>  test performance --profile pr|release|soak     run a controlled performance profile\n\
+<a href=#66 id=66 data-nosnippet>66</a>  coverage                                       enforce configured LLVM coverage\n\
+<a href=#67 id=67 data-nosnippet>67</a>  fuzz smoke|campaign                            run bounded or full fuzzing\n\
+<a href=#68 id=68 data-nosnippet>68</a>  quality [--profile pr|release]                 run the documented quality composition\n\
+<a href=#69 id=69 data-nosnippet>69</a>  quality status|render|verify                   inspect or synchronize the quality ledger\n\
+<a href=#70 id=70 data-nosnippet>70</a>  quality evaluate --profile pr|release          run and retain a commit-bound evaluation\n\
+<a href=#71 id=71 data-nosnippet>71</a>  quality approve --release &lt;version&gt;            approve a passing release evaluation\n\
+<a href=#72 id=72 data-nosnippet>72</a>  build --profile dev|release                    build the workspace\n\
+<a href=#73 id=73 data-nosnippet>73</a>  docs                                           generate workspace API documentation\n\
+<a href=#74 id=74 data-nosnippet>74</a>  validate &lt;artifact&gt;|binaries                   validate a release artifact or binaries\n\
+<a href=#75 id=75 data-nosnippet>75</a>  package                                        assemble the selected distribution\n\
+<a href=#76 id=76 data-nosnippet>76</a>  release prepare                                prepare, but never publish, a release\n\
+<a href=#77 id=77 data-nosnippet>77</a>  version show|check|prepare &lt;version&gt;            inspect or prepare package versioning\n\
+<a href=#78 id=78 data-nosnippet>78</a>  portable install &lt;directory&gt;                   atomically install a reviewed portable\n\
+<a href=#79 id=79 data-nosnippet>79</a>  portable verify|snapshot                       verify or snapshot the active portable\n\
+<a href=#80 id=80 data-nosnippet>80</a>  clean                                          remove ignored generated evidence\n\n\
+<a href=#81 id=81 data-nosnippet>81</a>Automation workflows:\n\
+<a href=#82 id=82 data-nosnippet>82</a>  ci pr|release                                  run the same logged gates locally and in CI"</span>;
+<a href=#83 id=83 data-nosnippet>83</a>
+<a href=#84 id=84 data-nosnippet>84</a><span class="doccomment">/// Command fragments that every contributor-facing command map must expose.
+<a href=#85 id=85 data-nosnippet>85</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>DOCUMENTED_COMMANDS: <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>str] = <span class="kw-2">&amp;</span>[
+<a href=#86 id=86 data-nosnippet>86</a>    <span class="string">"cargo xtask dev"</span>,
+<a href=#87 id=87 data-nosnippet>87</a>    <span class="string">"cargo xtask fmt"</span>,
+<a href=#88 id=88 data-nosnippet>88</a>    <span class="string">"cargo xtask lint"</span>,
+<a href=#89 id=89 data-nosnippet>89</a>    <span class="string">"cargo xtask check"</span>,
+<a href=#90 id=90 data-nosnippet>90</a>    <span class="string">"cargo xtask test"</span>,
+<a href=#91 id=91 data-nosnippet>91</a>    <span class="string">"cargo xtask coverage"</span>,
+<a href=#92 id=92 data-nosnippet>92</a>    <span class="string">"cargo xtask fuzz"</span>,
+<a href=#93 id=93 data-nosnippet>93</a>    <span class="string">"cargo xtask quality"</span>,
+<a href=#94 id=94 data-nosnippet>94</a>    <span class="string">"cargo xtask build"</span>,
+<a href=#95 id=95 data-nosnippet>95</a>    <span class="string">"cargo xtask validate"</span>,
+<a href=#96 id=96 data-nosnippet>96</a>    <span class="string">"cargo xtask package"</span>,
+<a href=#97 id=97 data-nosnippet>97</a>    <span class="string">"cargo xtask release prepare"</span>,
+<a href=#98 id=98 data-nosnippet>98</a>    <span class="string">"cargo xtask version"</span>,
+<a href=#99 id=99 data-nosnippet>99</a>    <span class="string">"cargo xtask portable"</span>,
+<a href=#100 id=100 data-nosnippet>100</a>    <span class="string">"cargo xtask clean"</span>,
+<a href=#101 id=101 data-nosnippet>101</a>    <span class="string">"cargo xtask ci"</span>,
+<a href=#102 id=102 data-nosnippet>102</a>];
+<a href=#103 id=103 data-nosnippet>103</a>
+<a href=#104 id=104 data-nosnippet>104</a><span class="doccomment">/// One parsed repository-automation request.
+<a href=#105 id=105 data-nosnippet>105</a></span><span class="attr">#[derive(Clone, Debug, Eq, PartialEq)]
+<a href=#106 id=106 data-nosnippet>106</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>Task {
+<a href=#107 id=107 data-nosnippet>107</a>    <span class="doccomment">/// Render stable command help.
+<a href=#108 id=108 data-nosnippet>108</a>    </span>Help,
+<a href=#109 id=109 data-nosnippet>109</a>    <span class="doccomment">/// Verify the contributor environment and initialize ignored output roots.
+<a href=#110 id=110 data-nosnippet>110</a>    </span>Bootstrap,
+<a href=#111 id=111 data-nosnippet>111</a>    <span class="doccomment">/// Run the ordered, auto-formatting local-development workflow.
+<a href=#112 id=112 data-nosnippet>112</a>    </span>Dev,
+<a href=#113 id=113 data-nosnippet>113</a>    <span class="doccomment">/// Verify the selected environment.
+<a href=#114 id=114 data-nosnippet>114</a>    </span>EnvironmentVerify,
+<a href=#115 id=115 data-nosnippet>115</a>    <span class="doccomment">/// Print a machine-readable environment manifest.
+<a href=#116 id=116 data-nosnippet>116</a>    </span>EnvironmentManifest,
+<a href=#117 id=117 data-nosnippet>117</a>    <span class="doccomment">/// Check or write Rust formatting.
+<a href=#118 id=118 data-nosnippet>118</a>    </span>Format {
+<a href=#119 id=119 data-nosnippet>119</a>        <span class="doccomment">/// Whether formatting changes should be applied.
+<a href=#120 id=120 data-nosnippet>120</a>        </span>write: bool,
+<a href=#121 id=121 data-nosnippet>121</a>    },
+<a href=#122 id=122 data-nosnippet>122</a>    <span class="doccomment">/// Run warning-free linting.
+<a href=#123 id=123 data-nosnippet>123</a>    </span>Lint,
+<a href=#124 id=124 data-nosnippet>124</a>    <span class="doccomment">/// Run compilation and repository-coherence checks.
+<a href=#125 id=125 data-nosnippet>125</a>    </span>Check,
+<a href=#126 id=126 data-nosnippet>126</a>    <span class="doccomment">/// Build the workspace using a durable profile.
+<a href=#127 id=127 data-nosnippet>127</a>    </span>Build(BuildProfile),
+<a href=#128 id=128 data-nosnippet>128</a>    <span class="doccomment">/// Generate workspace documentation.
+<a href=#129 id=129 data-nosnippet>129</a>    </span>Docs,
+<a href=#130 id=130 data-nosnippet>130</a>    <span class="doccomment">/// Run one durable test level.
+<a href=#131 id=131 data-nosnippet>131</a>    </span>Test(TestLevel),
+<a href=#132 id=132 data-nosnippet>132</a>    <span class="doccomment">/// Run a controlled performance profile.
+<a href=#133 id=133 data-nosnippet>133</a>    </span>Performance(PerformanceProfile),
+<a href=#134 id=134 data-nosnippet>134</a>    <span class="doccomment">/// Run one fuzz mode.
+<a href=#135 id=135 data-nosnippet>135</a>    </span>Fuzz(FuzzMode),
+<a href=#136 id=136 data-nosnippet>136</a>    <span class="doccomment">/// Run configured LLVM coverage.
+<a href=#137 id=137 data-nosnippet>137</a>    </span>Coverage,
+<a href=#138 id=138 data-nosnippet>138</a>    <span class="doccomment">/// Run configured mutation analysis.
+<a href=#139 id=139 data-nosnippet>139</a>    </span>Mutate,
+<a href=#140 id=140 data-nosnippet>140</a>    <span class="doccomment">/// Operate the managed quality ledger or run an aggregate profile.
+<a href=#141 id=141 data-nosnippet>141</a>    </span>Quality(QualityAction),
+<a href=#142 id=142 data-nosnippet>142</a>    <span class="doccomment">/// Validate released binaries or one encoded artifact.
+<a href=#143 id=143 data-nosnippet>143</a>    </span>Validate(ValidationTarget),
+<a href=#144 id=144 data-nosnippet>144</a>    <span class="doccomment">/// Assemble the selected release distribution.
+<a href=#145 id=145 data-nosnippet>145</a>    </span>Package,
+<a href=#146 id=146 data-nosnippet>146</a>    <span class="doccomment">/// Prepare a release without publishing it.
+<a href=#147 id=147 data-nosnippet>147</a>    </span>ReleasePrepare,
+<a href=#148 id=148 data-nosnippet>148</a>    <span class="doccomment">/// Inspect or prepare package versioning.
+<a href=#149 id=149 data-nosnippet>149</a>    </span>Version(VersionAction),
+<a href=#150 id=150 data-nosnippet>150</a>    <span class="doccomment">/// Verify or snapshot the active portable package.
+<a href=#151 id=151 data-nosnippet>151</a>    </span>Portable(PortableAction),
+<a href=#152 id=152 data-nosnippet>152</a>    <span class="doccomment">/// Remove ignored generated evidence.
+<a href=#153 id=153 data-nosnippet>153</a>    </span>Clean,
+<a href=#154 id=154 data-nosnippet>154</a>    <span class="doccomment">/// Run one internal CI composition.
+<a href=#155 id=155 data-nosnippet>155</a>    </span>Ci(CiProfile),
+<a href=#156 id=156 data-nosnippet>156</a>}
+<a href=#157 id=157 data-nosnippet>157</a>
+<a href=#158 id=158 data-nosnippet>158</a><span class="doccomment">/// Supported workspace build profiles.
+<a href=#159 id=159 data-nosnippet>159</a></span><span class="attr">#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+<a href=#160 id=160 data-nosnippet>160</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>BuildProfile {
+<a href=#161 id=161 data-nosnippet>161</a>    <span class="doccomment">/// Fast developer build.
+<a href=#162 id=162 data-nosnippet>162</a>    </span>Dev,
+<a href=#163 id=163 data-nosnippet>163</a>    <span class="doccomment">/// Optimized release build.
+<a href=#164 id=164 data-nosnippet>164</a>    </span>Release,
+<a href=#165 id=165 data-nosnippet>165</a>}
+<a href=#166 id=166 data-nosnippet>166</a>
+<a href=#167 id=167 data-nosnippet>167</a><span class="doccomment">/// Independently runnable, durable test levels.
+<a href=#168 id=168 data-nosnippet>168</a></span><span class="attr">#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+<a href=#169 id=169 data-nosnippet>169</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>TestLevel {
+<a href=#170 id=170 data-nosnippet>170</a>    <span class="doccomment">/// All crate-owned tests.
+<a href=#171 id=171 data-nosnippet>171</a>    </span>Unit,
+<a href=#172 id=172 data-nosnippet>172</a>    <span class="doccomment">/// Built-binary help/version smoke tests.
+<a href=#173 id=173 data-nosnippet>173</a>    </span>Smoke,
+<a href=#174 id=174 data-nosnippet>174</a>    <span class="doccomment">/// Cross-package integration tests.
+<a href=#175 id=175 data-nosnippet>175</a>    </span>Integration,
+<a href=#176 id=176 data-nosnippet>176</a>    <span class="doccomment">/// Process and filesystem system tests.
+<a href=#177 id=177 data-nosnippet>177</a>    </span>System,
+<a href=#178 id=178 data-nosnippet>178</a>    <span class="doccomment">/// Manifest-driven normative conformance tests.
+<a href=#179 id=179 data-nosnippet>179</a>    </span>Conformance,
+<a href=#180 id=180 data-nosnippet>180</a>    <span class="doccomment">/// Property and metamorphic tests.
+<a href=#181 id=181 data-nosnippet>181</a>    </span>Property,
+<a href=#182 id=182 data-nosnippet>182</a>    <span class="doccomment">/// Security and adversarial tests.
+<a href=#183 id=183 data-nosnippet>183</a>    </span>Security,
+<a href=#184 id=184 data-nosnippet>184</a>    <span class="doccomment">/// Complete ordinary test composition.
+<a href=#185 id=185 data-nosnippet>185</a>    </span>All,
+<a href=#186 id=186 data-nosnippet>186</a>}
+<a href=#187 id=187 data-nosnippet>187</a>
+<a href=#188 id=188 data-nosnippet>188</a><span class="doccomment">/// Controlled performance profiles.
+<a href=#189 id=189 data-nosnippet>189</a></span><span class="attr">#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+<a href=#190 id=190 data-nosnippet>190</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>PerformanceProfile {
+<a href=#191 id=191 data-nosnippet>191</a>    <span class="doccomment">/// Bounded pull-request performance smoke.
+<a href=#192 id=192 data-nosnippet>192</a>    </span>Pr,
+<a href=#193 id=193 data-nosnippet>193</a>    <span class="doccomment">/// Release qualification profile.
+<a href=#194 id=194 data-nosnippet>194</a>    </span>Release,
+<a href=#195 id=195 data-nosnippet>195</a>    <span class="doccomment">/// Extended soak profile.
+<a href=#196 id=196 data-nosnippet>196</a>    </span>Soak,
+<a href=#197 id=197 data-nosnippet>197</a>}
+<a href=#198 id=198 data-nosnippet>198</a>
+<a href=#199 id=199 data-nosnippet>199</a><span class="doccomment">/// Supported fuzzing modes.
+<a href=#200 id=200 data-nosnippet>200</a></span><span class="attr">#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+<a href=#201 id=201 data-nosnippet>201</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>FuzzMode {
+<a href=#202 id=202 data-nosnippet>202</a>    <span class="doccomment">/// Deterministic bounded fuzz regressions.
+<a href=#203 id=203 data-nosnippet>203</a>    </span>Smoke,
+<a href=#204 id=204 data-nosnippet>204</a>    <span class="doccomment">/// Full configured coverage-guided campaign.
+<a href=#205 id=205 data-nosnippet>205</a>    </span>Campaign,
+<a href=#206 id=206 data-nosnippet>206</a>}
+<a href=#207 id=207 data-nosnippet>207</a>
+<a href=#208 id=208 data-nosnippet>208</a><span class="doccomment">/// Aggregate quality profiles.
+<a href=#209 id=209 data-nosnippet>209</a></span><span class="attr">#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+<a href=#210 id=210 data-nosnippet>210</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>QualityProfile {
+<a href=#211 id=211 data-nosnippet>211</a>    <span class="doccomment">/// Normal push/pull-request quality checks.
+<a href=#212 id=212 data-nosnippet>212</a>    </span>Pr,
+<a href=#213 id=213 data-nosnippet>213</a>    <span class="doccomment">/// Full release qualification checks.
+<a href=#214 id=214 data-nosnippet>214</a>    </span>Release,
+<a href=#215 id=215 data-nosnippet>215</a>}
+<a href=#216 id=216 data-nosnippet>216</a>
+<a href=#217 id=217 data-nosnippet>217</a><span class="doccomment">/// Managed quality workflow actions.
+<a href=#218 id=218 data-nosnippet>218</a></span><span class="attr">#[derive(Clone, Debug, Eq, PartialEq)]
+<a href=#219 id=219 data-nosnippet>219</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>QualityAction {
+<a href=#220 id=220 data-nosnippet>220</a>    <span class="doccomment">/// Run an aggregate quality profile without creating an evaluation record.
+<a href=#221 id=221 data-nosnippet>221</a>    </span>Run(QualityProfile),
+<a href=#222 id=222 data-nosnippet>222</a>    <span class="doccomment">/// Print the approved-release ledger.
+<a href=#223 id=223 data-nosnippet>223</a>    </span>Status,
+<a href=#224 id=224 data-nosnippet>224</a>    <span class="doccomment">/// Run a profile and retain a commit-bound evaluation.
+<a href=#225 id=225 data-nosnippet>225</a>    </span>Evaluate(QualityProfile),
+<a href=#226 id=226 data-nosnippet>226</a>    <span class="doccomment">/// Approve the matching release evaluation through an explicit human action.
+<a href=#227 id=227 data-nosnippet>227</a>    </span>Approve(String),
+<a href=#228 id=228 data-nosnippet>228</a>    <span class="doccomment">/// Regenerate the human-readable status document.
+<a href=#229 id=229 data-nosnippet>229</a>    </span>Render,
+<a href=#230 id=230 data-nosnippet>230</a>    <span class="doccomment">/// Verify the manifest, approvals, evidence hashes, and rendered status.
+<a href=#231 id=231 data-nosnippet>231</a>    </span>Verify,
+<a href=#232 id=232 data-nosnippet>232</a>}
+<a href=#233 id=233 data-nosnippet>233</a>
+<a href=#234 id=234 data-nosnippet>234</a><span class="doccomment">/// Artifact target selected for validation.
+<a href=#235 id=235 data-nosnippet>235</a></span><span class="attr">#[derive(Clone, Debug, Eq, PartialEq)]
+<a href=#236 id=236 data-nosnippet>236</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>ValidationTarget {
+<a href=#237 id=237 data-nosnippet>237</a>    <span class="doccomment">/// Validate the release-mode CLI and standalone probe binaries.
+<a href=#238 id=238 data-nosnippet>238</a>    </span>Binaries,
+<a href=#239 id=239 data-nosnippet>239</a>    <span class="doccomment">/// Validate one encoded artifact through the standalone probe boundary.
+<a href=#240 id=240 data-nosnippet>240</a>    </span>Artifact(PathBuf),
+<a href=#241 id=241 data-nosnippet>241</a>}
+<a href=#242 id=242 data-nosnippet>242</a>
+<a href=#243 id=243 data-nosnippet>243</a><span class="doccomment">/// Stable package-version actions.
+<a href=#244 id=244 data-nosnippet>244</a></span><span class="attr">#[derive(Clone, Debug, Eq, PartialEq)]
+<a href=#245 id=245 data-nosnippet>245</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>VersionAction {
+<a href=#246 id=246 data-nosnippet>246</a>    <span class="doccomment">/// Display package and frozen contract versions.
+<a href=#247 id=247 data-nosnippet>247</a>    </span>Show,
+<a href=#248 id=248 data-nosnippet>248</a>    <span class="doccomment">/// Check centralized version invariants.
+<a href=#249 id=249 data-nosnippet>249</a>    </span>Check,
+<a href=#250 id=250 data-nosnippet>250</a>    <span class="doccomment">/// Prepare deterministic derived changes for a package version.
+<a href=#251 id=251 data-nosnippet>251</a>    </span>Prepare(String),
+<a href=#252 id=252 data-nosnippet>252</a>}
+<a href=#253 id=253 data-nosnippet>253</a>
+<a href=#254 id=254 data-nosnippet>254</a><span class="doccomment">/// Stable active-portable lifecycle actions.
+<a href=#255 id=255 data-nosnippet>255</a></span><span class="attr">#[derive(Clone, Debug, Eq, PartialEq)]
+<a href=#256 id=256 data-nosnippet>256</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>PortableAction {
+<a href=#257 id=257 data-nosnippet>257</a>    <span class="doccomment">/// Install a reviewed portable package from one source directory.
+<a href=#258 id=258 data-nosnippet>258</a>    </span>Install(PathBuf),
+<a href=#259 id=259 data-nosnippet>259</a>    <span class="doccomment">/// Verify active portable ownership and links.
+<a href=#260 id=260 data-nosnippet>260</a>    </span>Verify,
+<a href=#261 id=261 data-nosnippet>261</a>    <span class="doccomment">/// Create a local deterministic archive candidate.
+<a href=#262 id=262 data-nosnippet>262</a>    </span>Snapshot,
+<a href=#263 id=263 data-nosnippet>263</a>}
+<a href=#264 id=264 data-nosnippet>264</a>
+<a href=#265 id=265 data-nosnippet>265</a><span class="doccomment">/// Internal CI compositions.
+<a href=#266 id=266 data-nosnippet>266</a></span><span class="attr">#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+<a href=#267 id=267 data-nosnippet>267</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>CiProfile {
+<a href=#268 id=268 data-nosnippet>268</a>    <span class="doccomment">/// Normal push/pull-request composition.
+<a href=#269 id=269 data-nosnippet>269</a>    </span>Pr,
+<a href=#270 id=270 data-nosnippet>270</a>    <span class="doccomment">/// Clean-main release preparation composition.
+<a href=#271 id=271 data-nosnippet>271</a>    </span>Release,
+<a href=#272 id=272 data-nosnippet>272</a>}
+<a href=#273 id=273 data-nosnippet>273</a>
+<a href=#274 id=274 data-nosnippet>274</a><span class="doccomment">/// Parses exact command arguments into one stable task.
+<a href=#275 id=275 data-nosnippet>275</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>parse(arguments: <span class="kw-2">&amp;</span>[String]) -&gt; <span class="prelude-ty">Result</span>&lt;Task, String&gt; {
+<a href=#276 id=276 data-nosnippet>276</a>    <span class="kw">let </span>values = arguments.iter().map(String::as_str).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+<a href=#277 id=277 data-nosnippet>277</a>    <span class="kw">match </span>values.as_slice() {
+<a href=#278 id=278 data-nosnippet>278</a>        [] | [HELP_OPTION | SHORT_HELP_OPTION] =&gt; <span class="prelude-val">Ok</span>(Task::Help),
+<a href=#279 id=279 data-nosnippet>279</a>        [BOOTSTRAP_COMMAND] =&gt; <span class="prelude-val">Ok</span>(Task::Bootstrap),
+<a href=#280 id=280 data-nosnippet>280</a>        [DEV_COMMAND] =&gt; <span class="prelude-val">Ok</span>(Task::Dev),
+<a href=#281 id=281 data-nosnippet>281</a>        [ENVIRONMENT_COMMAND, <span class="string">"verify"</span>] =&gt; <span class="prelude-val">Ok</span>(Task::EnvironmentVerify),
+<a href=#282 id=282 data-nosnippet>282</a>        [ENVIRONMENT_COMMAND, <span class="string">"manifest"</span>] =&gt; <span class="prelude-val">Ok</span>(Task::EnvironmentManifest),
+<a href=#283 id=283 data-nosnippet>283</a>        [FORMAT_COMMAND] =&gt; <span class="prelude-val">Ok</span>(Task::Format { write: <span class="bool-val">false </span>}),
+<a href=#284 id=284 data-nosnippet>284</a>        [FORMAT_COMMAND, <span class="string">"--write"</span>] =&gt; <span class="prelude-val">Ok</span>(Task::Format { write: <span class="bool-val">true </span>}),
+<a href=#285 id=285 data-nosnippet>285</a>        [LINT_COMMAND] =&gt; <span class="prelude-val">Ok</span>(Task::Lint),
+<a href=#286 id=286 data-nosnippet>286</a>        [CHECK_COMMAND] =&gt; <span class="prelude-val">Ok</span>(Task::Check),
+<a href=#287 id=287 data-nosnippet>287</a>        [DOCS_COMMAND] =&gt; <span class="prelude-val">Ok</span>(Task::Docs),
+<a href=#288 id=288 data-nosnippet>288</a>        [BUILD_COMMAND, PROFILE_OPTION, <span class="string">"dev"</span>] =&gt; <span class="prelude-val">Ok</span>(Task::Build(BuildProfile::Dev)),
+<a href=#289 id=289 data-nosnippet>289</a>        [BUILD_COMMAND, PROFILE_OPTION, <span class="string">"release"</span>] =&gt; <span class="prelude-val">Ok</span>(Task::Build(BuildProfile::Release)),
+<a href=#290 id=290 data-nosnippet>290</a>        [TEST_COMMAND, <span class="string">"performance"</span>, PROFILE_OPTION, profile] =&gt; {
+<a href=#291 id=291 data-nosnippet>291</a>            parse_performance_profile(profile).map(Task::Performance)
+<a href=#292 id=292 data-nosnippet>292</a>        }
+<a href=#293 id=293 data-nosnippet>293</a>        [TEST_COMMAND, level] =&gt; parse_test_level(level).map(Task::Test),
+<a href=#294 id=294 data-nosnippet>294</a>        [FUZZ_COMMAND, mode] =&gt; parse_fuzz_mode(mode).map(Task::Fuzz),
+<a href=#295 id=295 data-nosnippet>295</a>        [COVERAGE_COMMAND] =&gt; <span class="prelude-val">Ok</span>(Task::Coverage),
+<a href=#296 id=296 data-nosnippet>296</a>        [MUTATE_COMMAND] =&gt; <span class="prelude-val">Ok</span>(Task::Mutate),
+<a href=#297 id=297 data-nosnippet>297</a>        [QUALITY_COMMAND] =&gt; <span class="prelude-val">Ok</span>(Task::Quality(QualityAction::Run(QualityProfile::Pr))),
+<a href=#298 id=298 data-nosnippet>298</a>        [QUALITY_COMMAND, PROFILE_OPTION, profile] =&gt; parse_quality_profile(profile)
+<a href=#299 id=299 data-nosnippet>299</a>            .map(QualityAction::Run)
+<a href=#300 id=300 data-nosnippet>300</a>            .map(Task::Quality),
+<a href=#301 id=301 data-nosnippet>301</a>        [QUALITY_COMMAND, <span class="string">"status"</span>] =&gt; <span class="prelude-val">Ok</span>(Task::Quality(QualityAction::Status)),
+<a href=#302 id=302 data-nosnippet>302</a>        [QUALITY_COMMAND, <span class="string">"render"</span>] =&gt; <span class="prelude-val">Ok</span>(Task::Quality(QualityAction::Render)),
+<a href=#303 id=303 data-nosnippet>303</a>        [QUALITY_COMMAND, <span class="string">"verify"</span>] =&gt; <span class="prelude-val">Ok</span>(Task::Quality(QualityAction::Verify)),
+<a href=#304 id=304 data-nosnippet>304</a>        [QUALITY_COMMAND, <span class="string">"evaluate"</span>, PROFILE_OPTION, profile] =&gt; parse_quality_profile(profile)
+<a href=#305 id=305 data-nosnippet>305</a>            .map(QualityAction::Evaluate)
+<a href=#306 id=306 data-nosnippet>306</a>            .map(Task::Quality),
+<a href=#307 id=307 data-nosnippet>307</a>        [QUALITY_COMMAND, <span class="string">"approve"</span>, <span class="string">"--release"</span>, release] =&gt; {
+<a href=#308 id=308 data-nosnippet>308</a>            <span class="prelude-val">Ok</span>(Task::Quality(QualityAction::Approve((<span class="kw-2">*</span>release).to_owned())))
+<a href=#309 id=309 data-nosnippet>309</a>        }
+<a href=#310 id=310 data-nosnippet>310</a>        [VALIDATE_COMMAND, <span class="string">"binaries"</span>] =&gt; <span class="prelude-val">Ok</span>(Task::Validate(ValidationTarget::Binaries)),
+<a href=#311 id=311 data-nosnippet>311</a>        [VALIDATE_COMMAND, artifact] =&gt; <span class="prelude-val">Ok</span>(Task::Validate(ValidationTarget::Artifact(
+<a href=#312 id=312 data-nosnippet>312</a>            PathBuf::from(artifact),
+<a href=#313 id=313 data-nosnippet>313</a>        ))),
+<a href=#314 id=314 data-nosnippet>314</a>        [PACKAGE_COMMAND] =&gt; <span class="prelude-val">Ok</span>(Task::Package),
+<a href=#315 id=315 data-nosnippet>315</a>        [RELEASE_COMMAND, <span class="string">"prepare"</span>] =&gt; <span class="prelude-val">Ok</span>(Task::ReleasePrepare),
+<a href=#316 id=316 data-nosnippet>316</a>        [VERSION_COMMAND, <span class="string">"show"</span>] =&gt; <span class="prelude-val">Ok</span>(Task::Version(VersionAction::Show)),
+<a href=#317 id=317 data-nosnippet>317</a>        [VERSION_COMMAND, <span class="string">"check"</span>] =&gt; <span class="prelude-val">Ok</span>(Task::Version(VersionAction::Check)),
+<a href=#318 id=318 data-nosnippet>318</a>        [VERSION_COMMAND, <span class="string">"prepare"</span>, version] =&gt; {
+<a href=#319 id=319 data-nosnippet>319</a>            <span class="prelude-val">Ok</span>(Task::Version(VersionAction::Prepare((<span class="kw-2">*</span>version).to_owned())))
+<a href=#320 id=320 data-nosnippet>320</a>        }
+<a href=#321 id=321 data-nosnippet>321</a>        [PORTABLE_COMMAND, <span class="string">"verify"</span>] =&gt; <span class="prelude-val">Ok</span>(Task::Portable(PortableAction::Verify)),
+<a href=#322 id=322 data-nosnippet>322</a>        [PORTABLE_COMMAND, <span class="string">"snapshot"</span>] =&gt; <span class="prelude-val">Ok</span>(Task::Portable(PortableAction::Snapshot)),
+<a href=#323 id=323 data-nosnippet>323</a>        [PORTABLE_COMMAND, <span class="string">"install"</span>, source] =&gt; <span class="prelude-val">Ok</span>(Task::Portable(PortableAction::Install(
+<a href=#324 id=324 data-nosnippet>324</a>            PathBuf::from(source),
+<a href=#325 id=325 data-nosnippet>325</a>        ))),
+<a href=#326 id=326 data-nosnippet>326</a>        [CLEAN_COMMAND] =&gt; <span class="prelude-val">Ok</span>(Task::Clean),
+<a href=#327 id=327 data-nosnippet>327</a>        [CI_COMMAND, <span class="string">"pr"</span>] =&gt; <span class="prelude-val">Ok</span>(Task::Ci(CiProfile::Pr)),
+<a href=#328 id=328 data-nosnippet>328</a>        [CI_COMMAND, <span class="string">"release"</span>] =&gt; <span class="prelude-val">Ok</span>(Task::Ci(CiProfile::Release)),
+<a href=#329 id=329 data-nosnippet>329</a>        <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(
+<a href=#330 id=330 data-nosnippet>330</a>            <span class="string">"unsupported command: {}; run `cargo xtask --help`"</span>,
+<a href=#331 id=331 data-nosnippet>331</a>            values.join(<span class="string">" "</span>)
+<a href=#332 id=332 data-nosnippet>332</a>        )),
+<a href=#333 id=333 data-nosnippet>333</a>    }
+<a href=#334 id=334 data-nosnippet>334</a>}
+<a href=#335 id=335 data-nosnippet>335</a>
+<a href=#336 id=336 data-nosnippet>336</a><span class="doccomment">/// Parses one durable test-level name.
+<a href=#337 id=337 data-nosnippet>337</a></span><span class="kw">fn </span>parse_test_level(value: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;TestLevel, String&gt; {
+<a href=#338 id=338 data-nosnippet>338</a>    <span class="kw">match </span>value {
+<a href=#339 id=339 data-nosnippet>339</a>        <span class="string">"unit" </span>=&gt; <span class="prelude-val">Ok</span>(TestLevel::Unit),
+<a href=#340 id=340 data-nosnippet>340</a>        <span class="string">"smoke" </span>=&gt; <span class="prelude-val">Ok</span>(TestLevel::Smoke),
+<a href=#341 id=341 data-nosnippet>341</a>        <span class="string">"integration" </span>=&gt; <span class="prelude-val">Ok</span>(TestLevel::Integration),
+<a href=#342 id=342 data-nosnippet>342</a>        <span class="string">"system" </span>=&gt; <span class="prelude-val">Ok</span>(TestLevel::System),
+<a href=#343 id=343 data-nosnippet>343</a>        <span class="string">"conformance" </span>=&gt; <span class="prelude-val">Ok</span>(TestLevel::Conformance),
+<a href=#344 id=344 data-nosnippet>344</a>        <span class="string">"property" </span>=&gt; <span class="prelude-val">Ok</span>(TestLevel::Property),
+<a href=#345 id=345 data-nosnippet>345</a>        <span class="string">"security" </span>=&gt; <span class="prelude-val">Ok</span>(TestLevel::Security),
+<a href=#346 id=346 data-nosnippet>346</a>        <span class="string">"all" </span>=&gt; <span class="prelude-val">Ok</span>(TestLevel::All),
+<a href=#347 id=347 data-nosnippet>347</a>        <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">"unknown test level: {value}"</span>)),
+<a href=#348 id=348 data-nosnippet>348</a>    }
+<a href=#349 id=349 data-nosnippet>349</a>}
+<a href=#350 id=350 data-nosnippet>350</a>
+<a href=#351 id=351 data-nosnippet>351</a><span class="doccomment">/// Parses one controlled performance-profile name.
+<a href=#352 id=352 data-nosnippet>352</a></span><span class="kw">fn </span>parse_performance_profile(value: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;PerformanceProfile, String&gt; {
+<a href=#353 id=353 data-nosnippet>353</a>    <span class="kw">match </span>value {
+<a href=#354 id=354 data-nosnippet>354</a>        <span class="string">"pr" </span>=&gt; <span class="prelude-val">Ok</span>(PerformanceProfile::Pr),
+<a href=#355 id=355 data-nosnippet>355</a>        <span class="string">"release" </span>=&gt; <span class="prelude-val">Ok</span>(PerformanceProfile::Release),
+<a href=#356 id=356 data-nosnippet>356</a>        <span class="string">"soak" </span>=&gt; <span class="prelude-val">Ok</span>(PerformanceProfile::Soak),
+<a href=#357 id=357 data-nosnippet>357</a>        <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">"unknown performance profile: {value}"</span>)),
+<a href=#358 id=358 data-nosnippet>358</a>    }
+<a href=#359 id=359 data-nosnippet>359</a>}
+<a href=#360 id=360 data-nosnippet>360</a>
+<a href=#361 id=361 data-nosnippet>361</a><span class="doccomment">/// Parses one fuzz-mode name.
+<a href=#362 id=362 data-nosnippet>362</a></span><span class="kw">fn </span>parse_fuzz_mode(value: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;FuzzMode, String&gt; {
+<a href=#363 id=363 data-nosnippet>363</a>    <span class="kw">match </span>value {
+<a href=#364 id=364 data-nosnippet>364</a>        <span class="string">"smoke" </span>=&gt; <span class="prelude-val">Ok</span>(FuzzMode::Smoke),
+<a href=#365 id=365 data-nosnippet>365</a>        <span class="string">"campaign" </span>=&gt; <span class="prelude-val">Ok</span>(FuzzMode::Campaign),
+<a href=#366 id=366 data-nosnippet>366</a>        <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">"unknown fuzz mode: {value}"</span>)),
+<a href=#367 id=367 data-nosnippet>367</a>    }
+<a href=#368 id=368 data-nosnippet>368</a>}
+<a href=#369 id=369 data-nosnippet>369</a>
+<a href=#370 id=370 data-nosnippet>370</a><span class="doccomment">/// Parses one aggregate quality-profile name.
+<a href=#371 id=371 data-nosnippet>371</a></span><span class="kw">fn </span>parse_quality_profile(value: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;QualityProfile, String&gt; {
+<a href=#372 id=372 data-nosnippet>372</a>    <span class="kw">match </span>value {
+<a href=#373 id=373 data-nosnippet>373</a>        <span class="string">"pr" </span>=&gt; <span class="prelude-val">Ok</span>(QualityProfile::Pr),
+<a href=#374 id=374 data-nosnippet>374</a>        <span class="string">"release" </span>=&gt; <span class="prelude-val">Ok</span>(QualityProfile::Release),
+<a href=#375 id=375 data-nosnippet>375</a>        <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">"unknown quality profile: {value}"</span>)),
+<a href=#376 id=376 data-nosnippet>376</a>    }
+<a href=#377 id=377 data-nosnippet>377</a>}
+</code></pre></div></section></main></body></html>

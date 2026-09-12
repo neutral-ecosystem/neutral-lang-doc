@@ -1,0 +1,471 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Public logical representation contracts for Neutral artifacts."><title>neutral_ir - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-1ed95124.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="neutral_ir" data-themes="" data-resource-suffix="" data-rustdoc-version="1.98.1 (48a229cea 2026-09-01)" data-channel="1.98.1" data-search-js="search-9944d736.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../static.files/storage-41dd4d93.js"></script><script defer src="../crates.js"></script><script defer src="../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-044be391.svg"><!-- SPDX-License-Identifier: Apache-2.0 -->
+<style>
+  :root,
+  :root:not([data-theme]),
+  :root[data-theme="light"] {
+    --neutral-nav-background: rgb(246 247 248 / 94%);
+    --neutral-nav-border: #d9dee4;
+    --neutral-surface: #ffffff;
+    --neutral-surface-raised: #f2f4f6;
+    --neutral-code-surface: #edf1f3;
+    --neutral-code-border: #cdd5dc;
+    --neutral-muted: #59636e;
+    --neutral-accent: #147d74;
+    --neutral-accent-soft: #d9efeb;
+    --neutral-focus: #a66500;
+    --main-background-color: #f7f8f9;
+    --main-color: #22272d;
+    --sidebar-background-color: #eef1f3;
+    --sidebar-background-color-hover: #e3e8eb;
+    --sidebar-border-color: #d1d8dd;
+    --sidebar-link-color: #344a52;
+    --sidebar-current-link-background-color: #dce6e7;
+    --code-block-background-color: #edf1f3;
+    --headings-border-bottom-color: #d9dee4;
+    --border-color: #cdd5dc;
+    --link-color: #0b766e;
+    --type-link-color: #087d78;
+    --trait-link-color: #7550a3;
+    --assoc-item-link-color: #946100;
+    --function-link-color: #187447;
+    --right-side-color: #59636e;
+  }
+
+  :root[data-theme="dark"],
+  :root[data-theme="ayu"] {
+    --neutral-nav-background: rgb(18 22 27 / 94%);
+    --neutral-nav-border: #303943;
+    --neutral-surface: #1d2329;
+    --neutral-surface-raised: #242b32;
+    --neutral-code-surface: #20272e;
+    --neutral-code-border: #394550;
+    --neutral-muted: #aeb8c2;
+    --neutral-accent: #62d2c2;
+    --neutral-accent-soft: #1d3b39;
+    --neutral-focus: #f0b64a;
+    --main-background-color: #171b20;
+    --main-color: #e8edf2;
+    --sidebar-background-color: #12171c;
+    --sidebar-background-color-hover: #222a31;
+    --sidebar-border-color: #303943;
+    --sidebar-link-color: #c3cdd6;
+    --sidebar-current-link-background-color: #253238;
+    --code-block-background-color: #20272e;
+    --headings-border-bottom-color: #303943;
+    --border-color: #394550;
+    --link-color: #73d8ca;
+    --type-link-color: #51c9c1;
+    --trait-link-color: #c099f4;
+    --assoc-item-link-color: #e8bc62;
+    --function-link-color: #62c98c;
+    --right-side-color: #aeb8c2;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+      --neutral-nav-background: rgb(18 22 27 / 94%);
+      --neutral-nav-border: #303943;
+      --neutral-surface: #1d2329;
+      --neutral-surface-raised: #242b32;
+      --neutral-code-surface: #20272e;
+      --neutral-code-border: #394550;
+      --neutral-muted: #aeb8c2;
+      --neutral-accent: #62d2c2;
+      --neutral-accent-soft: #1d3b39;
+      --neutral-focus: #f0b64a;
+      --main-background-color: #171b20;
+      --main-color: #e8edf2;
+      --sidebar-background-color: #12171c;
+      --sidebar-background-color-hover: #222a31;
+      --sidebar-border-color: #303943;
+      --sidebar-link-color: #c3cdd6;
+      --sidebar-current-link-background-color: #253238;
+      --code-block-background-color: #20272e;
+      --headings-border-bottom-color: #303943;
+      --border-color: #394550;
+      --link-color: #73d8ca;
+      --type-link-color: #51c9c1;
+      --trait-link-color: #c099f4;
+      --assoc-item-link-color: #e8bc62;
+      --function-link-color: #62c98c;
+      --right-side-color: #aeb8c2;
+    }
+  }
+
+  body.rustdoc {
+    padding-top: 3.65rem;
+  }
+
+  #neutral-docs-nav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 10000;
+    display: flex;
+    min-height: 3.65rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.55rem 1rem;
+    color: var(--main-color);
+    background: var(--neutral-nav-background);
+    border-bottom: 1px solid var(--neutral-nav-border);
+    backdrop-filter: blur(14px);
+  }
+
+  .neutral-docs-brand,
+  .neutral-docs-actions,
+  .neutral-docs-context {
+    display: flex;
+    align-items: center;
+  }
+
+  .neutral-docs-brand {
+    min-width: 0;
+    gap: 0.7rem;
+    color: var(--main-color);
+    font: 650 0.9rem/1.2 var(--font-family);
+    text-decoration: none;
+  }
+
+  .neutral-docs-brand img {
+    width: 2.15rem;
+    height: 2.15rem;
+    border-radius: 0.65rem;
+    box-shadow: 0 0.3rem 0.9rem rgb(0 0 0 / 22%);
+  }
+
+  .neutral-docs-context {
+    min-width: 0;
+    gap: 0.55rem;
+    color: var(--neutral-muted);
+    font: 500 0.8rem/1.2 var(--font-family-code);
+  }
+
+  .neutral-docs-context::before {
+    width: 1px;
+    height: 1.1rem;
+    margin-right: 0.1rem;
+    background: var(--neutral-nav-border);
+    content: "";
+  }
+
+  .neutral-docs-actions {
+    flex: 0 0 auto;
+    gap: 0.4rem;
+  }
+
+  .neutral-docs-actions a {
+    min-height: 2.15rem;
+    padding: 0.46rem 0.78rem;
+    color: var(--main-color);
+    background: var(--neutral-surface-raised);
+    border: 1px solid var(--neutral-nav-border);
+    border-radius: 0.5rem;
+    font: 600 0.8rem/1.2 var(--font-family);
+    text-decoration: none;
+  }
+
+  .neutral-docs-actions a:hover {
+    color: var(--neutral-accent);
+    border-color: var(--neutral-accent);
+  }
+
+  .sidebar {
+    top: 3.65rem;
+    height: calc(100vh - 3.65rem);
+    border-right-color: var(--neutral-nav-border);
+  }
+
+  .sidebar-resizer {
+    top: 3.65rem;
+    height: calc(100% - 3.65rem);
+    color: var(--neutral-nav-border);
+  }
+
+  .sidebar-crate {
+    margin-top: 1.15rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .sidebar-crate h2 a {
+    color: var(--main-color);
+    font-weight: 650;
+  }
+
+  .sidebar .version {
+    display: inline-block;
+    margin-top: 0.2rem;
+    color: var(--neutral-muted);
+    font-size: 0.75rem;
+  }
+
+  .sidebar h3 {
+    margin: 1.2rem 0 0.35rem;
+    color: var(--neutral-muted);
+    font-size: 0.78rem;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .sidebar-elems a,
+  .sidebar > h2 a {
+    margin-block: 0.08rem;
+    border-radius: 0.34rem;
+  }
+
+  .sidebar-elems .block {
+    margin-bottom: 1.4rem;
+  }
+
+  body.rustdoc > main {
+    padding: 2.2rem clamp(1.4rem, 4vw, 4rem) 5rem;
+  }
+
+  .width-limiter {
+    max-width: 72rem;
+  }
+
+  .main-heading {
+    margin-bottom: 1.7rem;
+    padding-bottom: 1.15rem;
+    border-bottom: 1px solid var(--neutral-nav-border);
+  }
+
+  .main-heading h1 {
+    font-size: clamp(1.75rem, 3vw, 2.45rem);
+    font-weight: 650;
+    letter-spacing: -0.025em;
+  }
+
+  .rustdoc-breadcrumbs,
+  .rustdoc-breadcrumbs a {
+    color: var(--neutral-muted);
+  }
+
+  .docblock {
+    color: var(--main-color);
+    font-size: 1rem;
+    line-height: 1.72;
+  }
+
+  .content h2,
+  .top-doc .docblock > h3,
+  .top-doc .docblock > h4 {
+    margin-top: 2.5rem;
+    border-bottom-color: var(--neutral-nav-border);
+    font-weight: 650;
+    letter-spacing: -0.015em;
+  }
+
+  .docblock :not(pre) > code,
+  .item-table dd code,
+  .item-info code {
+    padding: 0.1em 0.34em;
+    color: var(--main-color);
+    background: var(--neutral-code-surface);
+    border: 1px solid var(--neutral-code-border);
+    border-radius: 0.28rem;
+    font-weight: 550;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  .impl > .code-header,
+  .method > .code-header,
+  .trait-impl > .code-header,
+  pre.item-decl,
+  .docblock pre {
+    background: var(--neutral-code-surface);
+    border: 1px solid var(--neutral-code-border);
+    border-left: 3px solid var(--neutral-accent);
+    border-radius: 0.45rem;
+    box-shadow: none;
+  }
+
+  .impl > .code-header,
+  .method > .code-header,
+  .trait-impl > .code-header {
+    padding: 0.62rem 0.78rem;
+  }
+
+  .impl-items > details.toggle,
+  .methods > details.toggle,
+  .implementors-toggle {
+    margin-bottom: 0.7rem;
+  }
+
+  details.toggle > summary {
+    border-radius: 0.45rem;
+  }
+
+  a.src,
+  .impl a.src.rightside,
+  .impl .rightside a.src {
+    display: inline-block;
+    padding: 0.2rem 0.48rem;
+    color: var(--neutral-accent) !important;
+    background: var(--neutral-accent-soft);
+    border: 1px solid color-mix(in srgb, var(--neutral-accent) 48%, transparent);
+    border-radius: 0.32rem;
+    font-weight: 650;
+  }
+
+  a.src:hover,
+  a.src:focus-visible {
+    color: var(--main-color) !important;
+    border-color: var(--neutral-accent);
+  }
+
+  .stab {
+    padding: 0.2rem 0.45rem;
+    color: var(--neutral-muted);
+    background: var(--neutral-surface-raised);
+    border: 1px solid var(--neutral-code-border);
+    border-radius: 0.32rem;
+  }
+
+  .stab code,
+  .since a {
+    color: var(--neutral-muted) !important;
+    font-weight: 650;
+  }
+
+  #copy-path {
+    color: var(--neutral-muted);
+    border-radius: 0.35rem;
+  }
+
+  .item-table > dt,
+  .item-table > dd {
+    padding-block: 0.65rem;
+    border-bottom: 1px solid var(--neutral-nav-border);
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  summary:focus-visible,
+  input:focus-visible {
+    outline: 2px solid var(--neutral-focus) !important;
+    outline-offset: 3px;
+  }
+
+  :target {
+    scroll-margin-top: 5rem;
+  }
+
+  @media (max-width: 700px) {
+    body.rustdoc {
+      padding-top: 3.35rem;
+    }
+
+    #neutral-docs-nav {
+      min-height: 3.35rem;
+      padding: 0.42rem 0.65rem;
+    }
+
+    .neutral-docs-brand img {
+      width: 1.95rem;
+      height: 1.95rem;
+    }
+
+    .neutral-docs-brand span,
+    .neutral-docs-context {
+      display: none;
+    }
+
+    .neutral-docs-actions a {
+      min-height: 2rem;
+      padding: 0.4rem 0.62rem;
+    }
+
+    rustdoc-topbar {
+      top: 3.35rem;
+    }
+
+    .sidebar {
+      top: calc(3.35rem + var(--topbar-height));
+      height: calc(100vh - 3.35rem - var(--topbar-height));
+    }
+
+    body.rustdoc > main {
+      padding: 1.3rem 1rem 4rem;
+    }
+
+    .main-heading h1 {
+      font-size: 1.65rem;
+    }
+  }
+
+  @media print {
+    body.rustdoc {
+      padding-top: 0;
+    }
+
+    #neutral-docs-nav {
+      display: none;
+    }
+  }
+</style>
+<script>
+  "use strict";
+
+  /** Builds the shared Neutral navigation and favicon for one Rustdoc page. */
+  function configureNeutralDocumentation() {
+    const rustdocVariables = document.querySelector('meta[name="rustdoc-vars"]');
+    if (!rustdocVariables || document.getElementById("neutral-docs-nav")) {
+      return;
+    }
+    const rootPath = rustdocVariables.dataset.rootPath || "./";
+    const favicon = document.createElement("link");
+    favicon.rel = "icon";
+    favicon.type = "image/png";
+    favicon.href = `${rootPath}assets/neutral-logo-rounded.png`;
+    document.head.append(favicon);
+
+    const navigation = document.createElement("nav");
+    navigation.id = "neutral-docs-nav";
+    navigation.setAttribute("aria-label", "Documentation navigation");
+
+    const brand = document.createElement("a");
+    brand.className = "neutral-docs-brand";
+    brand.href = `${rootPath}index.html`;
+    brand.setAttribute("aria-label", "Neutral documentation home");
+
+    const logo = document.createElement("img");
+    logo.src = `${rootPath}assets/neutral-logo.png`;
+    logo.alt = "";
+    logo.width = 34;
+    logo.height = 34;
+    brand.append(logo);
+
+    const brandName = document.createElement("span");
+    brandName.textContent = "Neutral documentation";
+    brand.append(brandName);
+
+    const context = document.createElement("span");
+    context.className = "neutral-docs-context";
+    context.textContent = rustdocVariables.dataset.currentCrate
+      ? rustdocVariables.dataset.currentCrate.replaceAll("_", "-")
+      : "Rust API";
+    brand.append(context);
+
+    const actions = document.createElement("div");
+    actions.className = "neutral-docs-actions";
+    const workspace = document.createElement("a");
+    workspace.href = `${rootPath}index.html`;
+    workspace.textContent = "Workspace";
+    actions.append(workspace);
+
+    navigation.append(brand, actions);
+    document.body.prepend(navigation);
+  }
+
+  document.addEventListener("DOMContentLoaded", configureNeutralDocumentation);
+</script>
+
+</head><body class="rustdoc mod crate"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Crate neutral_ir</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../neutral_ir/index.html">neutral_<wbr>ir</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><ul class="block"><li><a id="all-types" href="all.html">All Items</a></li></ul><section id="rustdoc-toc"><h3><a href="#modules">Crate Items</a></h3><ul class="block"><li><a href="#modules" title="Modules">Modules</a></li><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#enums" title="Enums">Enums</a></li><li><a href="#constants" title="Constants">Constants</a></li></ul></section><div id="rustdoc-modnav"></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1>Crate <span>neutral_<wbr>ir</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/neutral_ir/lib.rs.html#3-2452">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Public logical representation contracts for Neutral artifacts.</p>
+<p>This crate owns the logical IR, source maps, provenance, and derivation
+records. It must not acquire source input, expose compiler-private models, or
+perform host I/O.</p>
+</div></details><h2 id="modules" class="section-header">Modules<a href="#modules" class="anchor">§</a></h2><dl class="item-table"><dt><a class="mod" href="language/index.html" title="mod neutral_ir::language">language</a></dt><dd>Frozen source and logical-name spellings shared by Neutral producers and readers.</dd></dl><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><dl class="item-table"><dt><a class="struct" href="struct.AcceptancePartition.html" title="struct neutral_ir::AcceptancePartition">Acceptance<wbr>Partition</a></dt><dd>Acceptance and resource inputs for captured compilation.</dd><dt><a class="struct" href="struct.CompilationArtifacts.html" title="struct neutral_ir::CompilationArtifacts">Compilation<wbr>Artifacts</a></dt><dd>Complete immutable successful compiler output before optional encoding.</dd><dt><a class="struct" href="struct.Declaration.html" title="struct neutral_ir::Declaration">Declaration</a></dt><dd>One exported immutable logical declaration.</dd><dt><a class="struct" href="struct.DeclarationFingerprint.html" title="struct neutral_ir::DeclarationFingerprint">Declaration<wbr>Fingerprint</a></dt><dd>Frozen declaration fingerprint separated from module-symbol continuity.</dd><dt><a class="struct" href="struct.DerivationManifest.html" title="struct neutral_ir::DerivationManifest">Derivation<wbr>Manifest</a></dt><dd>Immutable partitioned derivation manifest for successful compilation.</dd><dt><a class="struct" href="struct.DiagnosticPartition.html" title="struct neutral_ir::DiagnosticPartition">Diagnostic<wbr>Partition</a></dt><dd>Diagnostic/output-policy inputs for captured compilation.</dd><dt><a class="struct" href="struct.ElementId.html" title="struct neutral_ir::ElementId">Element<wbr>Id</a></dt><dd>An opaque graph-local element label without cross-document meaning.</dd><dt><a class="struct" href="struct.ExactNumber.html" title="struct neutral_ir::ExactNumber">Exact<wbr>Number</a></dt><dd>Exact normalized base-10 rational representation used by Neutral IR.</dd><dt><a class="struct" href="struct.FieldProvenanceRecord.html" title="struct neutral_ir::FieldProvenanceRecord">Field<wbr>Provenance<wbr>Record</a></dt><dd>Provenance for one final field inside a binding’s contextual record value.</dd><dt><a class="struct" href="struct.IdentityReference.html" title="struct neutral_ir::IdentityReference">Identity<wbr>Reference</a></dt><dd>One typed document-local identity edge retained in logical IR.</dd><dt><a class="struct" href="struct.LogicalDocument.html" title="struct neutral_ir::LogicalDocument">Logical<wbr>Document</a></dt><dd>Immutable validated logical Neutral document.</dd><dt><a class="struct" href="struct.LogicalModuleIdentity.html" title="struct neutral_ir::LogicalModuleIdentity">Logical<wbr>Module<wbr>Identity</a></dt><dd>Structured logical identity of one Neutral module.</dd><dt><a class="struct" href="struct.MeaningPartition.html" title="struct neutral_ir::MeaningPartition">Meaning<wbr>Partition</a></dt><dd>Meaning-affecting derivation inputs for captured compilation.</dd><dt><a class="struct" href="struct.ModuleSymbolIdentity.html" title="struct neutral_ir::ModuleSymbolIdentity">Module<wbr>Symbol<wbr>Identity</a></dt><dd>Structured continuity identity for one declaration in a logical module.</dd><dt><a class="struct" href="struct.NominalTypeIdentity.html" title="struct neutral_ir::NominalTypeIdentity">Nominal<wbr>Type<wbr>Identity</a></dt><dd>Exact nominal identity of one user record type.</dd><dt><a class="struct" href="struct.ProvenanceRecord.html" title="struct neutral_ir::ProvenanceRecord">Provenance<wbr>Record</a></dt><dd>Provenance record for one minimal binding value.</dd><dt><a class="struct" href="struct.RecordFieldSchema.html" title="struct neutral_ir::RecordFieldSchema">Record<wbr>Field<wbr>Schema</a></dt><dd>One typed field contract in a nominal record declaration.</dd><dt><a class="struct" href="struct.RecordTypeDefinition.html" title="struct neutral_ir::RecordTypeDefinition">Record<wbr>Type<wbr>Definition</a></dt><dd>One exported nominal record type declaration.</dd><dt><a class="struct" href="struct.RecordValue.html" title="struct neutral_ir::RecordValue">Record<wbr>Value</a></dt><dd>One contextually typed nominal record value.</dd><dt><a class="struct" href="struct.RecordValueField.html" title="struct neutral_ir::RecordValueField">Record<wbr>Value<wbr>Field</a></dt><dd>One final field in a contextual record value.</dd><dt><a class="struct" href="struct.ReferenceProvenanceRecord.html" title="struct neutral_ir::ReferenceProvenanceRecord">Reference<wbr>Provenance<wbr>Record</a></dt><dd>Provenance for one typed identity-reference edge occurrence.</dd><dt><a class="struct" href="struct.ResourceFacts.html" title="struct neutral_ir::ResourceFacts">Resource<wbr>Facts</a></dt><dd>Deterministic resource facts recorded for successful compilation.</dd><dt><a class="struct" href="struct.ReuseProvenanceRecord.html" title="struct neutral_ir::ReuseProvenanceRecord">Reuse<wbr>Provenance<wbr>Record</a></dt><dd>Provenance for one ordinary immutable-value reuse edge.</dd><dt><a class="struct" href="struct.SourceMap.html" title="struct neutral_ir::SourceMap">Source<wbr>Map</a></dt><dd>Immutable original-byte source map for a validated document.</dd><dt><a class="struct" href="struct.SourceMapEntry.html" title="struct neutral_ir::SourceMapEntry">Source<wbr>MapEntry</a></dt><dd>Source-map entry for one declaration and its minimal child components.</dd><dt><a class="struct" href="struct.VocabularyContract.html" title="struct neutral_ir::VocabularyContract">Vocabulary<wbr>Contract</a></dt><dd>Complete exact captured vocabulary contract retained in logical IR.</dd><dt><a class="struct" href="struct.VocabularyFieldContract.html" title="struct neutral_ir::VocabularyFieldContract">Vocabulary<wbr>Field<wbr>Contract</a></dt><dd>One immutable field in a captured vocabulary type contract.</dd><dt><a class="struct" href="struct.VocabularyIdentity.html" title="struct neutral_ir::VocabularyIdentity">Vocabulary<wbr>Identity</a></dt><dd>Exact captured and logical identity of one vocabulary contract.</dd><dt><a class="struct" href="struct.VocabularyRecordValue.html" title="struct neutral_ir::VocabularyRecordValue">Vocabulary<wbr>Record<wbr>Value</a></dt><dd>One final vocabulary-owned contextual record value.</dd><dt><a class="struct" href="struct.VocabularyTypeContract.html" title="struct neutral_ir::VocabularyTypeContract">Vocabulary<wbr>Type<wbr>Contract</a></dt><dd>One immutable nominal type in a captured vocabulary contract.</dd><dt><a class="struct" href="struct.VocabularyTypeIdentity.html" title="struct neutral_ir::VocabularyTypeIdentity">Vocabulary<wbr>Type<wbr>Identity</a></dt><dd>Exact qualified identity of one vocabulary-owned nominal type.</dd></dl><h2 id="enums" class="section-header">Enums<a href="#enums" class="anchor">§</a></h2><dl class="item-table"><dt><a class="enum" href="enum.IrError.html" title="enum neutral_ir::IrError">IrError</a></dt><dd>A failure while constructing validated logical IR values.</dd><dt><a class="enum" href="enum.LogicalValue.html" title="enum neutral_ir::LogicalValue">Logical<wbr>Value</a></dt><dd>Immutable logical value in the active public IR slice.</dd><dt><a class="enum" href="enum.Normalization.html" title="enum neutral_ir::Normalization">Normalization</a></dt><dd>Logical normalization applied while lowering one value.</dd><dt><a class="enum" href="enum.ResolvedType.html" title="enum neutral_ir::ResolvedType">Resolved<wbr>Type</a></dt><dd>Resolved minimal Neutral type identity.</dd><dt><a class="enum" href="enum.ValueOrigin.html" title="enum neutral_ir::ValueOrigin">Value<wbr>Origin</a></dt><dd>Why a final logical value exists in the active document.</dd></dl><h2 id="constants" class="section-header">Constants<a href="#constants" class="anchor">§</a></h2><dl class="item-table"><dt><a class="constant" href="constant.DERIVATION_SCHEMA_VERSION.html" title="constant neutral_ir::DERIVATION_SCHEMA_VERSION">DERIVATION_<wbr>SCHEMA_<wbr>VERSION</a></dt><dd>Frozen derivation schema version for the minimal v0 artifact.</dd><dt><a class="constant" href="constant.LANGUAGE_BEHAVIOR_VERSION.html" title="constant neutral_ir::LANGUAGE_BEHAVIOR_VERSION">LANGUAGE_<wbr>BEHAVIOR_<wbr>VERSION</a></dt><dd>Frozen v0 language-behavior version shared by artifacts and producers.</dd><dt><a class="constant" href="constant.LOGICAL_IR_SCHEMA_VERSION.html" title="constant neutral_ir::LOGICAL_IR_SCHEMA_VERSION">LOGICAL_<wbr>IR_<wbr>SCHEMA_<wbr>VERSION</a></dt><dd>Frozen logical IR schema version for the minimal v0 artifact.</dd><dt><a class="constant" href="constant.PROVENANCE_VERSION.html" title="constant neutral_ir::PROVENANCE_VERSION">PROVENANCE_<wbr>VERSION</a></dt><dd>Frozen provenance schema version for the minimal v0 artifact.</dd><dt><a class="constant" href="constant.SOURCE_MAP_VERSION.html" title="constant neutral_ir::SOURCE_MAP_VERSION">SOURCE_<wbr>MAP_<wbr>VERSION</a></dt><dd>Frozen source-map schema version for the minimal v0 artifact.</dd></dl></section></div></main></body></html>

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["CoreError","DiagnosticLayer","DiagnosticSeverity","DigestTextError","ResultClass"],"fn":["line_column_at","nht_frame"],"struct":["ByteSpan","CancellationToken","Diagnostic","DiagnosticCode","EncodedSectionDigest","LineColumn","SemanticDigest","SourceContentDigest","SourceLocation","StructuralLimits","VocabularyContentDigest"]};

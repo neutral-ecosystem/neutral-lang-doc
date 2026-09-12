@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["BOOL","FALSE","LIST","MODULE","NEU","NULL","NUM","PROTECTED_CORE_NAMES","RECORD","REF","REF_TYPE","SOURCE_LANGUAGE_VERSION","STRING","TRUE","USE"],"fn":["is_exact_release_version","is_feature_id","is_protected_name","is_snake_name","is_upper_name"]};

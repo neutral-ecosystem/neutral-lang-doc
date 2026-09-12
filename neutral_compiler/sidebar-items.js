@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["LANGUAGE_BEHAVIOR_VERSION"],"enum":["CaptureError","CompilationFailureDetail","CompilationResult","FormatError"],"fn":["capture","compile","compile_captured","format","format_captured"],"mod":["diagnostics"],"struct":["CapturedCompilation","CompilationFailure","CompilationRequest","FormattedSource"]};
