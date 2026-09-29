@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["ReaderError"],"struct":["ElementId","ValidatedDocument","VocabularyContract"]};
+window.SIDEBAR_ITEMS = {"enum":["LanguageCapability","LanguageProfile","ProfileAvailability","ProjectInterfaceError","ReaderError"],"fn":["language_profiles"],"struct":["ElementId","LanguageProfileDescriptor","ModuleSymbolIdentity","ProjectPublicEdge","ValidatedDocument","ValidatedProjectInterface","VocabularyContract"]};

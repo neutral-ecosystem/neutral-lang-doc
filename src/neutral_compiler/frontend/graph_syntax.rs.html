@@ -1,0 +1,774 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/neutral-compiler/src/frontend/graph_syntax.rs`."><title>graph_syntax.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-1ed95124.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="neutral_compiler" data-themes="" data-resource-suffix="" data-rustdoc-version="1.98.1 (48a229cea 2026-09-01)" data-channel="1.98.1" data-search-js="search-9944d736.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"><!-- SPDX-License-Identifier: Apache-2.0 -->
+<style>
+  :root,
+  :root:not([data-theme]),
+  :root[data-theme="light"] {
+    --neutral-nav-background: rgb(246 247 248 / 94%);
+    --neutral-nav-border: #d9dee4;
+    --neutral-surface: #ffffff;
+    --neutral-surface-raised: #f2f4f6;
+    --neutral-code-surface: #edf1f3;
+    --neutral-code-border: #cdd5dc;
+    --neutral-muted: #59636e;
+    --neutral-accent: #147d74;
+    --neutral-accent-soft: #d9efeb;
+    --neutral-focus: #a66500;
+    --main-background-color: #f7f8f9;
+    --main-color: #22272d;
+    --sidebar-background-color: #eef1f3;
+    --sidebar-background-color-hover: #e3e8eb;
+    --sidebar-border-color: #d1d8dd;
+    --sidebar-link-color: #344a52;
+    --sidebar-current-link-background-color: #dce6e7;
+    --code-block-background-color: #edf1f3;
+    --headings-border-bottom-color: #d9dee4;
+    --border-color: #cdd5dc;
+    --link-color: #0b766e;
+    --type-link-color: #087d78;
+    --trait-link-color: #7550a3;
+    --assoc-item-link-color: #946100;
+    --function-link-color: #187447;
+    --right-side-color: #59636e;
+  }
+
+  :root[data-theme="dark"],
+  :root[data-theme="ayu"] {
+    --neutral-nav-background: rgb(18 22 27 / 94%);
+    --neutral-nav-border: #303943;
+    --neutral-surface: #1d2329;
+    --neutral-surface-raised: #242b32;
+    --neutral-code-surface: #20272e;
+    --neutral-code-border: #394550;
+    --neutral-muted: #aeb8c2;
+    --neutral-accent: #62d2c2;
+    --neutral-accent-soft: #1d3b39;
+    --neutral-focus: #f0b64a;
+    --main-background-color: #171b20;
+    --main-color: #e8edf2;
+    --sidebar-background-color: #12171c;
+    --sidebar-background-color-hover: #222a31;
+    --sidebar-border-color: #303943;
+    --sidebar-link-color: #c3cdd6;
+    --sidebar-current-link-background-color: #253238;
+    --code-block-background-color: #20272e;
+    --headings-border-bottom-color: #303943;
+    --border-color: #394550;
+    --link-color: #73d8ca;
+    --type-link-color: #51c9c1;
+    --trait-link-color: #c099f4;
+    --assoc-item-link-color: #e8bc62;
+    --function-link-color: #62c98c;
+    --right-side-color: #aeb8c2;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+      --neutral-nav-background: rgb(18 22 27 / 94%);
+      --neutral-nav-border: #303943;
+      --neutral-surface: #1d2329;
+      --neutral-surface-raised: #242b32;
+      --neutral-code-surface: #20272e;
+      --neutral-code-border: #394550;
+      --neutral-muted: #aeb8c2;
+      --neutral-accent: #62d2c2;
+      --neutral-accent-soft: #1d3b39;
+      --neutral-focus: #f0b64a;
+      --main-background-color: #171b20;
+      --main-color: #e8edf2;
+      --sidebar-background-color: #12171c;
+      --sidebar-background-color-hover: #222a31;
+      --sidebar-border-color: #303943;
+      --sidebar-link-color: #c3cdd6;
+      --sidebar-current-link-background-color: #253238;
+      --code-block-background-color: #20272e;
+      --headings-border-bottom-color: #303943;
+      --border-color: #394550;
+      --link-color: #73d8ca;
+      --type-link-color: #51c9c1;
+      --trait-link-color: #c099f4;
+      --assoc-item-link-color: #e8bc62;
+      --function-link-color: #62c98c;
+      --right-side-color: #aeb8c2;
+    }
+  }
+
+  body.rustdoc {
+    padding-top: 3.65rem;
+  }
+
+  #neutral-docs-nav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 10000;
+    display: flex;
+    min-height: 3.65rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.55rem 1rem;
+    color: var(--main-color);
+    background: var(--neutral-nav-background);
+    border-bottom: 1px solid var(--neutral-nav-border);
+    backdrop-filter: blur(14px);
+  }
+
+  .neutral-docs-brand,
+  .neutral-docs-actions,
+  .neutral-docs-context {
+    display: flex;
+    align-items: center;
+  }
+
+  .neutral-docs-brand {
+    min-width: 0;
+    gap: 0.7rem;
+    color: var(--main-color);
+    font: 650 0.9rem/1.2 var(--font-family);
+    text-decoration: none;
+  }
+
+  .neutral-docs-brand img {
+    width: 2.15rem;
+    height: 2.15rem;
+    border-radius: 0.65rem;
+    box-shadow: 0 0.3rem 0.9rem rgb(0 0 0 / 22%);
+  }
+
+  .neutral-docs-context {
+    min-width: 0;
+    gap: 0.55rem;
+    color: var(--neutral-muted);
+    font: 500 0.8rem/1.2 var(--font-family-code);
+  }
+
+  .neutral-docs-context::before {
+    width: 1px;
+    height: 1.1rem;
+    margin-right: 0.1rem;
+    background: var(--neutral-nav-border);
+    content: "";
+  }
+
+  .neutral-docs-actions {
+    flex: 0 0 auto;
+    gap: 0.4rem;
+  }
+
+  .neutral-docs-actions a {
+    min-height: 2.15rem;
+    padding: 0.46rem 0.78rem;
+    color: var(--main-color);
+    background: var(--neutral-surface-raised);
+    border: 1px solid var(--neutral-nav-border);
+    border-radius: 0.5rem;
+    font: 600 0.8rem/1.2 var(--font-family);
+    text-decoration: none;
+  }
+
+  .neutral-docs-actions a:hover {
+    color: var(--neutral-accent);
+    border-color: var(--neutral-accent);
+  }
+
+  .sidebar {
+    top: 3.65rem;
+    height: calc(100vh - 3.65rem);
+    border-right-color: var(--neutral-nav-border);
+  }
+
+  .sidebar-resizer {
+    top: 3.65rem;
+    height: calc(100% - 3.65rem);
+    color: var(--neutral-nav-border);
+  }
+
+  .sidebar-crate {
+    margin-top: 1.15rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .sidebar-crate h2 a {
+    color: var(--main-color);
+    font-weight: 650;
+  }
+
+  .sidebar .version {
+    display: inline-block;
+    margin-top: 0.2rem;
+    color: var(--neutral-muted);
+    font-size: 0.75rem;
+  }
+
+  .sidebar h3 {
+    margin: 1.2rem 0 0.35rem;
+    color: var(--neutral-muted);
+    font-size: 0.78rem;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .sidebar-elems a,
+  .sidebar > h2 a {
+    margin-block: 0.08rem;
+    border-radius: 0.34rem;
+  }
+
+  .sidebar-elems .block {
+    margin-bottom: 1.4rem;
+  }
+
+  body.rustdoc > main {
+    padding: 2.2rem clamp(1.4rem, 4vw, 4rem) 5rem;
+  }
+
+  .width-limiter {
+    max-width: 72rem;
+  }
+
+  .main-heading {
+    margin-bottom: 1.7rem;
+    padding-bottom: 1.15rem;
+    border-bottom: 1px solid var(--neutral-nav-border);
+  }
+
+  .main-heading h1 {
+    font-size: clamp(1.75rem, 3vw, 2.45rem);
+    font-weight: 650;
+    letter-spacing: -0.025em;
+  }
+
+  .rustdoc-breadcrumbs,
+  .rustdoc-breadcrumbs a {
+    color: var(--neutral-muted);
+  }
+
+  .docblock {
+    color: var(--main-color);
+    font-size: 1rem;
+    line-height: 1.72;
+  }
+
+  .content h2,
+  .top-doc .docblock > h3,
+  .top-doc .docblock > h4 {
+    margin-top: 2.5rem;
+    border-bottom-color: var(--neutral-nav-border);
+    font-weight: 650;
+    letter-spacing: -0.015em;
+  }
+
+  .docblock :not(pre) > code,
+  .item-table dd code,
+  .item-info code {
+    padding: 0.1em 0.34em;
+    color: var(--main-color);
+    background: var(--neutral-code-surface);
+    border: 1px solid var(--neutral-code-border);
+    border-radius: 0.28rem;
+    font-weight: 550;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  .impl > .code-header,
+  .method > .code-header,
+  .trait-impl > .code-header,
+  pre.item-decl,
+  .docblock pre {
+    background: var(--neutral-code-surface);
+    border: 1px solid var(--neutral-code-border);
+    border-left: 3px solid var(--neutral-accent);
+    border-radius: 0.45rem;
+    box-shadow: none;
+  }
+
+  .impl > .code-header,
+  .method > .code-header,
+  .trait-impl > .code-header {
+    padding: 0.62rem 0.78rem;
+  }
+
+  .impl-items > details.toggle,
+  .methods > details.toggle,
+  .implementors-toggle {
+    margin-bottom: 0.7rem;
+  }
+
+  details.toggle > summary {
+    border-radius: 0.45rem;
+  }
+
+  a.src,
+  .impl a.src.rightside,
+  .impl .rightside a.src {
+    display: inline-block;
+    padding: 0.2rem 0.48rem;
+    color: var(--neutral-accent) !important;
+    background: var(--neutral-accent-soft);
+    border: 1px solid color-mix(in srgb, var(--neutral-accent) 48%, transparent);
+    border-radius: 0.32rem;
+    font-weight: 650;
+  }
+
+  a.src:hover,
+  a.src:focus-visible {
+    color: var(--main-color) !important;
+    border-color: var(--neutral-accent);
+  }
+
+  .stab {
+    padding: 0.2rem 0.45rem;
+    color: var(--neutral-muted);
+    background: var(--neutral-surface-raised);
+    border: 1px solid var(--neutral-code-border);
+    border-radius: 0.32rem;
+  }
+
+  .stab code,
+  .since a {
+    color: var(--neutral-muted) !important;
+    font-weight: 650;
+  }
+
+  #copy-path {
+    color: var(--neutral-muted);
+    border-radius: 0.35rem;
+  }
+
+  .item-table > dt,
+  .item-table > dd {
+    padding-block: 0.65rem;
+    border-bottom: 1px solid var(--neutral-nav-border);
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  summary:focus-visible,
+  input:focus-visible {
+    outline: 2px solid var(--neutral-focus) !important;
+    outline-offset: 3px;
+  }
+
+  :target {
+    scroll-margin-top: 5rem;
+  }
+
+  @media (max-width: 700px) {
+    body.rustdoc {
+      padding-top: 3.35rem;
+    }
+
+    #neutral-docs-nav {
+      min-height: 3.35rem;
+      padding: 0.42rem 0.65rem;
+    }
+
+    .neutral-docs-brand img {
+      width: 1.95rem;
+      height: 1.95rem;
+    }
+
+    .neutral-docs-brand span,
+    .neutral-docs-context {
+      display: none;
+    }
+
+    .neutral-docs-actions a {
+      min-height: 2rem;
+      padding: 0.4rem 0.62rem;
+    }
+
+    rustdoc-topbar {
+      top: 3.35rem;
+    }
+
+    .sidebar {
+      top: calc(3.35rem + var(--topbar-height));
+      height: calc(100vh - 3.35rem - var(--topbar-height));
+    }
+
+    body.rustdoc > main {
+      padding: 1.3rem 1rem 4rem;
+    }
+
+    .main-heading h1 {
+      font-size: 1.65rem;
+    }
+  }
+
+  @media print {
+    body.rustdoc {
+      padding-top: 0;
+    }
+
+    #neutral-docs-nav {
+      display: none;
+    }
+  }
+</style>
+<script>
+  "use strict";
+
+  /** Builds the shared Neutral navigation and favicon for one Rustdoc page. */
+  function configureNeutralDocumentation() {
+    const rustdocVariables = document.querySelector('meta[name="rustdoc-vars"]');
+    if (!rustdocVariables || document.getElementById("neutral-docs-nav")) {
+      return;
+    }
+    const rootPath = rustdocVariables.dataset.rootPath || "./";
+    const favicon = document.createElement("link");
+    favicon.rel = "icon";
+    favicon.type = "image/png";
+    favicon.href = `${rootPath}assets/neutral-logo-rounded.png`;
+    document.head.append(favicon);
+
+    const navigation = document.createElement("nav");
+    navigation.id = "neutral-docs-nav";
+    navigation.setAttribute("aria-label", "Documentation navigation");
+
+    const brand = document.createElement("a");
+    brand.className = "neutral-docs-brand";
+    brand.href = `${rootPath}index.html`;
+    brand.setAttribute("aria-label", "Neutral documentation home");
+
+    const logo = document.createElement("img");
+    logo.src = `${rootPath}assets/neutral-logo.png`;
+    logo.alt = "";
+    logo.width = 34;
+    logo.height = 34;
+    brand.append(logo);
+
+    const brandName = document.createElement("span");
+    brandName.textContent = "Neutral documentation";
+    brand.append(brandName);
+
+    const context = document.createElement("span");
+    context.className = "neutral-docs-context";
+    context.textContent = rustdocVariables.dataset.currentCrate
+      ? rustdocVariables.dataset.currentCrate.replaceAll("_", "-")
+      : "Rust API";
+    brand.append(context);
+
+    const actions = document.createElement("div");
+    actions.className = "neutral-docs-actions";
+    const workspace = document.createElement("a");
+    workspace.href = `${rootPath}index.html`;
+    workspace.textContent = "Workspace";
+    actions.append(workspace);
+
+    navigation.append(brand, actions);
+    document.body.prepend(navigation);
+  }
+
+  document.addEventListener("DOMContentLoaded", configureNeutralDocumentation);
+</script>
+
+</head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">neutral_compiler/frontend/</div>graph_syntax.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// SPDX-License-Identifier: Apache-2.0
+<a href=#2 id=2 data-nosnippet>2</a>
+<a href=#3 id=3 data-nosnippet>3</a></span><span class="doccomment">//! Bounded v1 module/import scanner over the existing exact-byte lexer.
+<a href=#4 id=4 data-nosnippet>4</a>
+<a href=#5 id=5 data-nosnippet>5</a></span><span class="kw">use super</span>::{Token, TokenKind, lexer};
+<a href=#6 id=6 data-nosnippet>6</a><span class="kw">use </span><span class="kw">crate</span>::language::{graph_names, names};
+<a href=#7 id=7 data-nosnippet>7</a><span class="kw">use </span>neutral_core::{ByteSpan, profile::V1_SOURCE_PROFILE};
+<a href=#8 id=8 data-nosnippet>8</a>
+<a href=#9 id=9 data-nosnippet>9</a><span class="doccomment">/// One parsed, source-accounted logical import.
+<a href=#10 id=10 data-nosnippet>10</a></span><span class="attr">#[derive(Clone, Debug, Eq, PartialEq)]
+<a href=#11 id=11 data-nosnippet>11</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>GraphImport {
+<a href=#12 id=12 data-nosnippet>12</a>    <span class="doccomment">/// Exact target module ID.
+<a href=#13 id=13 data-nosnippet>13</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) target: String,
+<a href=#14 id=14 data-nosnippet>14</a>    <span class="doccomment">/// Required local alias.
+<a href=#15 id=15 data-nosnippet>15</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) alias: String,
+<a href=#16 id=16 data-nosnippet>16</a>    <span class="doccomment">/// Original-byte span of the complete import statement.
+<a href=#17 id=17 data-nosnippet>17</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) span: ByteSpan,
+<a href=#18 id=18 data-nosnippet>18</a>}
+<a href=#19 id=19 data-nosnippet>19</a>
+<a href=#20 id=20 data-nosnippet>20</a><span class="doccomment">/// One syntax scan result before graph validation.
+<a href=#21 id=21 data-nosnippet>21</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>GraphSourceSyntax {
+<a href=#22 id=22 data-nosnippet>22</a>    <span class="doccomment">/// Exact module header span.
+<a href=#23 id=23 data-nosnippet>23</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) header_span: ByteSpan,
+<a href=#24 id=24 data-nosnippet>24</a>    <span class="doccomment">/// Imported modules in original source order.
+<a href=#25 id=25 data-nosnippet>25</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) imports: Vec&lt;GraphImport&gt;,
+<a href=#26 id=26 data-nosnippet>26</a>    <span class="doccomment">/// Names already occupied by captured vocabulary requirements.
+<a href=#27 id=27 data-nosnippet>27</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) vocabulary_aliases: Vec&lt;String&gt;,
+<a href=#28 id=28 data-nosnippet>28</a>}
+<a href=#29 id=29 data-nosnippet>29</a>
+<a href=#30 id=30 data-nosnippet>30</a><span class="doccomment">/// Classification of a source syntax failure at the graph boundary.
+<a href=#31 id=31 data-nosnippet>31</a></span><span class="attr">#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+<a href=#32 id=32 data-nosnippet>32</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>GraphSyntaxErrorKind {
+<a href=#33 id=33 data-nosnippet>33</a>    <span class="doccomment">/// The required source grammar or placement is malformed.
+<a href=#34 id=34 data-nosnippet>34</a>    </span>InvalidSyntax,
+<a href=#35 id=35 data-nosnippet>35</a>    <span class="doccomment">/// An import attempts a forbidden form, including re-export or acquisition.
+<a href=#36 id=36 data-nosnippet>36</a>    </span>ForbiddenImport,
+<a href=#37 id=37 data-nosnippet>37</a>    <span class="doccomment">/// One vocabulary alias collides with another alias or the local module.
+<a href=#38 id=38 data-nosnippet>38</a>    </span>AliasCollision,
+<a href=#39 id=39 data-nosnippet>39</a>    <span class="doccomment">/// The per-module import count exceeded its explicit ceiling.
+<a href=#40 id=40 data-nosnippet>40</a>    </span>LimitExceeded,
+<a href=#41 id=41 data-nosnippet>41</a>}
+<a href=#42 id=42 data-nosnippet>42</a>
+<a href=#43 id=43 data-nosnippet>43</a><span class="doccomment">/// One bounded source syntax error with an original-byte location.
+<a href=#44 id=44 data-nosnippet>44</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>GraphSyntaxError {
+<a href=#45 id=45 data-nosnippet>45</a>    <span class="doccomment">/// Stable failure classification.
+<a href=#46 id=46 data-nosnippet>46</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) kind: GraphSyntaxErrorKind,
+<a href=#47 id=47 data-nosnippet>47</a>    <span class="doccomment">/// Exact original-byte location.
+<a href=#48 id=48 data-nosnippet>48</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) span: ByteSpan,
+<a href=#49 id=49 data-nosnippet>49</a>}
+<a href=#50 id=50 data-nosnippet>50</a>
+<a href=#51 id=51 data-nosnippet>51</a><span class="doccomment">/// Scans one captured unit without consulting host locations or resolvers.
+<a href=#52 id=52 data-nosnippet>52</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>scan_graph_source(
+<a href=#53 id=53 data-nosnippet>53</a>    bytes: <span class="kw-2">&amp;</span>[u8],
+<a href=#54 id=54 data-nosnippet>54</a>    expected_module: <span class="kw-2">&amp;</span>str,
+<a href=#55 id=55 data-nosnippet>55</a>    import_limit: u64,
+<a href=#56 id=56 data-nosnippet>56</a>) -&gt; <span class="prelude-ty">Result</span>&lt;GraphSourceSyntax, GraphSyntaxError&gt; {
+<a href=#57 id=57 data-nosnippet>57</a>    <span class="kw">let </span>lexed = lexer::lex(bytes).map_err(|error| GraphSyntaxError {
+<a href=#58 id=58 data-nosnippet>58</a>        kind: <span class="kw">if </span>forbidden_line_at(bytes, error.span.start()) {
+<a href=#59 id=59 data-nosnippet>59</a>            GraphSyntaxErrorKind::ForbiddenImport
+<a href=#60 id=60 data-nosnippet>60</a>        } <span class="kw">else </span>{
+<a href=#61 id=61 data-nosnippet>61</a>            GraphSyntaxErrorKind::InvalidSyntax
+<a href=#62 id=62 data-nosnippet>62</a>        },
+<a href=#63 id=63 data-nosnippet>63</a>        span: error.span,
+<a href=#64 id=64 data-nosnippet>64</a>    })<span class="question-mark">?</span>;
+<a href=#65 id=65 data-nosnippet>65</a>    <span class="kw">let </span><span class="kw-2">mut </span>result = GraphSourceSyntax {
+<a href=#66 id=66 data-nosnippet>66</a>        header_span: span(<span class="number">0</span>, <span class="number">0</span>),
+<a href=#67 id=67 data-nosnippet>67</a>        imports: Vec::new(),
+<a href=#68 id=68 data-nosnippet>68</a>        vocabulary_aliases: Vec::new(),
+<a href=#69 id=69 data-nosnippet>69</a>    };
+<a href=#70 id=70 data-nosnippet>70</a>    <span class="kw">let </span><span class="kw-2">mut </span>phase = <span class="number">0_u8</span>;
+<a href=#71 id=71 data-nosnippet>71</a>    <span class="kw">let </span><span class="kw-2">mut </span>start = <span class="number">0_usize</span>;
+<a href=#72 id=72 data-nosnippet>72</a>    <span class="kw">for </span>(index, token) <span class="kw">in </span>lexed.tokens.iter().enumerate() {
+<a href=#73 id=73 data-nosnippet>73</a>        <span class="kw">if </span>!<span class="macro">matches!</span>(
+<a href=#74 id=74 data-nosnippet>74</a>            token.kind,
+<a href=#75 id=75 data-nosnippet>75</a>            TokenKind::PhysicalLineEnd(<span class="kw">_</span>) | TokenKind::EndOfFile
+<a href=#76 id=76 data-nosnippet>76</a>        ) {
+<a href=#77 id=77 data-nosnippet>77</a>            <span class="kw">continue</span>;
+<a href=#78 id=78 data-nosnippet>78</a>        }
+<a href=#79 id=79 data-nosnippet>79</a>        <span class="kw">let </span>line = <span class="kw-2">&amp;</span>lexed.tokens[start..index];
+<a href=#80 id=80 data-nosnippet>80</a>        <span class="kw">if </span>!line.is_empty() {
+<a href=#81 id=81 data-nosnippet>81</a>            scan_line(line, expected_module, import_limit, <span class="kw-2">&amp;mut </span>phase, <span class="kw-2">&amp;mut </span>result)<span class="question-mark">?</span>;
+<a href=#82 id=82 data-nosnippet>82</a>        }
+<a href=#83 id=83 data-nosnippet>83</a>        start = index + <span class="number">1</span>;
+<a href=#84 id=84 data-nosnippet>84</a>    }
+<a href=#85 id=85 data-nosnippet>85</a>    <span class="kw">if </span>phase &lt; <span class="number">2 </span>{
+<a href=#86 id=86 data-nosnippet>86</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(GraphSyntaxError {
+<a href=#87 id=87 data-nosnippet>87</a>            kind: GraphSyntaxErrorKind::InvalidSyntax,
+<a href=#88 id=88 data-nosnippet>88</a>            span: span(bytes.len(), bytes.len()),
+<a href=#89 id=89 data-nosnippet>89</a>        });
+<a href=#90 id=90 data-nosnippet>90</a>    }
+<a href=#91 id=91 data-nosnippet>91</a>    <span class="prelude-val">Ok</span>(result)
+<a href=#92 id=92 data-nosnippet>92</a>}
+<a href=#93 id=93 data-nosnippet>93</a>
+<a href=#94 id=94 data-nosnippet>94</a><span class="doccomment">/// Advances the header/import/declaration phases for one physical source line.
+<a href=#95 id=95 data-nosnippet>95</a></span><span class="kw">fn </span>scan_line(
+<a href=#96 id=96 data-nosnippet>96</a>    line: <span class="kw-2">&amp;</span>[Token],
+<a href=#97 id=97 data-nosnippet>97</a>    expected_module: <span class="kw-2">&amp;</span>str,
+<a href=#98 id=98 data-nosnippet>98</a>    import_limit: u64,
+<a href=#99 id=99 data-nosnippet>99</a>    phase: <span class="kw-2">&amp;mut </span>u8,
+<a href=#100 id=100 data-nosnippet>100</a>    result: <span class="kw-2">&amp;mut </span>GraphSourceSyntax,
+<a href=#101 id=101 data-nosnippet>101</a>) -&gt; <span class="prelude-ty">Result</span>&lt;(), GraphSyntaxError&gt; {
+<a href=#102 id=102 data-nosnippet>102</a>    <span class="kw">let </span>line_span = token_span(line);
+<a href=#103 id=103 data-nosnippet>103</a>    <span class="kw">if </span><span class="kw-2">*</span>phase == <span class="number">0 </span>{
+<a href=#104 id=104 data-nosnippet>104</a>        <span class="kw">if </span>!<span class="macro">matches!</span>(line, [Token { kind: TokenKind::Neu, .. }, Token { kind: TokenKind::StringLiteral(value), .. }] <span class="kw">if </span>!value.had_escape &amp;&amp; value.value == V1_SOURCE_PROFILE)
+<a href=#105 id=105 data-nosnippet>105</a>        {
+<a href=#106 id=106 data-nosnippet>106</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(invalid(line_span));
+<a href=#107 id=107 data-nosnippet>107</a>        }
+<a href=#108 id=108 data-nosnippet>108</a>        <span class="kw-2">*</span>phase = <span class="number">1</span>;
+<a href=#109 id=109 data-nosnippet>109</a>        <span class="kw">return </span><span class="prelude-val">Ok</span>(());
+<a href=#110 id=110 data-nosnippet>110</a>    }
+<a href=#111 id=111 data-nosnippet>111</a>    <span class="kw">if </span><span class="kw-2">*</span>phase == <span class="number">1 </span>{
+<a href=#112 id=112 data-nosnippet>112</a>        <span class="kw">if </span>!<span class="macro">matches!</span>(line[<span class="number">0</span>].kind, TokenKind::Module)
+<a href=#113 id=113 data-nosnippet>113</a>            || parse_module_name(<span class="kw-2">&amp;</span>line[<span class="number">1</span>..]).as_deref() != <span class="prelude-val">Some</span>(expected_module)
+<a href=#114 id=114 data-nosnippet>114</a>        {
+<a href=#115 id=115 data-nosnippet>115</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(invalid(line_span));
+<a href=#116 id=116 data-nosnippet>116</a>        }
+<a href=#117 id=117 data-nosnippet>117</a>        result.header_span = line_span;
+<a href=#118 id=118 data-nosnippet>118</a>        <span class="kw-2">*</span>phase = <span class="number">2</span>;
+<a href=#119 id=119 data-nosnippet>119</a>        <span class="kw">return </span><span class="prelude-val">Ok</span>(());
+<a href=#120 id=120 data-nosnippet>120</a>    }
+<a href=#121 id=121 data-nosnippet>121</a>    <span class="kw">if </span><span class="macro">matches!</span>(line[<span class="number">0</span>].kind, TokenKind::Use) {
+<a href=#122 id=122 data-nosnippet>122</a>        <span class="kw">if </span><span class="kw-2">*</span>phase &gt; <span class="number">2 </span>{
+<a href=#123 id=123 data-nosnippet>123</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(invalid(line_span));
+<a href=#124 id=124 data-nosnippet>124</a>        }
+<a href=#125 id=125 data-nosnippet>125</a>        <span class="kw">let </span>[
+<a href=#126 id=126 data-nosnippet>126</a>            <span class="kw">_</span>,
+<a href=#127 id=127 data-nosnippet>127</a>            Token {
+<a href=#128 id=128 data-nosnippet>128</a>                kind: TokenKind::Identifier(identity),
+<a href=#129 id=129 data-nosnippet>129</a>                ..
+<a href=#130 id=130 data-nosnippet>130</a>            },
+<a href=#131 id=131 data-nosnippet>131</a>            Token {
+<a href=#132 id=132 data-nosnippet>132</a>                kind: TokenKind::Identifier(as_word),
+<a href=#133 id=133 data-nosnippet>133</a>                ..
+<a href=#134 id=134 data-nosnippet>134</a>            },
+<a href=#135 id=135 data-nosnippet>135</a>            Token {
+<a href=#136 id=136 data-nosnippet>136</a>                kind: TokenKind::Identifier(alias),
+<a href=#137 id=137 data-nosnippet>137</a>                ..
+<a href=#138 id=138 data-nosnippet>138</a>            },
+<a href=#139 id=139 data-nosnippet>139</a>        ] = line
+<a href=#140 id=140 data-nosnippet>140</a>        <span class="kw">else </span>{
+<a href=#141 id=141 data-nosnippet>141</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(invalid(line_span));
+<a href=#142 id=142 data-nosnippet>142</a>        };
+<a href=#143 id=143 data-nosnippet>143</a>        <span class="kw">if </span>!identity.starts_with(|character: char| character.is_ascii_uppercase())
+<a href=#144 id=144 data-nosnippet>144</a>            || as_word != graph_names::AS
+<a href=#145 id=145 data-nosnippet>145</a>            || !valid_graph_name(alias)
+<a href=#146 id=146 data-nosnippet>146</a>        {
+<a href=#147 id=147 data-nosnippet>147</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(invalid(line_span));
+<a href=#148 id=148 data-nosnippet>148</a>        }
+<a href=#149 id=149 data-nosnippet>149</a>        <span class="kw">if </span>alias == expected_module.rsplit(<span class="string">"::"</span>).next().unwrap_or(<span class="string">""</span>)
+<a href=#150 id=150 data-nosnippet>150</a>            || result.vocabulary_aliases.contains(alias)
+<a href=#151 id=151 data-nosnippet>151</a>        {
+<a href=#152 id=152 data-nosnippet>152</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(GraphSyntaxError {
+<a href=#153 id=153 data-nosnippet>153</a>                kind: GraphSyntaxErrorKind::AliasCollision,
+<a href=#154 id=154 data-nosnippet>154</a>                span: line_span,
+<a href=#155 id=155 data-nosnippet>155</a>            });
+<a href=#156 id=156 data-nosnippet>156</a>        }
+<a href=#157 id=157 data-nosnippet>157</a>        result.vocabulary_aliases.push(alias.clone());
+<a href=#158 id=158 data-nosnippet>158</a>        <span class="kw">return </span><span class="prelude-val">Ok</span>(());
+<a href=#159 id=159 data-nosnippet>159</a>    }
+<a href=#160 id=160 data-nosnippet>160</a>    <span class="kw">if </span><span class="macro">matches!</span>(<span class="kw-2">&amp;</span>line[<span class="number">0</span>].kind, TokenKind::Identifier(word) <span class="kw">if </span>word == graph_names::PUBLIC)
+<a href=#161 id=161 data-nosnippet>161</a>        &amp;&amp; line
+<a href=#162 id=162 data-nosnippet>162</a>            .get(<span class="number">1</span>)
+<a href=#163 id=163 data-nosnippet>163</a>            .is_some_and(|token| <span class="macro">matches!</span>(<span class="kw-2">&amp;</span>token.kind, TokenKind::Identifier(word) <span class="kw">if </span>word == graph_names::IMPORT))
+<a href=#164 id=164 data-nosnippet>164</a>    {
+<a href=#165 id=165 data-nosnippet>165</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(GraphSyntaxError {
+<a href=#166 id=166 data-nosnippet>166</a>            kind: GraphSyntaxErrorKind::ForbiddenImport,
+<a href=#167 id=167 data-nosnippet>167</a>            span: line_span,
+<a href=#168 id=168 data-nosnippet>168</a>        });
+<a href=#169 id=169 data-nosnippet>169</a>    }
+<a href=#170 id=170 data-nosnippet>170</a>    <span class="kw">if </span><span class="macro">matches!</span>(<span class="kw-2">&amp;</span>line[<span class="number">0</span>].kind, TokenKind::Identifier(word) <span class="kw">if </span>word == graph_names::IMPORT) {
+<a href=#171 id=171 data-nosnippet>171</a>        <span class="kw">if </span><span class="kw-2">*</span>phase &gt; <span class="number">3 </span>{
+<a href=#172 id=172 data-nosnippet>172</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(invalid(line_span));
+<a href=#173 id=173 data-nosnippet>173</a>        }
+<a href=#174 id=174 data-nosnippet>174</a>        <span class="kw-2">*</span>phase = <span class="number">3</span>;
+<a href=#175 id=175 data-nosnippet>175</a>        <span class="kw">let </span>parsed = parse_import(line)<span class="question-mark">?</span>;
+<a href=#176 id=176 data-nosnippet>176</a>        <span class="kw">if </span>u64::try_from(result.imports.len()).unwrap_or(u64::MAX) &gt;= import_limit {
+<a href=#177 id=177 data-nosnippet>177</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(GraphSyntaxError {
+<a href=#178 id=178 data-nosnippet>178</a>                kind: GraphSyntaxErrorKind::LimitExceeded,
+<a href=#179 id=179 data-nosnippet>179</a>                span: line_span,
+<a href=#180 id=180 data-nosnippet>180</a>            });
+<a href=#181 id=181 data-nosnippet>181</a>        }
+<a href=#182 id=182 data-nosnippet>182</a>        result.imports.push(parsed);
+<a href=#183 id=183 data-nosnippet>183</a>        <span class="kw">return </span><span class="prelude-val">Ok</span>(());
+<a href=#184 id=184 data-nosnippet>184</a>    }
+<a href=#185 id=185 data-nosnippet>185</a>    <span class="kw">if </span><span class="macro">matches!</span>(line[<span class="number">0</span>].kind, TokenKind::Module | TokenKind::Neu) {
+<a href=#186 id=186 data-nosnippet>186</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(invalid(line_span));
+<a href=#187 id=187 data-nosnippet>187</a>    }
+<a href=#188 id=188 data-nosnippet>188</a>    <span class="kw-2">*</span>phase = <span class="number">4</span>;
+<a href=#189 id=189 data-nosnippet>189</a>    <span class="prelude-val">Ok</span>(())
+<a href=#190 id=190 data-nosnippet>190</a>}
+<a href=#191 id=191 data-nosnippet>191</a>
+<a href=#192 id=192 data-nosnippet>192</a><span class="doccomment">/// Parses one exact aliased import statement from already lexed tokens.
+<a href=#193 id=193 data-nosnippet>193</a></span><span class="kw">fn </span>parse_import(line: <span class="kw-2">&amp;</span>[Token]) -&gt; <span class="prelude-ty">Result</span>&lt;GraphImport, GraphSyntaxError&gt; {
+<a href=#194 id=194 data-nosnippet>194</a>    <span class="kw">let </span>line_span = token_span(line);
+<a href=#195 id=195 data-nosnippet>195</a>    <span class="kw">if </span>line.len() &lt; <span class="number">4 </span>{
+<a href=#196 id=196 data-nosnippet>196</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(invalid(line_span));
+<a href=#197 id=197 data-nosnippet>197</a>    }
+<a href=#198 id=198 data-nosnippet>198</a>    <span class="kw">if </span>line.get(<span class="number">1</span>).is_some_and(|token| {
+<a href=#199 id=199 data-nosnippet>199</a>        <span class="macro">matches!</span>(
+<a href=#200 id=200 data-nosnippet>200</a>            token.kind,
+<a href=#201 id=201 data-nosnippet>201</a>            TokenKind::DoubleColon | TokenKind::StringLiteral(<span class="kw">_</span>)
+<a href=#202 id=202 data-nosnippet>202</a>        )
+<a href=#203 id=203 data-nosnippet>203</a>    }) {
+<a href=#204 id=204 data-nosnippet>204</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(GraphSyntaxError {
+<a href=#205 id=205 data-nosnippet>205</a>            kind: GraphSyntaxErrorKind::ForbiddenImport,
+<a href=#206 id=206 data-nosnippet>206</a>            span: line_span,
+<a href=#207 id=207 data-nosnippet>207</a>        });
+<a href=#208 id=208 data-nosnippet>208</a>    }
+<a href=#209 id=209 data-nosnippet>209</a>    <span class="kw">let </span><span class="kw-2">mut </span>end = <span class="number">2_usize</span>;
+<a href=#210 id=210 data-nosnippet>210</a>    <span class="kw">while </span>end + <span class="number">1 </span>&lt; line.len() &amp;&amp; <span class="macro">matches!</span>(line[end].kind, TokenKind::DoubleColon) {
+<a href=#211 id=211 data-nosnippet>211</a>        end += <span class="number">2</span>;
+<a href=#212 id=212 data-nosnippet>212</a>    }
+<a href=#213 id=213 data-nosnippet>213</a>    <span class="kw">let </span>target = parse_module_name(<span class="kw-2">&amp;</span>line[<span class="number">1</span>..end]).ok_or_else(|| invalid(line_span))<span class="question-mark">?</span>;
+<a href=#214 id=214 data-nosnippet>214</a>    <span class="kw">let </span>[
+<a href=#215 id=215 data-nosnippet>215</a>        Token {
+<a href=#216 id=216 data-nosnippet>216</a>            kind: TokenKind::Identifier(as_word),
+<a href=#217 id=217 data-nosnippet>217</a>            ..
+<a href=#218 id=218 data-nosnippet>218</a>        },
+<a href=#219 id=219 data-nosnippet>219</a>        Token {
+<a href=#220 id=220 data-nosnippet>220</a>            kind: TokenKind::Identifier(alias),
+<a href=#221 id=221 data-nosnippet>221</a>            ..
+<a href=#222 id=222 data-nosnippet>222</a>        },
+<a href=#223 id=223 data-nosnippet>223</a>    ] = <span class="kw-2">&amp;</span>line[end..]
+<a href=#224 id=224 data-nosnippet>224</a>    <span class="kw">else </span>{
+<a href=#225 id=225 data-nosnippet>225</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(invalid(line_span));
+<a href=#226 id=226 data-nosnippet>226</a>    };
+<a href=#227 id=227 data-nosnippet>227</a>    <span class="kw">if </span>as_word != graph_names::AS || !valid_graph_name(alias) {
+<a href=#228 id=228 data-nosnippet>228</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(invalid(line_span));
+<a href=#229 id=229 data-nosnippet>229</a>    }
+<a href=#230 id=230 data-nosnippet>230</a>    <span class="prelude-val">Ok</span>(GraphImport {
+<a href=#231 id=231 data-nosnippet>231</a>        target,
+<a href=#232 id=232 data-nosnippet>232</a>        alias: alias.clone(),
+<a href=#233 id=233 data-nosnippet>233</a>        span: line_span,
+<a href=#234 id=234 data-nosnippet>234</a>    })
+<a href=#235 id=235 data-nosnippet>235</a>}
+<a href=#236 id=236 data-nosnippet>236</a>
+<a href=#237 id=237 data-nosnippet>237</a><span class="doccomment">/// Reads a qualified module ID from alternating name and `::` tokens.
+<a href=#238 id=238 data-nosnippet>238</a></span><span class="kw">fn </span>parse_module_name(tokens: <span class="kw-2">&amp;</span>[Token]) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+<a href=#239 id=239 data-nosnippet>239</a>    <span class="kw">if </span>tokens.is_empty() || tokens.len().is_multiple_of(<span class="number">2</span>) {
+<a href=#240 id=240 data-nosnippet>240</a>        <span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#241 id=241 data-nosnippet>241</a>    }
+<a href=#242 id=242 data-nosnippet>242</a>    <span class="kw">let </span><span class="kw-2">mut </span>parts = Vec::new();
+<a href=#243 id=243 data-nosnippet>243</a>    <span class="kw">for </span>(index, token) <span class="kw">in </span>tokens.iter().enumerate() {
+<a href=#244 id=244 data-nosnippet>244</a>        <span class="kw">if </span>index % <span class="number">2 </span>== <span class="number">0 </span>{
+<a href=#245 id=245 data-nosnippet>245</a>            <span class="kw">let </span>TokenKind::Identifier(name) = <span class="kw-2">&amp;</span>token.kind <span class="kw">else </span>{
+<a href=#246 id=246 data-nosnippet>246</a>                <span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#247 id=247 data-nosnippet>247</a>            };
+<a href=#248 id=248 data-nosnippet>248</a>            <span class="kw">if </span>!valid_graph_name(name) {
+<a href=#249 id=249 data-nosnippet>249</a>                <span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#250 id=250 data-nosnippet>250</a>            }
+<a href=#251 id=251 data-nosnippet>251</a>            parts.push(name.as_str());
+<a href=#252 id=252 data-nosnippet>252</a>        } <span class="kw">else if </span>!<span class="macro">matches!</span>(token.kind, TokenKind::DoubleColon) {
+<a href=#253 id=253 data-nosnippet>253</a>            <span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#254 id=254 data-nosnippet>254</a>        }
+<a href=#255 id=255 data-nosnippet>255</a>    }
+<a href=#256 id=256 data-nosnippet>256</a>    <span class="prelude-val">Some</span>(parts.join(<span class="string">"::"</span>))
+<a href=#257 id=257 data-nosnippet>257</a>}
+<a href=#258 id=258 data-nosnippet>258</a>
+<a href=#259 id=259 data-nosnippet>259</a><span class="doccomment">/// Applies the exact ASCII snake-name grammar and excludes language keywords.
+<a href=#260 id=260 data-nosnippet>260</a></span><span class="kw">fn </span>valid_graph_name(value: <span class="kw-2">&amp;</span>str) -&gt; bool {
+<a href=#261 id=261 data-nosnippet>261</a>    value.split(<span class="string">'_'</span>).all(|part| {
+<a href=#262 id=262 data-nosnippet>262</a>        <span class="kw">let </span><span class="kw-2">mut </span>bytes = part.bytes();
+<a href=#263 id=263 data-nosnippet>263</a>        bytes.next().is_some_and(|byte| byte.is_ascii_lowercase())
+<a href=#264 id=264 data-nosnippet>264</a>            &amp;&amp; bytes.all(|byte| byte.is_ascii_lowercase() || byte.is_ascii_digit())
+<a href=#265 id=265 data-nosnippet>265</a>    }) &amp;&amp; !names::is_protected_name(value)
+<a href=#266 id=266 data-nosnippet>266</a>        &amp;&amp; !<span class="macro">matches!</span>(
+<a href=#267 id=267 data-nosnippet>267</a>            value,
+<a href=#268 id=268 data-nosnippet>268</a>            graph_names::IMPORT | graph_names::AS | graph_names::PUBLIC
+<a href=#269 id=269 data-nosnippet>269</a>        )
+<a href=#270 id=270 data-nosnippet>270</a>}
+<a href=#271 id=271 data-nosnippet>271</a>
+<a href=#272 id=272 data-nosnippet>272</a><span class="doccomment">/// Classifies an unsupported symbol on an import line as a forbidden form.
+<a href=#273 id=273 data-nosnippet>273</a></span><span class="kw">fn </span>forbidden_line_at(bytes: <span class="kw-2">&amp;</span>[u8], offset: u64) -&gt; bool {
+<a href=#274 id=274 data-nosnippet>274</a>    <span class="kw">let </span>end = usize::try_from(offset)
+<a href=#275 id=275 data-nosnippet>275</a>        .unwrap_or(bytes.len())
+<a href=#276 id=276 data-nosnippet>276</a>        .min(bytes.len());
+<a href=#277 id=277 data-nosnippet>277</a>    <span class="kw">let </span>start = bytes[..end]
+<a href=#278 id=278 data-nosnippet>278</a>        .iter()
+<a href=#279 id=279 data-nosnippet>279</a>        .rposition(|byte| <span class="macro">matches!</span>(byte, <span class="string">b'\n' </span>| <span class="string">b'\r'</span>))
+<a href=#280 id=280 data-nosnippet>280</a>        .map_or(<span class="number">0</span>, |index| index + <span class="number">1</span>);
+<a href=#281 id=281 data-nosnippet>281</a>    <span class="kw">let </span>prefix = bytes[start..end]
+<a href=#282 id=282 data-nosnippet>282</a>        .iter()
+<a href=#283 id=283 data-nosnippet>283</a>        .copied()
+<a href=#284 id=284 data-nosnippet>284</a>        .skip_while(|byte| <span class="macro">matches!</span>(byte, <span class="string">b' ' </span>| <span class="string">b'\t'</span>))
+<a href=#285 id=285 data-nosnippet>285</a>        .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+<a href=#286 id=286 data-nosnippet>286</a>    prefix.starts_with(graph_names::IMPORT.as_bytes())
+<a href=#287 id=287 data-nosnippet>287</a>        || prefix.starts_with(<span class="macro">format!</span>(<span class="string">"{} {}"</span>, graph_names::PUBLIC, graph_names::IMPORT).as_bytes())
+<a href=#288 id=288 data-nosnippet>288</a>}
+<a href=#289 id=289 data-nosnippet>289</a>
+<a href=#290 id=290 data-nosnippet>290</a><span class="doccomment">/// Creates one stable invalid-syntax error at the original-byte location.
+<a href=#291 id=291 data-nosnippet>291</a></span><span class="kw">fn </span>invalid(span: ByteSpan) -&gt; GraphSyntaxError {
+<a href=#292 id=292 data-nosnippet>292</a>    GraphSyntaxError {
+<a href=#293 id=293 data-nosnippet>293</a>        kind: GraphSyntaxErrorKind::InvalidSyntax,
+<a href=#294 id=294 data-nosnippet>294</a>        span,
+<a href=#295 id=295 data-nosnippet>295</a>    }
+<a href=#296 id=296 data-nosnippet>296</a>}
+<a href=#297 id=297 data-nosnippet>297</a>
+<a href=#298 id=298 data-nosnippet>298</a><span class="doccomment">/// Returns the exact original-byte span of a nonempty token line.
+<a href=#299 id=299 data-nosnippet>299</a></span><span class="kw">fn </span>token_span(line: <span class="kw-2">&amp;</span>[Token]) -&gt; ByteSpan {
+<a href=#300 id=300 data-nosnippet>300</a>    ByteSpan::new(line[<span class="number">0</span>].span.start(), line[line.len() - <span class="number">1</span>].span.end())
+<a href=#301 id=301 data-nosnippet>301</a>        .expect(<span class="string">"ordered token offsets must form a span"</span>)
+<a href=#302 id=302 data-nosnippet>302</a>}
+<a href=#303 id=303 data-nosnippet>303</a>
+<a href=#304 id=304 data-nosnippet>304</a><span class="doccomment">/// Creates a checked original-byte half-open span from lexer offsets.
+<a href=#305 id=305 data-nosnippet>305</a></span><span class="kw">fn </span>span(start: usize, end: usize) -&gt; ByteSpan {
+<a href=#306 id=306 data-nosnippet>306</a>    ByteSpan::new(start <span class="kw">as </span>u64, end <span class="kw">as </span>u64).expect(<span class="string">"ordered lexer offsets must form a span"</span>)
+<a href=#307 id=307 data-nosnippet>307</a>}
+</code></pre></div></section></main></body></html>

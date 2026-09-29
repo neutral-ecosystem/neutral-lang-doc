@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["MAX_PROJECT_INTERFACE_TYPE_DEPTH","PROJECT_INTERFACE_FINGERPRINT_DOMAIN"],"enum":["ProjectPublicEdgeKind","ProjectPublicSignature","ProjectPublicType"],"struct":["ProjectInterface","ProjectPublicEdge","ProjectPublicExport","ProjectPublicField"]};
