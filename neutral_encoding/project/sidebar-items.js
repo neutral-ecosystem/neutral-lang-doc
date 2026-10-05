@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["ENCODING","MAGIC"],"fn":["decode_project","encode_project","hard_project_limits"]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["ProbeError"],"fn":["inspect_encoded","render_summary","source_linked_diagnostic","summarize","summarize_project_interface"],"mod":["diagnostics","output"],"struct":["ProbeSummary","ProjectInterfaceSummary"]};
+window.SIDEBAR_ITEMS = {"enum":["ProbeError"],"fn":["inspect_encoded","render_summary","source_linked_diagnostic","summarize","summarize_project_interface"],"mod":["diagnostics","inspection_schema","output","project"],"struct":["ProbeSummary","ProjectInterfaceSummary"]};

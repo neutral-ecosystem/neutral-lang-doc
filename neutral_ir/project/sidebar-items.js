@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["PROJECT_IR_SCHEMA","PROJECT_MAX_DEPTH","PROJECT_RESULT_SCHEMA","PROJECT_VIEW_SCHEMA"],"enum":["ProjectValue"],"struct":["ProjectDeclaration","ProjectIr","ProjectLimits","ProjectModule","ProjectProvenance","ProjectResourceFacts","ProjectSource","ProjectSourceMap","ProjectVocabularyRecord","ProjectVocabularySource","ViewRequest"]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["run"],"mod":["constants"]};
+window.SIDEBAR_ITEMS = {"fn":["run"],"mod":["constants","output"]};

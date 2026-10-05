@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["SCHEMA_VERSION"],"enum":["FieldValue"],"fn":["fields","render_summary_json"],"struct":["Field"]};
