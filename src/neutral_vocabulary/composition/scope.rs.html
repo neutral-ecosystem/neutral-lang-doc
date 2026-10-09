@@ -1,0 +1,1064 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/neutral-vocabulary/src/composition/scope.rs`."><title>scope.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-1ed95124.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="neutral_vocabulary" data-themes="" data-resource-suffix="" data-rustdoc-version="1.98.1 (48a229cea 2026-09-01)" data-channel="1.98.1" data-search-js="search-9944d736.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"><!-- SPDX-License-Identifier: Apache-2.0 -->
+<style>
+  :root,
+  :root:not([data-theme]),
+  :root[data-theme="light"] {
+    --neutral-nav-background: rgb(246 247 248 / 94%);
+    --neutral-nav-border: #d9dee4;
+    --neutral-surface: #ffffff;
+    --neutral-surface-raised: #f2f4f6;
+    --neutral-code-surface: #edf1f3;
+    --neutral-code-border: #cdd5dc;
+    --neutral-muted: #59636e;
+    --neutral-accent: #147d74;
+    --neutral-accent-soft: #d9efeb;
+    --neutral-focus: #a66500;
+    --main-background-color: #f7f8f9;
+    --main-color: #22272d;
+    --sidebar-background-color: #eef1f3;
+    --sidebar-background-color-hover: #e3e8eb;
+    --sidebar-border-color: #d1d8dd;
+    --sidebar-link-color: #344a52;
+    --sidebar-current-link-background-color: #dce6e7;
+    --code-block-background-color: #edf1f3;
+    --headings-border-bottom-color: #d9dee4;
+    --border-color: #cdd5dc;
+    --link-color: #0b766e;
+    --type-link-color: #087d78;
+    --trait-link-color: #7550a3;
+    --assoc-item-link-color: #946100;
+    --function-link-color: #187447;
+    --right-side-color: #59636e;
+  }
+
+  :root[data-theme="dark"],
+  :root[data-theme="ayu"] {
+    --neutral-nav-background: rgb(18 22 27 / 94%);
+    --neutral-nav-border: #303943;
+    --neutral-surface: #1d2329;
+    --neutral-surface-raised: #242b32;
+    --neutral-code-surface: #20272e;
+    --neutral-code-border: #394550;
+    --neutral-muted: #aeb8c2;
+    --neutral-accent: #62d2c2;
+    --neutral-accent-soft: #1d3b39;
+    --neutral-focus: #f0b64a;
+    --main-background-color: #171b20;
+    --main-color: #e8edf2;
+    --sidebar-background-color: #12171c;
+    --sidebar-background-color-hover: #222a31;
+    --sidebar-border-color: #303943;
+    --sidebar-link-color: #c3cdd6;
+    --sidebar-current-link-background-color: #253238;
+    --code-block-background-color: #20272e;
+    --headings-border-bottom-color: #303943;
+    --border-color: #394550;
+    --link-color: #73d8ca;
+    --type-link-color: #51c9c1;
+    --trait-link-color: #c099f4;
+    --assoc-item-link-color: #e8bc62;
+    --function-link-color: #62c98c;
+    --right-side-color: #aeb8c2;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+      --neutral-nav-background: rgb(18 22 27 / 94%);
+      --neutral-nav-border: #303943;
+      --neutral-surface: #1d2329;
+      --neutral-surface-raised: #242b32;
+      --neutral-code-surface: #20272e;
+      --neutral-code-border: #394550;
+      --neutral-muted: #aeb8c2;
+      --neutral-accent: #62d2c2;
+      --neutral-accent-soft: #1d3b39;
+      --neutral-focus: #f0b64a;
+      --main-background-color: #171b20;
+      --main-color: #e8edf2;
+      --sidebar-background-color: #12171c;
+      --sidebar-background-color-hover: #222a31;
+      --sidebar-border-color: #303943;
+      --sidebar-link-color: #c3cdd6;
+      --sidebar-current-link-background-color: #253238;
+      --code-block-background-color: #20272e;
+      --headings-border-bottom-color: #303943;
+      --border-color: #394550;
+      --link-color: #73d8ca;
+      --type-link-color: #51c9c1;
+      --trait-link-color: #c099f4;
+      --assoc-item-link-color: #e8bc62;
+      --function-link-color: #62c98c;
+      --right-side-color: #aeb8c2;
+    }
+  }
+
+  body.rustdoc {
+    padding-top: 3.65rem;
+  }
+
+  #neutral-docs-nav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 10000;
+    display: flex;
+    min-height: 3.65rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.55rem 1rem;
+    color: var(--main-color);
+    background: var(--neutral-nav-background);
+    border-bottom: 1px solid var(--neutral-nav-border);
+    backdrop-filter: blur(14px);
+  }
+
+  .neutral-docs-brand,
+  .neutral-docs-actions,
+  .neutral-docs-context {
+    display: flex;
+    align-items: center;
+  }
+
+  .neutral-docs-brand {
+    min-width: 0;
+    gap: 0.7rem;
+    color: var(--main-color);
+    font: 650 0.9rem/1.2 var(--font-family);
+    text-decoration: none;
+  }
+
+  .neutral-docs-brand img {
+    width: 2.15rem;
+    height: 2.15rem;
+    border-radius: 0.65rem;
+    box-shadow: 0 0.3rem 0.9rem rgb(0 0 0 / 22%);
+  }
+
+  .neutral-docs-context {
+    min-width: 0;
+    gap: 0.55rem;
+    color: var(--neutral-muted);
+    font: 500 0.8rem/1.2 var(--font-family-code);
+  }
+
+  .neutral-docs-context::before {
+    width: 1px;
+    height: 1.1rem;
+    margin-right: 0.1rem;
+    background: var(--neutral-nav-border);
+    content: "";
+  }
+
+  .neutral-docs-actions {
+    flex: 0 0 auto;
+    gap: 0.4rem;
+  }
+
+  .neutral-docs-actions a {
+    min-height: 2.15rem;
+    padding: 0.46rem 0.78rem;
+    color: var(--main-color);
+    background: var(--neutral-surface-raised);
+    border: 1px solid var(--neutral-nav-border);
+    border-radius: 0.5rem;
+    font: 600 0.8rem/1.2 var(--font-family);
+    text-decoration: none;
+  }
+
+  .neutral-docs-actions a:hover {
+    color: var(--neutral-accent);
+    border-color: var(--neutral-accent);
+  }
+
+  .sidebar {
+    top: 3.65rem;
+    height: calc(100vh - 3.65rem);
+    border-right-color: var(--neutral-nav-border);
+  }
+
+  .sidebar-resizer {
+    top: 3.65rem;
+    height: calc(100% - 3.65rem);
+    color: var(--neutral-nav-border);
+  }
+
+  .sidebar-crate {
+    margin-top: 1.15rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .sidebar-crate h2 a {
+    color: var(--main-color);
+    font-weight: 650;
+  }
+
+  .sidebar .version {
+    display: inline-block;
+    margin-top: 0.2rem;
+    color: var(--neutral-muted);
+    font-size: 0.75rem;
+  }
+
+  .sidebar h3 {
+    margin: 1.2rem 0 0.35rem;
+    color: var(--neutral-muted);
+    font-size: 0.78rem;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .sidebar-elems a,
+  .sidebar > h2 a {
+    margin-block: 0.08rem;
+    border-radius: 0.34rem;
+  }
+
+  .sidebar-elems .block {
+    margin-bottom: 1.4rem;
+  }
+
+  body.rustdoc > main {
+    padding: 2.2rem clamp(1.4rem, 4vw, 4rem) 5rem;
+  }
+
+  .width-limiter {
+    max-width: 72rem;
+  }
+
+  .main-heading {
+    margin-bottom: 1.7rem;
+    padding-bottom: 1.15rem;
+    border-bottom: 1px solid var(--neutral-nav-border);
+  }
+
+  .main-heading h1 {
+    font-size: clamp(1.75rem, 3vw, 2.45rem);
+    font-weight: 650;
+    letter-spacing: -0.025em;
+  }
+
+  .rustdoc-breadcrumbs,
+  .rustdoc-breadcrumbs a {
+    color: var(--neutral-muted);
+  }
+
+  .docblock {
+    color: var(--main-color);
+    font-size: 1rem;
+    line-height: 1.72;
+  }
+
+  .content h2,
+  .top-doc .docblock > h3,
+  .top-doc .docblock > h4 {
+    margin-top: 2.5rem;
+    border-bottom-color: var(--neutral-nav-border);
+    font-weight: 650;
+    letter-spacing: -0.015em;
+  }
+
+  .docblock :not(pre) > code,
+  .item-table dd code,
+  .item-info code {
+    padding: 0.1em 0.34em;
+    color: var(--main-color);
+    background: var(--neutral-code-surface);
+    border: 1px solid var(--neutral-code-border);
+    border-radius: 0.28rem;
+    font-weight: 550;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  .impl > .code-header,
+  .method > .code-header,
+  .trait-impl > .code-header,
+  pre.item-decl,
+  .docblock pre {
+    background: var(--neutral-code-surface);
+    border: 1px solid var(--neutral-code-border);
+    border-left: 3px solid var(--neutral-accent);
+    border-radius: 0.45rem;
+    box-shadow: none;
+  }
+
+  .impl > .code-header,
+  .method > .code-header,
+  .trait-impl > .code-header {
+    padding: 0.62rem 0.78rem;
+  }
+
+  .impl-items > details.toggle,
+  .methods > details.toggle,
+  .implementors-toggle {
+    margin-bottom: 0.7rem;
+  }
+
+  details.toggle > summary {
+    border-radius: 0.45rem;
+  }
+
+  a.src,
+  .impl a.src.rightside,
+  .impl .rightside a.src {
+    display: inline-block;
+    padding: 0.2rem 0.48rem;
+    color: var(--neutral-accent) !important;
+    background: var(--neutral-accent-soft);
+    border: 1px solid color-mix(in srgb, var(--neutral-accent) 48%, transparent);
+    border-radius: 0.32rem;
+    font-weight: 650;
+  }
+
+  a.src:hover,
+  a.src:focus-visible {
+    color: var(--main-color) !important;
+    border-color: var(--neutral-accent);
+  }
+
+  .stab {
+    padding: 0.2rem 0.45rem;
+    color: var(--neutral-muted);
+    background: var(--neutral-surface-raised);
+    border: 1px solid var(--neutral-code-border);
+    border-radius: 0.32rem;
+  }
+
+  .stab code,
+  .since a {
+    color: var(--neutral-muted) !important;
+    font-weight: 650;
+  }
+
+  #copy-path {
+    color: var(--neutral-muted);
+    border-radius: 0.35rem;
+  }
+
+  .item-table > dt,
+  .item-table > dd {
+    padding-block: 0.65rem;
+    border-bottom: 1px solid var(--neutral-nav-border);
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  summary:focus-visible,
+  input:focus-visible {
+    outline: 2px solid var(--neutral-focus) !important;
+    outline-offset: 3px;
+  }
+
+  :target {
+    scroll-margin-top: 5rem;
+  }
+
+  @media (max-width: 700px) {
+    body.rustdoc {
+      padding-top: 3.35rem;
+    }
+
+    #neutral-docs-nav {
+      min-height: 3.35rem;
+      padding: 0.42rem 0.65rem;
+    }
+
+    .neutral-docs-brand img {
+      width: 1.95rem;
+      height: 1.95rem;
+    }
+
+    .neutral-docs-brand span,
+    .neutral-docs-context {
+      display: none;
+    }
+
+    .neutral-docs-actions a {
+      min-height: 2rem;
+      padding: 0.4rem 0.62rem;
+    }
+
+    rustdoc-topbar {
+      top: 3.35rem;
+    }
+
+    .sidebar {
+      top: calc(3.35rem + var(--topbar-height));
+      height: calc(100vh - 3.35rem - var(--topbar-height));
+    }
+
+    body.rustdoc > main {
+      padding: 1.3rem 1rem 4rem;
+    }
+
+    .main-heading h1 {
+      font-size: 1.65rem;
+    }
+  }
+
+  @media print {
+    body.rustdoc {
+      padding-top: 0;
+    }
+
+    #neutral-docs-nav {
+      display: none;
+    }
+  }
+</style>
+<script>
+  "use strict";
+
+  /** Builds the shared Neutral navigation and favicon for one Rustdoc page. */
+  function configureNeutralDocumentation() {
+    const rustdocVariables = document.querySelector('meta[name="rustdoc-vars"]');
+    if (!rustdocVariables || document.getElementById("neutral-docs-nav")) {
+      return;
+    }
+    const rootPath = rustdocVariables.dataset.rootPath || "./";
+    const favicon = document.createElement("link");
+    favicon.rel = "icon";
+    favicon.type = "image/png";
+    favicon.href = `${rootPath}assets/neutral-logo-rounded.png`;
+    document.head.append(favicon);
+
+    const navigation = document.createElement("nav");
+    navigation.id = "neutral-docs-nav";
+    navigation.setAttribute("aria-label", "Documentation navigation");
+
+    const brand = document.createElement("a");
+    brand.className = "neutral-docs-brand";
+    brand.href = `${rootPath}index.html`;
+    brand.setAttribute("aria-label", "Neutral documentation home");
+
+    const logo = document.createElement("img");
+    logo.src = `${rootPath}assets/neutral-logo.png`;
+    logo.alt = "";
+    logo.width = 34;
+    logo.height = 34;
+    brand.append(logo);
+
+    const brandName = document.createElement("span");
+    brandName.textContent = "Neutral documentation";
+    brand.append(brandName);
+
+    const context = document.createElement("span");
+    context.className = "neutral-docs-context";
+    context.textContent = rustdocVariables.dataset.currentCrate
+      ? rustdocVariables.dataset.currentCrate.replaceAll("_", "-")
+      : "Rust API";
+    brand.append(context);
+
+    const actions = document.createElement("div");
+    actions.className = "neutral-docs-actions";
+    const workspace = document.createElement("a");
+    workspace.href = `${rootPath}index.html`;
+    workspace.textContent = "Workspace";
+    actions.append(workspace);
+
+    navigation.append(brand, actions);
+    document.body.prepend(navigation);
+  }
+
+  document.addEventListener("DOMContentLoaded", configureNeutralDocumentation);
+</script>
+
+</head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">neutral_vocabulary/composition/</div>scope.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// SPDX-License-Identifier: Apache-2.0
+<a href=#2 id=2 data-nosnippet>2</a>
+<a href=#3 id=3 data-nosnippet>3</a></span><span class="doccomment">//! Shared resolved declaration validation; source parsing and project artifacts remain separate.
+<a href=#4 id=4 data-nosnippet>4</a>
+<a href=#5 id=5 data-nosnippet>5</a></span><span class="kw">use super</span>::{
+<a href=#6 id=6 data-nosnippet>6</a>    Budget, CompositionError <span class="kw">as </span>E, CompositionLimits, ValidatedComposition,
+<a href=#7 id=7 data-nosnippet>7</a>    ValidatedCompositionValue, charge, check_count, supplied, values,
+<a href=#8 id=8 data-nosnippet>8</a>};
+<a href=#9 id=9 data-nosnippet>9</a><span class="kw">use </span>neutral_core::allocation::RetainCapacity;
+<a href=#10 id=10 data-nosnippet>10</a><span class="kw">use </span>neutral_core::allocation::Shared <span class="kw">as </span>Arc;
+<a href=#11 id=11 data-nosnippet>11</a><span class="kw">use </span>neutral_core::ordered::{OrderedMap <span class="kw">as </span>BTreeMap, OrderedSet <span class="kw">as </span>BTreeSet};
+<a href=#12 id=12 data-nosnippet>12</a><span class="kw">use </span>neutral_core::{CancellationToken, profile::V1_SOURCE_PROFILE};
+<a href=#13 id=13 data-nosnippet>13</a><span class="kw">use </span>neutral_ir::{
+<a href=#14 id=14 data-nosnippet>14</a>    ModuleSymbolIdentity,
+<a href=#15 id=15 data-nosnippet>15</a>    composition::{
+<a href=#16 id=16 data-nosnippet>16</a>        ClosedValue <span class="kw">as </span>V, CompositionBody, CompositionDefinition, FieldPresence,
+<a href=#17 id=17 data-nosnippet>17</a>        SourceCompositionDefinition,
+<a href=#18 id=18 data-nosnippet>18</a>    },
+<a href=#19 id=19 data-nosnippet>19</a>    language::{is_protected_name, is_snake_name, is_upper_name},
+<a href=#20 id=20 data-nosnippet>20</a>    project_interface::ProjectPublicType <span class="kw">as </span>T,
+<a href=#21 id=21 data-nosnippet>21</a>};
+<a href=#22 id=22 data-nosnippet>22</a>
+<a href=#23 id=23 data-nosnippet>23</a><span class="doccomment">/// Immutable resolved contracts for both source and vocabulary nominal owners.
+<a href=#24 id=24 data-nosnippet>24</a>///
+<a href=#25 id=25 data-nosnippet>25</a>/// This is a type/default boundary, not compiled project IR. It cannot establish
+<a href=#26 id=26 data-nosnippet>26</a>/// source syntax, import visibility, source attribution, binding reference targets,
+<a href=#27 id=27 data-nosnippet>27</a>/// wire compatibility or identity. Those require the explicit compiler boundary.
+<a href=#28 id=28 data-nosnippet>28</a></span><span class="attr">#[derive(Clone, Eq, PartialEq)]
+<a href=#29 id=29 data-nosnippet>29</a></span><span class="kw">pub struct </span>ValidatedCompositionScope {
+<a href=#30 id=30 data-nosnippet>30</a>    <span class="doccomment">/// Exact, already validated transitive vocabulary closure.
+<a href=#31 id=31 data-nosnippet>31</a>    </span>catalogue: Arc&lt;ValidatedComposition&gt;,
+<a href=#32 id=32 data-nosnippet>32</a>    <span class="doccomment">/// Canonical source-owned record/variant contracts, never mutably exposed.
+<a href=#33 id=33 data-nosnippet>33</a>    </span>sources: Vec&lt;SourceCompositionDefinition&gt;,
+<a href=#34 id=34 data-nosnippet>34</a>}
+<a href=#35 id=35 data-nosnippet>35</a>
+<a href=#36 id=36 data-nosnippet>36</a><span class="kw">impl </span>std::fmt::Debug <span class="kw">for </span>ValidatedCompositionScope {
+<a href=#37 id=37 data-nosnippet>37</a>    <span class="doccomment">/// Reports counts rather than private contracts, defaults or source owner names.
+<a href=#38 id=38 data-nosnippet>38</a>    </span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+<a href=#39 id=39 data-nosnippet>39</a>        formatter
+<a href=#40 id=40 data-nosnippet>40</a>            .debug_struct(<span class="string">"ValidatedCompositionScope"</span>)
+<a href=#41 id=41 data-nosnippet>41</a>            .field(<span class="string">"vocabularies"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.catalogue.bundles().len())
+<a href=#42 id=42 data-nosnippet>42</a>            .field(<span class="string">"source_types"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.sources.len())
+<a href=#43 id=43 data-nosnippet>43</a>            .finish_non_exhaustive()
+<a href=#44 id=44 data-nosnippet>44</a>    }
+<a href=#45 id=45 data-nosnippet>45</a>}
+<a href=#46 id=46 data-nosnippet>46</a>
+<a href=#47 id=47 data-nosnippet>47</a><span class="kw">impl </span>ValidatedCompositionScope {
+<a href=#48 id=48 data-nosnippet>48</a>    <span class="doccomment">/// Returns the immutable vocabulary catalogue with exact semantic owners and locks.
+<a href=#49 id=49 data-nosnippet>49</a>    </span><span class="attr">#[must_use]
+<a href=#50 id=50 data-nosnippet>50</a>    </span><span class="kw">pub fn </span>catalogue(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Arc&lt;ValidatedComposition&gt; {
+<a href=#51 id=51 data-nosnippet>51</a>        <span class="kw-2">&amp;</span><span class="self">self</span>.catalogue
+<a href=#52 id=52 data-nosnippet>52</a>    }
+<a href=#53 id=53 data-nosnippet>53</a>
+<a href=#54 id=54 data-nosnippet>54</a>    <span class="doccomment">/// Returns complete source contracts for trusted producers; public readers must filter visibility.
+<a href=#55 id=55 data-nosnippet>55</a>    </span><span class="attr">#[must_use]
+<a href=#56 id=56 data-nosnippet>56</a>    </span><span class="kw">pub fn </span>sources(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[SourceCompositionDefinition] {
+<a href=#57 id=57 data-nosnippet>57</a>        <span class="kw-2">&amp;</span><span class="self">self</span>.sources
+<a href=#58 id=58 data-nosnippet>58</a>    }
+<a href=#59 id=59 data-nosnippet>59</a>
+<a href=#60 id=60 data-nosnippet>60</a>    <span class="doccomment">/// Materializes closed data under either exact public nominal origin using one value engine.
+<a href=#61 id=61 data-nosnippet>61</a>    ///
+<a href=#62 id=62 data-nosnippet>62</a>    /// Project /2 depth counts root zero and record/list/variant occurrences, not
+<a href=#63 id=63 data-nosnippet>63</a>    /// nullable checks or nominal lookup. Closed data cannot supply source reuse
+<a href=#64 id=64 data-nosnippet>64</a>    /// or a non-null reference. Missing and private roots are indistinguishable.
+<a href=#65 id=65 data-nosnippet>65</a>    ///
+<a href=#66 id=66 data-nosnippet>66</a>    /// # Errors
+<a href=#67 id=67 data-nosnippet>67</a>    /// Returns a safe unknown-type/value/limit/cancellation failure without partial origins.
+<a href=#68 id=68 data-nosnippet>68</a>    </span><span class="kw">pub fn </span>materialize(
+<a href=#69 id=69 data-nosnippet>69</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#70 id=70 data-nosnippet>70</a>        owner: <span class="kw-2">&amp;</span>T,
+<a href=#71 id=71 data-nosnippet>71</a>        value: <span class="kw-2">&amp;</span>V,
+<a href=#72 id=72 data-nosnippet>72</a>        limits: CompositionLimits,
+<a href=#73 id=73 data-nosnippet>73</a>        cancellation: <span class="kw-2">&amp;</span>CancellationToken,
+<a href=#74 id=74 data-nosnippet>74</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;ValidatedCompositionValue, E&gt; {
+<a href=#75 id=75 data-nosnippet>75</a>        limits.validate()<span class="question-mark">?</span>;
+<a href=#76 id=76 data-nosnippet>76</a>        <span class="kw">let </span><span class="kw-2">mut </span>budget = Budget::new(limits, cancellation);
+<a href=#77 id=77 data-nosnippet>77</a>        budget.origin_root_depth = <span class="number">0</span>;
+<a href=#78 id=78 data-nosnippet>78</a>        budget.step(<span class="number">1</span>)<span class="question-mark">?</span>;
+<a href=#79 id=79 data-nosnippet>79</a>        <span class="kw">let </span>lookup = lookup(<span class="kw-2">&amp;</span><span class="self">self</span>.catalogue, <span class="kw-2">&amp;</span><span class="self">self</span>.sources, <span class="kw-2">&amp;mut </span>budget)<span class="question-mark">?</span>;
+<a href=#80 id=80 data-nosnippet>80</a>        <span class="kw">let </span>definition = lookup.resolve(owner, <span class="kw-2">&amp;mut </span>budget)<span class="question-mark">?</span>;
+<a href=#81 id=81 data-nosnippet>81</a>        <span class="kw">if </span>!definition.public {
+<a href=#82 id=82 data-nosnippet>82</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(E::UnknownType);
+<a href=#83 id=83 data-nosnippet>83</a>        }
+<a href=#84 id=84 data-nosnippet>84</a>        <span class="kw">let </span>result =
+<a href=#85 id=85 data-nosnippet>85</a>            values::materialize(value, owner, <span class="kw-2">&amp;</span>lookup, <span class="kw-2">&amp;mut </span>budget, <span class="number">0</span>).map_err(|error| {
+<a href=#86 id=86 data-nosnippet>86</a>                <span class="kw">if </span>error == E::InvalidDefault {
+<a href=#87 id=87 data-nosnippet>87</a>                    E::InvalidValue
+<a href=#88 id=88 data-nosnippet>88</a>                } <span class="kw">else </span>{
+<a href=#89 id=89 data-nosnippet>89</a>                    error
+<a href=#90 id=90 data-nosnippet>90</a>                }
+<a href=#91 id=91 data-nosnippet>91</a>            })<span class="question-mark">?</span>;
+<a href=#92 id=92 data-nosnippet>92</a>        <span class="kw">let </span><span class="kw-2">mut </span>origins = Vec::new();
+<a href=#93 id=93 data-nosnippet>93</a>        supplied::classify(
+<a href=#94 id=94 data-nosnippet>94</a>            <span class="prelude-val">Some</span>(value),
+<a href=#95 id=95 data-nosnippet>95</a>            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>result),
+<a href=#96 id=96 data-nosnippet>96</a>            <span class="bool-val">false</span>,
+<a href=#97 id=97 data-nosnippet>97</a>            <span class="kw-2">&amp;mut </span>Vec::new(),
+<a href=#98 id=98 data-nosnippet>98</a>            <span class="kw-2">&amp;mut </span>origins,
+<a href=#99 id=99 data-nosnippet>99</a>            <span class="kw-2">&amp;mut </span>budget,
+<a href=#100 id=100 data-nosnippet>100</a>        )<span class="question-mark">?</span>;
+<a href=#101 id=101 data-nosnippet>101</a>        budget.step(<span class="number">1</span>)<span class="question-mark">?</span>;
+<a href=#102 id=102 data-nosnippet>102</a>        <span class="prelude-val">Ok</span>(ValidatedCompositionValue {
+<a href=#103 id=103 data-nosnippet>103</a>            value: result,
+<a href=#104 id=104 data-nosnippet>104</a>            origins,
+<a href=#105 id=105 data-nosnippet>105</a>        })
+<a href=#106 id=106 data-nosnippet>106</a>    }
+<a href=#107 id=107 data-nosnippet>107</a>}
+<a href=#108 id=108 data-nosnippet>108</a>
+<a href=#109 id=109 data-nosnippet>109</a><span class="doccomment">/// Validates resolved source declarations against the exact locked vocabulary catalogue.
+<a href=#110 id=110 data-nosnippet>110</a>///
+<a href=#111 id=111 data-nosnippet>111</a>/// All definitions, including private unused types and unselected alternatives,
+<a href=#112 id=112 data-nosnippet>112</a>/// participate in closure and aggregate bounds. References are non-embedding;
+<a href=#113 id=113 data-nosnippet>113</a>/// lists and nullable wrappers never hide an embedded cycle. Source fields allow
+<a href=#114 id=114 data-nosnippet>114</a>/// required/defaulted presence only; optional fields belong to vocabulary contracts.
+<a href=#115 id=115 data-nosnippet>115</a>/// Raw source owners cannot be created by a vocabulary, and aliases never occur here.
+<a href=#116 id=116 data-nosnippet>116</a>/// The previously validated catalogue remains responsible for captured bytes,
+<a href=#117 id=117 data-nosnippet>117</a>/// exact locks and dependency depth; this boundary does not recapture bundles.
+<a href=#118 id=118 data-nosnippet>118</a>///
+<a href=#119 id=119 data-nosnippet>119</a>/// # Errors
+<a href=#120 id=120 data-nosnippet>120</a>/// Rejects invalid owners/shapes/defaults/restrictions, private/dangling type edges,
+<a href=#121 id=121 data-nosnippet>121</a>/// embedded cycles, exhausted independent bounds or cancellation atomically.
+<a href=#122 id=122 data-nosnippet>122</a></span><span class="kw">pub fn </span>validate_composition_scope(
+<a href=#123 id=123 data-nosnippet>123</a>    catalogue: Arc&lt;ValidatedComposition&gt;,
+<a href=#124 id=124 data-nosnippet>124</a>    <span class="kw-2">mut </span>sources: Vec&lt;SourceCompositionDefinition&gt;,
+<a href=#125 id=125 data-nosnippet>125</a>    limits: CompositionLimits,
+<a href=#126 id=126 data-nosnippet>126</a>    cancellation: <span class="kw-2">&amp;</span>CancellationToken,
+<a href=#127 id=127 data-nosnippet>127</a>) -&gt; <span class="prelude-ty">Result</span>&lt;ValidatedCompositionScope, E&gt; {
+<a href=#128 id=128 data-nosnippet>128</a>    limits.validate()<span class="question-mark">?</span>;
+<a href=#129 id=129 data-nosnippet>129</a>    <span class="kw">let </span><span class="kw-2">mut </span>budget = Budget::new(limits, cancellation);
+<a href=#130 id=130 data-nosnippet>130</a>    budget.step(<span class="number">1</span>)<span class="question-mark">?</span>;
+<a href=#131 id=131 data-nosnippet>131</a>    check_count(catalogue.bundles().len(), limits.bundles)<span class="question-mark">?</span>;
+<a href=#132 id=132 data-nosnippet>132</a>    check_count(sources.len(), limits.total_types)<span class="question-mark">?</span>;
+<a href=#133 id=133 data-nosnippet>133</a>    <span class="kw">let </span><span class="kw-2">mut </span>module_types = BTreeMap::new();
+<a href=#134 id=134 data-nosnippet>134</a>    <span class="kw">for </span>source <span class="kw">in </span><span class="kw-2">&amp;</span>sources {
+<a href=#135 id=135 data-nosnippet>135</a>        validate_owner(<span class="kw-2">&amp;</span>source.owner, <span class="kw-2">&amp;mut </span>budget)<span class="question-mark">?</span>;
+<a href=#136 id=136 data-nosnippet>136</a>        budget.step(module_types.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
+<a href=#137 id=137 data-nosnippet>137</a>        charge(
+<a href=#138 id=138 data-nosnippet>138</a>            module_types
+<a href=#139 id=139 data-nosnippet>139</a>                .entry(source.owner.module())
+<a href=#140 id=140 data-nosnippet>140</a>                .map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?
+<a href=#141 id=141 data-nosnippet>141</a>                </span>.or_insert(<span class="number">0</span>),
+<a href=#142 id=142 data-nosnippet>142</a>            <span class="number">1</span>,
+<a href=#143 id=143 data-nosnippet>143</a>            limits.json.types(),
+<a href=#144 id=144 data-nosnippet>144</a>        )<span class="question-mark">?</span>;
+<a href=#145 id=145 data-nosnippet>145</a>        <span class="kw">if </span>source.owner.declaration_name() != source.definition.name {
+<a href=#146 id=146 data-nosnippet>146</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(E::InvalidContract);
+<a href=#147 id=147 data-nosnippet>147</a>        }
+<a href=#148 id=148 data-nosnippet>148</a>        preflight(<span class="kw-2">&amp;</span>source.definition, <span class="bool-val">true</span>, <span class="kw-2">&amp;mut </span>budget)<span class="question-mark">?</span>;
+<a href=#149 id=149 data-nosnippet>149</a>    }
+<a href=#150 id=150 data-nosnippet>150</a>    <span class="kw">for </span>bundle <span class="kw">in </span>catalogue.bundles() {
+<a href=#151 id=151 data-nosnippet>151</a>        check_count(bundle.definitions.len(), limits.json.types())<span class="question-mark">?</span>;
+<a href=#152 id=152 data-nosnippet>152</a>        charge(
+<a href=#153 id=153 data-nosnippet>153</a>            <span class="kw-2">&amp;mut </span>budget.edges,
+<a href=#154 id=154 data-nosnippet>154</a>            bundle.dependencies.len() <span class="kw">as </span>u64,
+<a href=#155 id=155 data-nosnippet>155</a>            limits.dependency_edges,
+<a href=#156 id=156 data-nosnippet>156</a>        )<span class="question-mark">?</span>;
+<a href=#157 id=157 data-nosnippet>157</a>        check_count(bundle.dependencies.len(), limits.dependencies_per_bundle)<span class="question-mark">?</span>;
+<a href=#158 id=158 data-nosnippet>158</a>        <span class="kw">for </span>definition <span class="kw">in </span><span class="kw-2">&amp;</span>bundle.definitions {
+<a href=#159 id=159 data-nosnippet>159</a>            preflight(definition, <span class="bool-val">false</span>, <span class="kw-2">&amp;mut </span>budget)<span class="question-mark">?</span>;
+<a href=#160 id=160 data-nosnippet>160</a>        }
+<a href=#161 id=161 data-nosnippet>161</a>    }
+<a href=#162 id=162 data-nosnippet>162</a>    <span class="comment">// Charge comparison work before sorting attacker-controlled owner/member strings.
+<a href=#163 id=163 data-nosnippet>163</a>    </span><span class="kw">for </span>source <span class="kw">in </span><span class="kw-2">&amp;</span>sources {
+<a href=#164 id=164 data-nosnippet>164</a>        budget.key(
+<a href=#165 id=165 data-nosnippet>165</a>            source.owner.module().module_name().len() + source.definition.name.len(),
+<a href=#166 id=166 data-nosnippet>166</a>            sources.len(),
+<a href=#167 id=167 data-nosnippet>167</a>        )<span class="question-mark">?</span>;
+<a href=#168 id=168 data-nosnippet>168</a>    }
+<a href=#169 id=169 data-nosnippet>169</a>    sources.sort_unstable_by(|a, b| a.owner.cmp(<span class="kw-2">&amp;</span>b.owner));
+<a href=#170 id=170 data-nosnippet>170</a>    <span class="kw">if </span>sources
+<a href=#171 id=171 data-nosnippet>171</a>        .windows(<span class="number">2</span>)
+<a href=#172 id=172 data-nosnippet>172</a>        .any(|pair| pair[<span class="number">0</span>].owner == pair[<span class="number">1</span>].owner)
+<a href=#173 id=173 data-nosnippet>173</a>    {
+<a href=#174 id=174 data-nosnippet>174</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(E::InvalidContract);
+<a href=#175 id=175 data-nosnippet>175</a>    }
+<a href=#176 id=176 data-nosnippet>176</a>    <span class="kw">for </span>source <span class="kw">in </span><span class="kw-2">&amp;mut </span>sources {
+<a href=#177 id=177 data-nosnippet>177</a>        <span class="kw">match </span><span class="kw-2">&amp;mut </span>source.definition.body {
+<a href=#178 id=178 data-nosnippet>178</a>            CompositionBody::Record(fields) =&gt; fields.sort_unstable_by(|a, b| a.name.cmp(<span class="kw-2">&amp;</span>b.name)),
+<a href=#179 id=179 data-nosnippet>179</a>            CompositionBody::Variant(alternatives) =&gt; {
+<a href=#180 id=180 data-nosnippet>180</a>                alternatives.sort_unstable_by(|a, b| a.tag.cmp(<span class="kw-2">&amp;</span>b.tag));
+<a href=#181 id=181 data-nosnippet>181</a>            }
+<a href=#182 id=182 data-nosnippet>182</a>        }
+<a href=#183 id=183 data-nosnippet>183</a>    }
+<a href=#184 id=184 data-nosnippet>184</a>    <span class="kw">let </span>contracts = lookup(<span class="kw-2">&amp;</span>catalogue, <span class="kw-2">&amp;</span>sources, <span class="kw-2">&amp;mut </span>budget)<span class="question-mark">?</span>;
+<a href=#185 id=185 data-nosnippet>185</a>    validate_edges(<span class="kw-2">&amp;</span>sources, <span class="kw-2">&amp;</span>contracts, <span class="kw-2">&amp;mut </span>budget)<span class="question-mark">?</span>;
+<a href=#186 id=186 data-nosnippet>186</a>    <span class="comment">// Check all defaults against the same complete, immutable scope before publishing
+<a href=#187 id=187 data-nosnippet>187</a>    // normalized source fields. A declaration's position cannot change its meaning.
+<a href=#188 id=188 data-nosnippet>188</a>    </span><span class="kw">let </span><span class="kw-2">mut </span>finalized = Vec::new();
+<a href=#189 id=189 data-nosnippet>189</a>    <span class="kw">for </span>(index, source) <span class="kw">in </span>sources.iter().enumerate() {
+<a href=#190 id=190 data-nosnippet>190</a>        <span class="kw">let </span>CompositionBody::Record(fields) = <span class="kw-2">&amp;</span>source.definition.body <span class="kw">else </span>{
+<a href=#191 id=191 data-nosnippet>191</a>            <span class="kw">continue</span>;
+<a href=#192 id=192 data-nosnippet>192</a>        };
+<a href=#193 id=193 data-nosnippet>193</a>        <span class="kw">for </span>(field_index, field) <span class="kw">in </span>fields.iter().enumerate() {
+<a href=#194 id=194 data-nosnippet>194</a>            <span class="kw">let </span>restrictions = values::validate_restrictions(field, <span class="kw-2">&amp;mut </span>budget)<span class="question-mark">?</span>;
+<a href=#195 id=195 data-nosnippet>195</a>            <span class="kw">let </span>default = field
+<a href=#196 id=196 data-nosnippet>196</a>                .default
+<a href=#197 id=197 data-nosnippet>197</a>                .as_ref()
+<a href=#198 id=198 data-nosnippet>198</a>                .map(|value| {
+<a href=#199 id=199 data-nosnippet>199</a>                    <span class="kw">let </span>value = values::materialize(value, <span class="kw-2">&amp;</span>field.ty, <span class="kw-2">&amp;</span>contracts, <span class="kw-2">&amp;mut </span>budget, <span class="number">0</span>)<span class="question-mark">?</span>;
+<a href=#200 id=200 data-nosnippet>200</a>                    values::check_restrictions(<span class="kw-2">&amp;</span>restrictions, <span class="kw-2">&amp;</span>value, <span class="kw-2">&amp;mut </span>budget)<span class="question-mark">?</span>;
+<a href=#201 id=201 data-nosnippet>201</a>                    <span class="prelude-val">Ok</span>::&lt;<span class="kw">_</span>, E&gt;(value)
+<a href=#202 id=202 data-nosnippet>202</a>                })
+<a href=#203 id=203 data-nosnippet>203</a>                .transpose()<span class="question-mark">?</span>;
+<a href=#204 id=204 data-nosnippet>204</a>            finalized.try_retain(<span class="number">1</span>).map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>;
+<a href=#205 id=205 data-nosnippet>205</a>            finalized.push((index, field_index, restrictions, default));
+<a href=#206 id=206 data-nosnippet>206</a>        }
+<a href=#207 id=207 data-nosnippet>207</a>    }
+<a href=#208 id=208 data-nosnippet>208</a>    <span class="comment">// Recheck vocabulary defaults under this call's independent policy, too.
+<a href=#209 id=209 data-nosnippet>209</a>    </span><span class="kw">for </span>bundle <span class="kw">in </span>catalogue.bundles() {
+<a href=#210 id=210 data-nosnippet>210</a>        <span class="kw">for </span>definition <span class="kw">in </span><span class="kw-2">&amp;</span>bundle.definitions {
+<a href=#211 id=211 data-nosnippet>211</a>            <span class="kw">if let </span>CompositionBody::Record(fields) = <span class="kw-2">&amp;</span>definition.body {
+<a href=#212 id=212 data-nosnippet>212</a>                <span class="kw">for </span>field <span class="kw">in </span>fields {
+<a href=#213 id=213 data-nosnippet>213</a>                    <span class="kw">let </span>restrictions = values::validate_restrictions(field, <span class="kw-2">&amp;mut </span>budget)<span class="question-mark">?</span>;
+<a href=#214 id=214 data-nosnippet>214</a>                    <span class="kw">if let </span><span class="prelude-val">Some</span>(default) = <span class="kw-2">&amp;</span>field.default {
+<a href=#215 id=215 data-nosnippet>215</a>                        <span class="kw">let </span>value =
+<a href=#216 id=216 data-nosnippet>216</a>                            values::materialize(default, <span class="kw-2">&amp;</span>field.ty, <span class="kw-2">&amp;</span>contracts, <span class="kw-2">&amp;mut </span>budget, <span class="number">0</span>)<span class="question-mark">?</span>;
+<a href=#217 id=217 data-nosnippet>217</a>                        values::check_restrictions(<span class="kw-2">&amp;</span>restrictions, <span class="kw-2">&amp;</span>value, <span class="kw-2">&amp;mut </span>budget)<span class="question-mark">?</span>;
+<a href=#218 id=218 data-nosnippet>218</a>                    }
+<a href=#219 id=219 data-nosnippet>219</a>                }
+<a href=#220 id=220 data-nosnippet>220</a>            }
+<a href=#221 id=221 data-nosnippet>221</a>        }
+<a href=#222 id=222 data-nosnippet>222</a>    }
+<a href=#223 id=223 data-nosnippet>223</a>    <span class="kw">for </span>(source, field, restrictions, default) <span class="kw">in </span>finalized {
+<a href=#224 id=224 data-nosnippet>224</a>        <span class="kw">if let </span>CompositionBody::Record(fields) = <span class="kw-2">&amp;mut </span>sources[source].definition.body {
+<a href=#225 id=225 data-nosnippet>225</a>            fields[field].restrictions = restrictions;
+<a href=#226 id=226 data-nosnippet>226</a>            fields[field].default = default;
+<a href=#227 id=227 data-nosnippet>227</a>        }
+<a href=#228 id=228 data-nosnippet>228</a>    }
+<a href=#229 id=229 data-nosnippet>229</a>    budget.step(<span class="number">1</span>)<span class="question-mark">?</span>;
+<a href=#230 id=230 data-nosnippet>230</a>    <span class="prelude-val">Ok</span>(ValidatedCompositionScope { catalogue, sources })
+<a href=#231 id=231 data-nosnippet>231</a>}
+<a href=#232 id=232 data-nosnippet>232</a>
+<a href=#233 id=233 data-nosnippet>233</a><span class="doccomment">/// Bounds and validates raw source owner components before map ordering or cloning.
+<a href=#234 id=234 data-nosnippet>234</a></span><span class="kw">fn </span>validate_owner(owner: <span class="kw-2">&amp;</span>ModuleSymbolIdentity, budget: <span class="kw-2">&amp;mut </span>Budget&lt;<span class="lifetime">'_</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), E&gt; {
+<a href=#235 id=235 data-nosnippet>235</a>    <span class="kw">let </span>module = owner.module();
+<a href=#236 id=236 data-nosnippet>236</a>    budget.key(
+<a href=#237 id=237 data-nosnippet>237</a>        module.module_name().len() + owner.declaration_name().len(),
+<a href=#238 id=238 data-nosnippet>238</a>        <span class="number">1</span>,
+<a href=#239 id=239 data-nosnippet>239</a>    )<span class="question-mark">?</span>;
+<a href=#240 id=240 data-nosnippet>240</a>    <span class="kw">if </span>module.module_name().len() <span class="kw">as </span>u64 &gt; budget.limits.json.string_bytes()
+<a href=#241 id=241 data-nosnippet>241</a>        || owner.declaration_name().len() <span class="kw">as </span>u64 &gt; budget.limits.json.string_bytes()
+<a href=#242 id=242 data-nosnippet>242</a>    {
+<a href=#243 id=243 data-nosnippet>243</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(E::Limit);
+<a href=#244 id=244 data-nosnippet>244</a>    }
+<a href=#245 id=245 data-nosnippet>245</a>    <span class="kw">if </span>module.language_behavior_version() != V1_SOURCE_PROFILE
+<a href=#246 id=246 data-nosnippet>246</a>        || !module.module_name().split(<span class="string">"::"</span>).all(is_snake_name)
+<a href=#247 id=247 data-nosnippet>247</a>        || !is_upper_name(owner.declaration_name())
+<a href=#248 id=248 data-nosnippet>248</a>        || is_protected_name(owner.declaration_name())
+<a href=#249 id=249 data-nosnippet>249</a>    {
+<a href=#250 id=250 data-nosnippet>250</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(E::InvalidContract);
+<a href=#251 id=251 data-nosnippet>251</a>    }
+<a href=#252 id=252 data-nosnippet>252</a>    <span class="prelude-val">Ok</span>(())
+<a href=#253 id=253 data-nosnippet>253</a>}
+<a href=#254 id=254 data-nosnippet>254</a>
+<a href=#255 id=255 data-nosnippet>255</a><span class="doccomment">/// Validates keys, presence and independent aggregate counts before retained-value copies.
+<a href=#256 id=256 data-nosnippet>256</a></span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>preflight(
+<a href=#257 id=257 data-nosnippet>257</a>    definition: <span class="kw-2">&amp;</span>CompositionDefinition,
+<a href=#258 id=258 data-nosnippet>258</a>    source: bool,
+<a href=#259 id=259 data-nosnippet>259</a>    budget: <span class="kw-2">&amp;mut </span>Budget&lt;<span class="lifetime">'_</span>&gt;,
+<a href=#260 id=260 data-nosnippet>260</a>) -&gt; <span class="prelude-ty">Result</span>&lt;(), E&gt; {
+<a href=#261 id=261 data-nosnippet>261</a>    charge(<span class="kw-2">&amp;mut </span>budget.types, <span class="number">1</span>, budget.limits.total_types)<span class="question-mark">?</span>;
+<a href=#262 id=262 data-nosnippet>262</a>    budget.step(definition.name.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
+<a href=#263 id=263 data-nosnippet>263</a>    <span class="kw">if </span>definition.name.len() <span class="kw">as </span>u64 &gt; budget.limits.json.string_bytes() {
+<a href=#264 id=264 data-nosnippet>264</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(E::Limit);
+<a href=#265 id=265 data-nosnippet>265</a>    }
+<a href=#266 id=266 data-nosnippet>266</a>    <span class="kw">if </span>!is_upper_name(<span class="kw-2">&amp;</span>definition.name) || is_protected_name(<span class="kw-2">&amp;</span>definition.name) {
+<a href=#267 id=267 data-nosnippet>267</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(E::InvalidContract);
+<a href=#268 id=268 data-nosnippet>268</a>    }
+<a href=#269 id=269 data-nosnippet>269</a>    <span class="kw">match </span><span class="kw-2">&amp;</span>definition.body {
+<a href=#270 id=270 data-nosnippet>270</a>        CompositionBody::Record(fields) =&gt; {
+<a href=#271 id=271 data-nosnippet>271</a>            check_count(fields.len(), budget.limits.json.fields())<span class="question-mark">?</span>;
+<a href=#272 id=272 data-nosnippet>272</a>            charge(
+<a href=#273 id=273 data-nosnippet>273</a>                <span class="kw-2">&amp;mut </span>budget.fields,
+<a href=#274 id=274 data-nosnippet>274</a>                fields.len() <span class="kw">as </span>u64,
+<a href=#275 id=275 data-nosnippet>275</a>                budget.limits.total_fields,
+<a href=#276 id=276 data-nosnippet>276</a>            )<span class="question-mark">?</span>;
+<a href=#277 id=277 data-nosnippet>277</a>            <span class="kw">let </span><span class="kw-2">mut </span>names = BTreeSet::new();
+<a href=#278 id=278 data-nosnippet>278</a>            <span class="kw">for </span>field <span class="kw">in </span>fields {
+<a href=#279 id=279 data-nosnippet>279</a>                member(<span class="kw-2">&amp;</span>field.name, fields.len(), <span class="kw-2">&amp;mut </span>names, budget)<span class="question-mark">?</span>;
+<a href=#280 id=280 data-nosnippet>280</a>                <span class="kw">if </span>(source &amp;&amp; field.presence == FieldPresence::Optional)
+<a href=#281 id=281 data-nosnippet>281</a>                    || (field.presence == FieldPresence::Defaulted) != field.default.is_some()
+<a href=#282 id=282 data-nosnippet>282</a>                {
+<a href=#283 id=283 data-nosnippet>283</a>                    <span class="kw">return </span><span class="prelude-val">Err</span>(E::InvalidContract);
+<a href=#284 id=284 data-nosnippet>284</a>                }
+<a href=#285 id=285 data-nosnippet>285</a>                preflight_type(<span class="kw-2">&amp;</span>field.ty, budget)<span class="question-mark">?</span>;
+<a href=#286 id=286 data-nosnippet>286</a>                preflight_restrictions(field, budget)<span class="question-mark">?</span>;
+<a href=#287 id=287 data-nosnippet>287</a>                <span class="kw">if let </span><span class="prelude-val">Some</span>(default) = <span class="kw-2">&amp;</span>field.default {
+<a href=#288 id=288 data-nosnippet>288</a>                    preflight_value(default, budget)<span class="question-mark">?</span>;
+<a href=#289 id=289 data-nosnippet>289</a>                }
+<a href=#290 id=290 data-nosnippet>290</a>            }
+<a href=#291 id=291 data-nosnippet>291</a>        }
+<a href=#292 id=292 data-nosnippet>292</a>        CompositionBody::Variant(alternatives) =&gt; {
+<a href=#293 id=293 data-nosnippet>293</a>            <span class="kw">if </span>alternatives.is_empty() {
+<a href=#294 id=294 data-nosnippet>294</a>                <span class="kw">return </span><span class="prelude-val">Err</span>(E::InvalidContract);
+<a href=#295 id=295 data-nosnippet>295</a>            }
+<a href=#296 id=296 data-nosnippet>296</a>            check_count(alternatives.len(), budget.limits.alternatives_per_type)<span class="question-mark">?</span>;
+<a href=#297 id=297 data-nosnippet>297</a>            charge(
+<a href=#298 id=298 data-nosnippet>298</a>                <span class="kw-2">&amp;mut </span>budget.alternatives,
+<a href=#299 id=299 data-nosnippet>299</a>                alternatives.len() <span class="kw">as </span>u64,
+<a href=#300 id=300 data-nosnippet>300</a>                budget.limits.total_alternatives,
+<a href=#301 id=301 data-nosnippet>301</a>            )<span class="question-mark">?</span>;
+<a href=#302 id=302 data-nosnippet>302</a>            <span class="kw">let </span><span class="kw-2">mut </span>tags = BTreeSet::new();
+<a href=#303 id=303 data-nosnippet>303</a>            <span class="kw">for </span>alternative <span class="kw">in </span>alternatives {
+<a href=#304 id=304 data-nosnippet>304</a>                member(<span class="kw-2">&amp;</span>alternative.tag, alternatives.len(), <span class="kw-2">&amp;mut </span>tags, budget)<span class="question-mark">?</span>;
+<a href=#305 id=305 data-nosnippet>305</a>                preflight_type(<span class="kw-2">&amp;</span>alternative.ty, budget)<span class="question-mark">?</span>;
+<a href=#306 id=306 data-nosnippet>306</a>            }
+<a href=#307 id=307 data-nosnippet>307</a>        }
+<a href=#308 id=308 data-nosnippet>308</a>    }
+<a href=#309 id=309 data-nosnippet>309</a>    <span class="prelude-val">Ok</span>(())
+<a href=#310 id=310 data-nosnippet>310</a>}
+<a href=#311 id=311 data-nosnippet>311</a>
+<a href=#312 id=312 data-nosnippet>312</a><span class="doccomment">/// Bounds every restriction value before copying or canonical numeric/scalar comparison.
+<a href=#313 id=313 data-nosnippet>313</a></span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>preflight_restrictions(
+<a href=#314 id=314 data-nosnippet>314</a>    field: <span class="kw-2">&amp;</span>neutral_ir::composition::CompositionField,
+<a href=#315 id=315 data-nosnippet>315</a>    budget: <span class="kw-2">&amp;mut </span>Budget&lt;<span class="lifetime">'_</span>&gt;,
+<a href=#316 id=316 data-nosnippet>316</a>) -&gt; <span class="prelude-ty">Result</span>&lt;(), E&gt; {
+<a href=#317 id=317 data-nosnippet>317</a>    <span class="kw">if let </span><span class="prelude-val">Some</span>(choices) = <span class="kw-2">&amp;</span>field.restrictions.choices {
+<a href=#318 id=318 data-nosnippet>318</a>        check_count(choices.len(), budget.limits.choices_per_field)<span class="question-mark">?</span>;
+<a href=#319 id=319 data-nosnippet>319</a>        charge(
+<a href=#320 id=320 data-nosnippet>320</a>            <span class="kw-2">&amp;mut </span>budget.choices,
+<a href=#321 id=321 data-nosnippet>321</a>            choices.len() <span class="kw">as </span>u64,
+<a href=#322 id=322 data-nosnippet>322</a>            budget.limits.total_choices,
+<a href=#323 id=323 data-nosnippet>323</a>        )<span class="question-mark">?</span>;
+<a href=#324 id=324 data-nosnippet>324</a>        <span class="kw">for </span>choice <span class="kw">in </span>choices {
+<a href=#325 id=325 data-nosnippet>325</a>            preflight_value(choice, budget)<span class="question-mark">?</span>;
+<a href=#326 id=326 data-nosnippet>326</a>        }
+<a href=#327 id=327 data-nosnippet>327</a>    }
+<a href=#328 id=328 data-nosnippet>328</a>    <span class="kw">for </span>bound <span class="kw">in </span>[<span class="kw-2">&amp;</span>field.restrictions.minimum, <span class="kw-2">&amp;</span>field.restrictions.maximum]
+<a href=#329 id=329 data-nosnippet>329</a>        .into_iter()
+<a href=#330 id=330 data-nosnippet>330</a>        .flatten()
+<a href=#331 id=331 data-nosnippet>331</a>    {
+<a href=#332 id=332 data-nosnippet>332</a>        number(bound, budget)<span class="question-mark">?</span>;
+<a href=#333 id=333 data-nosnippet>333</a>    }
+<a href=#334 id=334 data-nosnippet>334</a>    <span class="prelude-val">Ok</span>(())
+<a href=#335 id=335 data-nosnippet>335</a>}
+<a href=#336 id=336 data-nosnippet>336</a>
+<a href=#337 id=337 data-nosnippet>337</a><span class="doccomment">/// Rejects invalid or duplicate member keys before canonical field/tag ordering.
+<a href=#338 id=338 data-nosnippet>338</a></span><span class="kw">fn </span>member&lt;<span class="lifetime">'a</span>&gt;(
+<a href=#339 id=339 data-nosnippet>339</a>    name: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>str,
+<a href=#340 id=340 data-nosnippet>340</a>    count: usize,
+<a href=#341 id=341 data-nosnippet>341</a>    seen: <span class="kw-2">&amp;mut </span>BTreeSet&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>str&gt;,
+<a href=#342 id=342 data-nosnippet>342</a>    budget: <span class="kw-2">&amp;mut </span>Budget&lt;<span class="lifetime">'_</span>&gt;,
+<a href=#343 id=343 data-nosnippet>343</a>) -&gt; <span class="prelude-ty">Result</span>&lt;(), E&gt; {
+<a href=#344 id=344 data-nosnippet>344</a>    budget.key(name.len(), count)<span class="question-mark">?</span>;
+<a href=#345 id=345 data-nosnippet>345</a>    <span class="kw">if </span>name.len() <span class="kw">as </span>u64 &gt; budget.limits.json.string_bytes() {
+<a href=#346 id=346 data-nosnippet>346</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(E::Limit);
+<a href=#347 id=347 data-nosnippet>347</a>    }
+<a href=#348 id=348 data-nosnippet>348</a>    budget.step(seen.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
+<a href=#349 id=349 data-nosnippet>349</a>    <span class="kw">if </span>!is_snake_name(name)
+<a href=#350 id=350 data-nosnippet>350</a>        || is_protected_name(name)
+<a href=#351 id=351 data-nosnippet>351</a>        || !seen.insert(name).map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?
+<a href=#352 id=352 data-nosnippet>352</a>    </span>{
+<a href=#353 id=353 data-nosnippet>353</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(E::InvalidContract);
+<a href=#354 id=354 data-nosnippet>354</a>    }
+<a href=#355 id=355 data-nosnippet>355</a>    <span class="prelude-val">Ok</span>(())
+<a href=#356 id=356 data-nosnippet>356</a>}
+<a href=#357 id=357 data-nosnippet>357</a>
+<a href=#358 id=358 data-nosnippet>358</a><span class="doccomment">/// Checks every wrapper before recursive type consumers; nominal ownership remains exact.
+<a href=#359 id=359 data-nosnippet>359</a></span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>preflight_type(ty: <span class="kw-2">&amp;</span>T, budget: <span class="kw-2">&amp;mut </span>Budget&lt;<span class="lifetime">'_</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), E&gt; {
+<a href=#360 id=360 data-nosnippet>360</a>    <span class="kw">let </span><span class="kw-2">mut </span>current = ty;
+<a href=#361 id=361 data-nosnippet>361</a>    <span class="kw">let </span><span class="kw-2">mut </span>depth = <span class="number">0</span>;
+<a href=#362 id=362 data-nosnippet>362</a>    <span class="kw">loop </span>{
+<a href=#363 id=363 data-nosnippet>363</a>        budget.depth(depth, budget.limits.type_depth)<span class="question-mark">?</span>;
+<a href=#364 id=364 data-nosnippet>364</a>        <span class="kw">match </span>current {
+<a href=#365 id=365 data-nosnippet>365</a>            T::Nullable(inner) <span class="kw">if </span><span class="macro">matches!</span>(inner.as_ref(), T::Nullable(<span class="kw">_</span>)) =&gt; {
+<a href=#366 id=366 data-nosnippet>366</a>                <span class="kw">return </span><span class="prelude-val">Err</span>(E::InvalidContract);
+<a href=#367 id=367 data-nosnippet>367</a>            }
+<a href=#368 id=368 data-nosnippet>368</a>            T::Ref(inner)
+<a href=#369 id=369 data-nosnippet>369</a>                <span class="kw">if </span>!<span class="macro">matches!</span>(inner.as_ref(), T::Nominal(<span class="kw">_</span>) | T::VocabularyNominal { .. }) =&gt;
+<a href=#370 id=370 data-nosnippet>370</a>            {
+<a href=#371 id=371 data-nosnippet>371</a>                <span class="kw">return </span><span class="prelude-val">Err</span>(E::InvalidContract);
+<a href=#372 id=372 data-nosnippet>372</a>            }
+<a href=#373 id=373 data-nosnippet>373</a>            T::List(inner) | T::Nullable(inner) | T::Ref(inner) =&gt; {
+<a href=#374 id=374 data-nosnippet>374</a>                current = inner;
+<a href=#375 id=375 data-nosnippet>375</a>                depth += <span class="number">1</span>;
+<a href=#376 id=376 data-nosnippet>376</a>            }
+<a href=#377 id=377 data-nosnippet>377</a>            T::Nominal(owner) =&gt; {
+<a href=#378 id=378 data-nosnippet>378</a>                validate_owner(owner, budget)<span class="question-mark">?</span>;
+<a href=#379 id=379 data-nosnippet>379</a>                <span class="kw">return </span><span class="prelude-val">Ok</span>(());
+<a href=#380 id=380 data-nosnippet>380</a>            }
+<a href=#381 id=381 data-nosnippet>381</a>            T::VocabularyNominal {
+<a href=#382 id=382 data-nosnippet>382</a>                identity,
+<a href=#383 id=383 data-nosnippet>383</a>                version,
+<a href=#384 id=384 data-nosnippet>384</a>                name,
+<a href=#385 id=385 data-nosnippet>385</a>            } =&gt; {
+<a href=#386 id=386 data-nosnippet>386</a>                budget.key(identity.len() + version.len() + name.len(), <span class="number">1</span>)<span class="question-mark">?</span>;
+<a href=#387 id=387 data-nosnippet>387</a>                <span class="kw">if </span>[identity.len(), version.len(), name.len()]
+<a href=#388 id=388 data-nosnippet>388</a>                    .into_iter()
+<a href=#389 id=389 data-nosnippet>389</a>                    .any(|n| n <span class="kw">as </span>u64 &gt; budget.limits.json.string_bytes())
+<a href=#390 id=390 data-nosnippet>390</a>                {
+<a href=#391 id=391 data-nosnippet>391</a>                    <span class="kw">return </span><span class="prelude-val">Err</span>(E::Limit);
+<a href=#392 id=392 data-nosnippet>392</a>                }
+<a href=#393 id=393 data-nosnippet>393</a>                <span class="kw">if </span>!is_upper_name(identity)
+<a href=#394 id=394 data-nosnippet>394</a>                    || !neutral_ir::language::is_exact_release_version(version)
+<a href=#395 id=395 data-nosnippet>395</a>                    || !is_upper_name(name)
+<a href=#396 id=396 data-nosnippet>396</a>                    || is_protected_name(name)
+<a href=#397 id=397 data-nosnippet>397</a>                {
+<a href=#398 id=398 data-nosnippet>398</a>                    <span class="kw">return </span><span class="prelude-val">Err</span>(E::InvalidContract);
+<a href=#399 id=399 data-nosnippet>399</a>                }
+<a href=#400 id=400 data-nosnippet>400</a>                <span class="kw">return </span><span class="prelude-val">Ok</span>(());
+<a href=#401 id=401 data-nosnippet>401</a>            }
+<a href=#402 id=402 data-nosnippet>402</a>            <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(()),
+<a href=#403 id=403 data-nosnippet>403</a>        }
+<a href=#404 id=404 data-nosnippet>404</a>    }
+<a href=#405 id=405 data-nosnippet>405</a>}
+<a href=#406 id=406 data-nosnippet>406</a>
+<a href=#407 id=407 data-nosnippet>407</a><span class="doccomment">/// Bounds caller-owned defaults/choices iteratively before any recursive expansion or clone.
+<a href=#408 id=408 data-nosnippet>408</a></span><span class="kw">fn </span>preflight_value(value: <span class="kw-2">&amp;</span>V, budget: <span class="kw-2">&amp;mut </span>Budget&lt;<span class="lifetime">'_</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), E&gt; {
+<a href=#409 id=409 data-nosnippet>409</a>    <span class="kw">let </span><span class="kw-2">mut </span>stack = Vec::new();
+<a href=#410 id=410 data-nosnippet>410</a>    stack.try_retain_exact(<span class="number">1</span>).map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>;
+<a href=#411 id=411 data-nosnippet>411</a>    stack.push((value, <span class="number">0</span>));
+<a href=#412 id=412 data-nosnippet>412</a>    <span class="kw">while let </span><span class="prelude-val">Some</span>((value, depth)) = stack.pop() {
+<a href=#413 id=413 data-nosnippet>413</a>        budget.depth(depth, budget.limits.value_depth)<span class="question-mark">?</span>;
+<a href=#414 id=414 data-nosnippet>414</a>        <span class="kw">match </span>value {
+<a href=#415 id=415 data-nosnippet>415</a>            V::List(items) =&gt; {
+<a href=#416 id=416 data-nosnippet>416</a>                check_count(items.len(), budget.limits.json.array_items())<span class="question-mark">?</span>;
+<a href=#417 id=417 data-nosnippet>417</a>                budget.step(items.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
+<a href=#418 id=418 data-nosnippet>418</a>                stack.try_retain(items.len()).map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>;
+<a href=#419 id=419 data-nosnippet>419</a>                stack.extend(items.iter().map(|item| (item, depth + <span class="number">1</span>)));
+<a href=#420 id=420 data-nosnippet>420</a>            }
+<a href=#421 id=421 data-nosnippet>421</a>            V::Record(fields) =&gt; {
+<a href=#422 id=422 data-nosnippet>422</a>                check_count(fields.len(), budget.limits.json.fields())<span class="question-mark">?</span>;
+<a href=#423 id=423 data-nosnippet>423</a>                budget.step(fields.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
+<a href=#424 id=424 data-nosnippet>424</a>                stack.try_retain(fields.len()).map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>;
+<a href=#425 id=425 data-nosnippet>425</a>                <span class="kw">for </span>(name, value) <span class="kw">in </span>fields {
+<a href=#426 id=426 data-nosnippet>426</a>                    budget.key(name.len(), fields.len())<span class="question-mark">?</span>;
+<a href=#427 id=427 data-nosnippet>427</a>                    <span class="kw">if </span>name.len() <span class="kw">as </span>u64 &gt; budget.limits.json.string_bytes() {
+<a href=#428 id=428 data-nosnippet>428</a>                        <span class="kw">return </span><span class="prelude-val">Err</span>(E::Limit);
+<a href=#429 id=429 data-nosnippet>429</a>                    }
+<a href=#430 id=430 data-nosnippet>430</a>                    <span class="kw">if let </span><span class="prelude-val">Some</span>(value) = value {
+<a href=#431 id=431 data-nosnippet>431</a>                        stack.push((value, depth + <span class="number">1</span>));
+<a href=#432 id=432 data-nosnippet>432</a>                    }
+<a href=#433 id=433 data-nosnippet>433</a>                }
+<a href=#434 id=434 data-nosnippet>434</a>            }
+<a href=#435 id=435 data-nosnippet>435</a>            V::Variant { tag, payload } =&gt; {
+<a href=#436 id=436 data-nosnippet>436</a>                budget.step(tag.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
+<a href=#437 id=437 data-nosnippet>437</a>                <span class="kw">if </span>tag.len() <span class="kw">as </span>u64 &gt; budget.limits.json.string_bytes() {
+<a href=#438 id=438 data-nosnippet>438</a>                    <span class="kw">return </span><span class="prelude-val">Err</span>(E::Limit);
+<a href=#439 id=439 data-nosnippet>439</a>                }
+<a href=#440 id=440 data-nosnippet>440</a>                stack.try_retain(<span class="number">1</span>).map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>;
+<a href=#441 id=441 data-nosnippet>441</a>                stack.push((payload, depth + <span class="number">1</span>));
+<a href=#442 id=442 data-nosnippet>442</a>            }
+<a href=#443 id=443 data-nosnippet>443</a>            <span class="kw">_ </span>=&gt; scalar(value, budget)<span class="question-mark">?</span>,
+<a href=#444 id=444 data-nosnippet>444</a>        }
+<a href=#445 id=445 data-nosnippet>445</a>    }
+<a href=#446 id=446 data-nosnippet>446</a>    <span class="prelude-val">Ok</span>(())
+<a href=#447 id=447 data-nosnippet>447</a>}
+<a href=#448 id=448 data-nosnippet>448</a>
+<a href=#449 id=449 data-nosnippet>449</a><span class="doccomment">/// Checks scalar retention and exact-number limits without exponent-sized allocation.
+<a href=#450 id=450 data-nosnippet>450</a></span><span class="kw">fn </span>scalar(value: <span class="kw-2">&amp;</span>V, budget: <span class="kw-2">&amp;mut </span>Budget&lt;<span class="lifetime">'_</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), E&gt; {
+<a href=#451 id=451 data-nosnippet>451</a>    <span class="kw">match </span>value {
+<a href=#452 id=452 data-nosnippet>452</a>        V::Number(value) =&gt; number(value, budget)<span class="question-mark">?</span>,
+<a href=#453 id=453 data-nosnippet>453</a>        V::String(text) | V::Url(text) | V::Path(text) =&gt; {
+<a href=#454 id=454 data-nosnippet>454</a>            budget.step(text.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
+<a href=#455 id=455 data-nosnippet>455</a>            <span class="kw">if </span>text.len() <span class="kw">as </span>u64 &gt; budget.limits.json.string_bytes() {
+<a href=#456 id=456 data-nosnippet>456</a>                <span class="kw">return </span><span class="prelude-val">Err</span>(E::Limit);
+<a href=#457 id=457 data-nosnippet>457</a>            }
+<a href=#458 id=458 data-nosnippet>458</a>        }
+<a href=#459 id=459 data-nosnippet>459</a>        <span class="kw">_ </span>=&gt; {
+<a href=#460 id=460 data-nosnippet>460</a>            budget.step(<span class="number">1</span>)<span class="question-mark">?</span>;
+<a href=#461 id=461 data-nosnippet>461</a>        }
+<a href=#462 id=462 data-nosnippet>462</a>    }
+<a href=#463 id=463 data-nosnippet>463</a>    <span class="prelude-val">Ok</span>(())
+<a href=#464 id=464 data-nosnippet>464</a>}
+<a href=#465 id=465 data-nosnippet>465</a>
+<a href=#466 id=466 data-nosnippet>466</a><span class="doccomment">/// Checks a borrowed exact number before cloning any restriction bound.
+<a href=#467 id=467 data-nosnippet>467</a></span><span class="kw">fn </span>number(number: <span class="kw-2">&amp;</span>neutral_ir::ExactNumber, budget: <span class="kw-2">&amp;mut </span>Budget&lt;<span class="lifetime">'_</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), E&gt; {
+<a href=#468 id=468 data-nosnippet>468</a>    budget.step(number.coefficient().len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
+<a href=#469 id=469 data-nosnippet>469</a>    <span class="kw">if </span>number.coefficient().len() <span class="kw">as </span>u64 &gt; budget.limits.json.numeric_digits
+<a href=#470 id=470 data-nosnippet>470</a>        || number.scale().unsigned_abs() &gt; budget.limits.json.numeric_scale
+<a href=#471 id=471 data-nosnippet>471</a>    {
+<a href=#472 id=472 data-nosnippet>472</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(E::Limit);
+<a href=#473 id=473 data-nosnippet>473</a>    }
+<a href=#474 id=474 data-nosnippet>474</a>    <span class="prelude-val">Ok</span>(())
+<a href=#475 id=475 data-nosnippet>475</a>}
+<a href=#476 id=476 data-nosnippet>476</a>
+<a href=#477 id=477 data-nosnippet>477</a><span class="doccomment">/// Builds both exact nominal maps once per request, without cloning private contract bodies.
+<a href=#478 id=478 data-nosnippet>478</a></span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>lookup&lt;<span class="lifetime">'a</span>&gt;(
+<a href=#479 id=479 data-nosnippet>479</a>    catalogue: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>ValidatedComposition,
+<a href=#480 id=480 data-nosnippet>480</a>    sources: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[SourceCompositionDefinition],
+<a href=#481 id=481 data-nosnippet>481</a>    budget: <span class="kw-2">&amp;mut </span>Budget&lt;<span class="lifetime">'_</span>&gt;,
+<a href=#482 id=482 data-nosnippet>482</a>) -&gt; <span class="prelude-ty">Result</span>&lt;values::Catalogue&lt;<span class="lifetime">'a</span>&gt;, E&gt; {
+<a href=#483 id=483 data-nosnippet>483</a>    <span class="kw">let </span><span class="kw-2">mut </span>result = values::Catalogue::new();
+<a href=#484 id=484 data-nosnippet>484</a>    result.project_depth = <span class="bool-val">true</span>;
+<a href=#485 id=485 data-nosnippet>485</a>    <span class="kw">for </span>bundle <span class="kw">in </span>catalogue.bundles() {
+<a href=#486 id=486 data-nosnippet>486</a>        <span class="kw">for </span>definition <span class="kw">in </span><span class="kw-2">&amp;</span>bundle.definitions {
+<a href=#487 id=487 data-nosnippet>487</a>            budget.key(
+<a href=#488 id=488 data-nosnippet>488</a>                bundle.identity.identity().len()
+<a href=#489 id=489 data-nosnippet>489</a>                    + bundle.identity.version().len()
+<a href=#490 id=490 data-nosnippet>490</a>                    + definition.name.len(),
+<a href=#491 id=491 data-nosnippet>491</a>                result.len() + <span class="number">1</span>,
+<a href=#492 id=492 data-nosnippet>492</a>            )<span class="question-mark">?</span>;
+<a href=#493 id=493 data-nosnippet>493</a>            budget.step(result.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
+<a href=#494 id=494 data-nosnippet>494</a>            result.insert(
+<a href=#495 id=495 data-nosnippet>495</a>                (
+<a href=#496 id=496 data-nosnippet>496</a>                    bundle.identity.identity(),
+<a href=#497 id=497 data-nosnippet>497</a>                    bundle.identity.version(),
+<a href=#498 id=498 data-nosnippet>498</a>                    <span class="kw-2">&amp;</span>definition.name,
+<a href=#499 id=499 data-nosnippet>499</a>                ),
+<a href=#500 id=500 data-nosnippet>500</a>                definition,
+<a href=#501 id=501 data-nosnippet>501</a>            )<span class="question-mark">?</span>;
+<a href=#502 id=502 data-nosnippet>502</a>        }
+<a href=#503 id=503 data-nosnippet>503</a>    }
+<a href=#504 id=504 data-nosnippet>504</a>    <span class="kw">for </span>source <span class="kw">in </span>sources {
+<a href=#505 id=505 data-nosnippet>505</a>        budget.key(
+<a href=#506 id=506 data-nosnippet>506</a>            source.owner.module().module_name().len() + source.definition.name.len(),
+<a href=#507 id=507 data-nosnippet>507</a>            result.len() + <span class="number">1</span>,
+<a href=#508 id=508 data-nosnippet>508</a>        )<span class="question-mark">?</span>;
+<a href=#509 id=509 data-nosnippet>509</a>        budget.step(result.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
+<a href=#510 id=510 data-nosnippet>510</a>        result
+<a href=#511 id=511 data-nosnippet>511</a>            .sources
+<a href=#512 id=512 data-nosnippet>512</a>            .insert(<span class="kw-2">&amp;</span>source.owner, <span class="kw-2">&amp;</span>source.definition)
+<a href=#513 id=513 data-nosnippet>513</a>            .map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>;
+<a href=#514 id=514 data-nosnippet>514</a>    }
+<a href=#515 id=515 data-nosnippet>515</a>    <span class="prelude-val">Ok</span>(result)
+<a href=#516 id=516 data-nosnippet>516</a>}
+<a href=#517 id=517 data-nosnippet>517</a>
+<a href=#518 id=518 data-nosnippet>518</a><span class="doccomment">/// Checks source public/external closure and records every non-reference embedding edge.
+<a href=#519 id=519 data-nosnippet>519</a></span><span class="kw">fn </span>validate_edges(
+<a href=#520 id=520 data-nosnippet>520</a>    sources: <span class="kw-2">&amp;</span>[SourceCompositionDefinition],
+<a href=#521 id=521 data-nosnippet>521</a>    lookup: <span class="kw-2">&amp;</span>values::Catalogue&lt;<span class="lifetime">'_</span>&gt;,
+<a href=#522 id=522 data-nosnippet>522</a>    budget: <span class="kw-2">&amp;mut </span>Budget&lt;<span class="lifetime">'_</span>&gt;,
+<a href=#523 id=523 data-nosnippet>523</a>) -&gt; <span class="prelude-ty">Result</span>&lt;(), E&gt; {
+<a href=#524 id=524 data-nosnippet>524</a>    <span class="kw">let </span><span class="kw-2">mut </span>graph = BTreeMap::&lt;<span class="kw-2">&amp;</span>ModuleSymbolIdentity, BTreeSet&lt;<span class="kw-2">&amp;</span>ModuleSymbolIdentity&gt;&gt;::new();
+<a href=#525 id=525 data-nosnippet>525</a>    <span class="kw">for </span>source <span class="kw">in </span>sources {
+<a href=#526 id=526 data-nosnippet>526</a>        budget.step(graph.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
+<a href=#527 id=527 data-nosnippet>527</a>        <span class="kw">let </span>targets = graph
+<a href=#528 id=528 data-nosnippet>528</a>            .entry(<span class="kw-2">&amp;</span>source.owner)
+<a href=#529 id=529 data-nosnippet>529</a>            .map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?
+<a href=#530 id=530 data-nosnippet>530</a>            </span>.or_default();
+<a href=#531 id=531 data-nosnippet>531</a>        <span class="kw">for </span>ty <span class="kw">in </span>values::definition_types(<span class="kw-2">&amp;</span>source.definition) {
+<a href=#532 id=532 data-nosnippet>532</a>            <span class="kw">let </span><span class="kw-2">mut </span>ty = ty;
+<a href=#533 id=533 data-nosnippet>533</a>            <span class="kw">let </span><span class="kw-2">mut </span>reference = <span class="bool-val">false</span>;
+<a href=#534 id=534 data-nosnippet>534</a>            <span class="kw">loop </span>{
+<a href=#535 id=535 data-nosnippet>535</a>                budget.step(<span class="number">1</span>)<span class="question-mark">?</span>;
+<a href=#536 id=536 data-nosnippet>536</a>                <span class="kw">match </span>ty {
+<a href=#537 id=537 data-nosnippet>537</a>                    T::List(inner) | T::Nullable(inner) =&gt; ty = inner,
+<a href=#538 id=538 data-nosnippet>538</a>                    T::Ref(inner) =&gt; {
+<a href=#539 id=539 data-nosnippet>539</a>                        reference = <span class="bool-val">true</span>;
+<a href=#540 id=540 data-nosnippet>540</a>                        ty = inner;
+<a href=#541 id=541 data-nosnippet>541</a>                    }
+<a href=#542 id=542 data-nosnippet>542</a>                    T::Nominal(owner) =&gt; {
+<a href=#543 id=543 data-nosnippet>543</a>                        <span class="kw">let </span>target = lookup.resolve(ty, budget)<span class="question-mark">?</span>;
+<a href=#544 id=544 data-nosnippet>544</a>                        <span class="kw">if </span>!target.public
+<a href=#545 id=545 data-nosnippet>545</a>                            &amp;&amp; (source.definition.public || owner.module() != source.owner.module())
+<a href=#546 id=546 data-nosnippet>546</a>                        {
+<a href=#547 id=547 data-nosnippet>547</a>                            <span class="kw">return </span><span class="prelude-val">Err</span>(E::PrivateType);
+<a href=#548 id=548 data-nosnippet>548</a>                        }
+<a href=#549 id=549 data-nosnippet>549</a>                        <span class="kw">if </span>!reference {
+<a href=#550 id=550 data-nosnippet>550</a>                            budget.step(targets.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
+<a href=#551 id=551 data-nosnippet>551</a>                            targets.insert(owner).map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>;
+<a href=#552 id=552 data-nosnippet>552</a>                        }
+<a href=#553 id=553 data-nosnippet>553</a>                        <span class="kw">break</span>;
+<a href=#554 id=554 data-nosnippet>554</a>                    }
+<a href=#555 id=555 data-nosnippet>555</a>                    T::VocabularyNominal { .. } =&gt; {
+<a href=#556 id=556 data-nosnippet>556</a>                        <span class="kw">if </span>!lookup.resolve(ty, budget)<span class="question-mark">?</span>.public {
+<a href=#557 id=557 data-nosnippet>557</a>                            <span class="kw">return </span><span class="prelude-val">Err</span>(E::PrivateType);
+<a href=#558 id=558 data-nosnippet>558</a>                        }
+<a href=#559 id=559 data-nosnippet>559</a>                        <span class="kw">break</span>;
+<a href=#560 id=560 data-nosnippet>560</a>                    }
+<a href=#561 id=561 data-nosnippet>561</a>                    <span class="kw">_ </span>=&gt; <span class="kw">break</span>,
+<a href=#562 id=562 data-nosnippet>562</a>                }
+<a href=#563 id=563 data-nosnippet>563</a>            }
+<a href=#564 id=564 data-nosnippet>564</a>        }
+<a href=#565 id=565 data-nosnippet>565</a>    }
+<a href=#566 id=566 data-nosnippet>566</a>    <span class="kw">let </span><span class="kw-2">mut </span>done = BTreeSet::new();
+<a href=#567 id=567 data-nosnippet>567</a>    <span class="kw">for </span>root <span class="kw">in </span>graph.keys() {
+<a href=#568 id=568 data-nosnippet>568</a>        <span class="kw">let </span><span class="kw-2">mut </span>visiting = BTreeSet::new();
+<a href=#569 id=569 data-nosnippet>569</a>        <span class="kw">let </span><span class="kw-2">mut </span>stack = Vec::new();
+<a href=#570 id=570 data-nosnippet>570</a>        stack.try_retain_exact(<span class="number">1</span>).map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>;
+<a href=#571 id=571 data-nosnippet>571</a>        stack.push((<span class="kw-2">*</span>root, <span class="bool-val">false</span>));
+<a href=#572 id=572 data-nosnippet>572</a>        <span class="kw">while let </span><span class="prelude-val">Some</span>((owner, leaving)) = stack.pop() {
+<a href=#573 id=573 data-nosnippet>573</a>            budget.step(<span class="number">1</span>)<span class="question-mark">?</span>;
+<a href=#574 id=574 data-nosnippet>574</a>            <span class="kw">if </span>leaving {
+<a href=#575 id=575 data-nosnippet>575</a>                budget.step(visiting.len() <span class="kw">as </span>u64 + done.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
+<a href=#576 id=576 data-nosnippet>576</a>                visiting.remove(owner);
+<a href=#577 id=577 data-nosnippet>577</a>                done.insert(owner).map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>;
+<a href=#578 id=578 data-nosnippet>578</a>                <span class="kw">continue</span>;
+<a href=#579 id=579 data-nosnippet>579</a>            }
+<a href=#580 id=580 data-nosnippet>580</a>            <span class="kw">if </span>done.contains(owner) {
+<a href=#581 id=581 data-nosnippet>581</a>                <span class="kw">continue</span>;
+<a href=#582 id=582 data-nosnippet>582</a>            }
+<a href=#583 id=583 data-nosnippet>583</a>            budget.step(visiting.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
+<a href=#584 id=584 data-nosnippet>584</a>            <span class="kw">if </span>!visiting.insert(owner).map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">? </span>{
+<a href=#585 id=585 data-nosnippet>585</a>                <span class="kw">return </span><span class="prelude-val">Err</span>(E::EmbeddedCycle);
+<a href=#586 id=586 data-nosnippet>586</a>            }
+<a href=#587 id=587 data-nosnippet>587</a>            stack
+<a href=#588 id=588 data-nosnippet>588</a>                .try_retain(<span class="number">1 </span>+ graph.get(owner).map_or(<span class="number">0</span>, BTreeSet::len))
+<a href=#589 id=589 data-nosnippet>589</a>                .map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>;
+<a href=#590 id=590 data-nosnippet>590</a>            stack.push((owner, <span class="bool-val">true</span>));
+<a href=#591 id=591 data-nosnippet>591</a>            <span class="kw">if let </span><span class="prelude-val">Some</span>(targets) = graph.get(owner) {
+<a href=#592 id=592 data-nosnippet>592</a>                stack.extend(targets.iter().map(|target| (<span class="kw-2">*</span>target, <span class="bool-val">false</span>)));
+<a href=#593 id=593 data-nosnippet>593</a>            }
+<a href=#594 id=594 data-nosnippet>594</a>        }
+<a href=#595 id=595 data-nosnippet>595</a>    }
+<a href=#596 id=596 data-nosnippet>596</a>    <span class="prelude-val">Ok</span>(())
+<a href=#597 id=597 data-nosnippet>597</a>}
+</code></pre></div></section></main></body></html>

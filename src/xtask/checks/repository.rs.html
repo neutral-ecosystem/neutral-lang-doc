@@ -546,8 +546,8 @@
 <a href=#80 id=80 data-nosnippet>80</a>        }
 <a href=#81 id=81 data-nosnippet>81</a>    }
 <a href=#82 id=82 data-nosnippet>82</a>    <span class="kw">let </span>release = read_workspace_text(<span class="kw-2">&amp;</span>root, <span class="string">".github/workflows/release.yml"</span>)<span class="question-mark">?</span>;
-<a href=#83 id=83 data-nosnippet>83</a>    <span class="kw">if </span>!release.contains(<span class="string">"cargo xtask release prepare"</span>) {
-<a href=#84 id=84 data-nosnippet>84</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"release.yml does not delegate to `cargo xtask release prepare`"</span>.to_owned());
+<a href=#83 id=83 data-nosnippet>83</a>    <span class="kw">if </span>!release.contains(<span class="string">"cargo xtask release qualify"</span>) {
+<a href=#84 id=84 data-nosnippet>84</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"release.yml does not delegate to `cargo xtask release qualify`"</span>.to_owned());
 <a href=#85 id=85 data-nosnippet>85</a>    }
 <a href=#86 id=86 data-nosnippet>86</a>    <span class="kw">for </span>requirement <span class="kw">in </span>[
 <a href=#87 id=87 data-nosnippet>87</a>        <span class="string">"tags: ['v*']"</span>,
@@ -872,10 +872,10 @@
 <a href=#406 id=406 data-nosnippet>406</a>        </span>));
 <a href=#407 id=407 data-nosnippet>407</a>    }
 <a href=#408 id=408 data-nosnippet>408</a>    <span class="kw">let </span>bundle = ReleasedBundle::load(root)<span class="question-mark">?</span>;
-<a href=#409 id=409 data-nosnippet>409</a>    <span class="kw">let </span>freeze = bundle.member(<span class="string">"specs/contracts/freeze.toml"</span>);
+<a href=#409 id=409 data-nosnippet>409</a>    <span class="kw">let </span>freeze = bundle.member(<span class="kw">crate</span>::constants::BUNDLE_CONTRACT_FREEZE_MEMBER);
 <a href=#410 id=410 data-nosnippet>410</a>    <span class="kw">let </span>manifest = bundle.member(<span class="string">"conformance/manifest.toml"</span>);
 <a href=#411 id=411 data-nosnippet>411</a>    <span class="kw">for </span>required <span class="kw">in </span>[
-<a href=#412 id=412 data-nosnippet>412</a>        <span class="string">"Cargo.lock"</span>,
+<a href=#412 id=412 data-nosnippet>412</a>        <span class="kw">crate</span>::constants::CARGO_LOCK_FILE,
 <a href=#413 id=413 data-nosnippet>413</a>        <span class="string">"rust-toolchain.toml"</span>,
 <a href=#414 id=414 data-nosnippet>414</a>        constants::AUTOMATION_CONFIG_FILE,
 <a href=#415 id=415 data-nosnippet>415</a>        constants::CONFORMANCE_CONFIG_FILE,

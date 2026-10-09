@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["CompositionAttribution","CompositionShapeError","CompositionSignature"],"fn":["inspect_composition_ir"],"struct":["CompositionDeclaration","CompositionOrigin","CompositionPolicy","CompositionProjectIr","CompositionResourceFacts"]};

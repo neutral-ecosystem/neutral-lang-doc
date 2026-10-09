@@ -519,7 +519,7 @@
 <a href=#53 id=53 data-nosnippet>53</a>    current: <span class="kw-2">&amp;</span>str,
 <a href=#54 id=54 data-nosnippet>54</a>    requested: <span class="kw-2">&amp;</span>str,
 <a href=#55 id=55 data-nosnippet>55</a>) -&gt; <span class="prelude-ty">Result</span>&lt;String, String&gt; {
-<a href=#56 id=56 data-nosnippet>56</a>    <span class="kw">let </span><span class="kw-2">mut </span>document = parse(content, <span class="string">"Cargo.lock"</span>)<span class="question-mark">?</span>;
+<a href=#56 id=56 data-nosnippet>56</a>    <span class="kw">let </span><span class="kw-2">mut </span>document = parse(content, <span class="kw">crate</span>::constants::CARGO_LOCK_FILE)<span class="question-mark">?</span>;
 <a href=#57 id=57 data-nosnippet>57</a>    <span class="kw">let </span>packages = document
 <a href=#58 id=58 data-nosnippet>58</a>        .get_mut(<span class="string">"package"</span>)
 <a href=#59 id=59 data-nosnippet>59</a>        .and_then(Item::as_array_of_tables_mut)

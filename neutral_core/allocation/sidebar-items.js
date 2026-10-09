@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["boxed","checkpoint","copy_slice","text"],"struct":["AllocationError","Shared"],"trait":["RetainCapacity","TryClone"]};

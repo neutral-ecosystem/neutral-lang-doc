@@ -1,0 +1,708 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/neutral-ir/src/composition/project.rs`."><title>project.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-1ed95124.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="neutral_ir" data-themes="" data-resource-suffix="" data-rustdoc-version="1.98.1 (48a229cea 2026-09-01)" data-channel="1.98.1" data-search-js="search-9944d736.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"><!-- SPDX-License-Identifier: Apache-2.0 -->
+<style>
+  :root,
+  :root:not([data-theme]),
+  :root[data-theme="light"] {
+    --neutral-nav-background: rgb(246 247 248 / 94%);
+    --neutral-nav-border: #d9dee4;
+    --neutral-surface: #ffffff;
+    --neutral-surface-raised: #f2f4f6;
+    --neutral-code-surface: #edf1f3;
+    --neutral-code-border: #cdd5dc;
+    --neutral-muted: #59636e;
+    --neutral-accent: #147d74;
+    --neutral-accent-soft: #d9efeb;
+    --neutral-focus: #a66500;
+    --main-background-color: #f7f8f9;
+    --main-color: #22272d;
+    --sidebar-background-color: #eef1f3;
+    --sidebar-background-color-hover: #e3e8eb;
+    --sidebar-border-color: #d1d8dd;
+    --sidebar-link-color: #344a52;
+    --sidebar-current-link-background-color: #dce6e7;
+    --code-block-background-color: #edf1f3;
+    --headings-border-bottom-color: #d9dee4;
+    --border-color: #cdd5dc;
+    --link-color: #0b766e;
+    --type-link-color: #087d78;
+    --trait-link-color: #7550a3;
+    --assoc-item-link-color: #946100;
+    --function-link-color: #187447;
+    --right-side-color: #59636e;
+  }
+
+  :root[data-theme="dark"],
+  :root[data-theme="ayu"] {
+    --neutral-nav-background: rgb(18 22 27 / 94%);
+    --neutral-nav-border: #303943;
+    --neutral-surface: #1d2329;
+    --neutral-surface-raised: #242b32;
+    --neutral-code-surface: #20272e;
+    --neutral-code-border: #394550;
+    --neutral-muted: #aeb8c2;
+    --neutral-accent: #62d2c2;
+    --neutral-accent-soft: #1d3b39;
+    --neutral-focus: #f0b64a;
+    --main-background-color: #171b20;
+    --main-color: #e8edf2;
+    --sidebar-background-color: #12171c;
+    --sidebar-background-color-hover: #222a31;
+    --sidebar-border-color: #303943;
+    --sidebar-link-color: #c3cdd6;
+    --sidebar-current-link-background-color: #253238;
+    --code-block-background-color: #20272e;
+    --headings-border-bottom-color: #303943;
+    --border-color: #394550;
+    --link-color: #73d8ca;
+    --type-link-color: #51c9c1;
+    --trait-link-color: #c099f4;
+    --assoc-item-link-color: #e8bc62;
+    --function-link-color: #62c98c;
+    --right-side-color: #aeb8c2;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+      --neutral-nav-background: rgb(18 22 27 / 94%);
+      --neutral-nav-border: #303943;
+      --neutral-surface: #1d2329;
+      --neutral-surface-raised: #242b32;
+      --neutral-code-surface: #20272e;
+      --neutral-code-border: #394550;
+      --neutral-muted: #aeb8c2;
+      --neutral-accent: #62d2c2;
+      --neutral-accent-soft: #1d3b39;
+      --neutral-focus: #f0b64a;
+      --main-background-color: #171b20;
+      --main-color: #e8edf2;
+      --sidebar-background-color: #12171c;
+      --sidebar-background-color-hover: #222a31;
+      --sidebar-border-color: #303943;
+      --sidebar-link-color: #c3cdd6;
+      --sidebar-current-link-background-color: #253238;
+      --code-block-background-color: #20272e;
+      --headings-border-bottom-color: #303943;
+      --border-color: #394550;
+      --link-color: #73d8ca;
+      --type-link-color: #51c9c1;
+      --trait-link-color: #c099f4;
+      --assoc-item-link-color: #e8bc62;
+      --function-link-color: #62c98c;
+      --right-side-color: #aeb8c2;
+    }
+  }
+
+  body.rustdoc {
+    padding-top: 3.65rem;
+  }
+
+  #neutral-docs-nav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 10000;
+    display: flex;
+    min-height: 3.65rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.55rem 1rem;
+    color: var(--main-color);
+    background: var(--neutral-nav-background);
+    border-bottom: 1px solid var(--neutral-nav-border);
+    backdrop-filter: blur(14px);
+  }
+
+  .neutral-docs-brand,
+  .neutral-docs-actions,
+  .neutral-docs-context {
+    display: flex;
+    align-items: center;
+  }
+
+  .neutral-docs-brand {
+    min-width: 0;
+    gap: 0.7rem;
+    color: var(--main-color);
+    font: 650 0.9rem/1.2 var(--font-family);
+    text-decoration: none;
+  }
+
+  .neutral-docs-brand img {
+    width: 2.15rem;
+    height: 2.15rem;
+    border-radius: 0.65rem;
+    box-shadow: 0 0.3rem 0.9rem rgb(0 0 0 / 22%);
+  }
+
+  .neutral-docs-context {
+    min-width: 0;
+    gap: 0.55rem;
+    color: var(--neutral-muted);
+    font: 500 0.8rem/1.2 var(--font-family-code);
+  }
+
+  .neutral-docs-context::before {
+    width: 1px;
+    height: 1.1rem;
+    margin-right: 0.1rem;
+    background: var(--neutral-nav-border);
+    content: "";
+  }
+
+  .neutral-docs-actions {
+    flex: 0 0 auto;
+    gap: 0.4rem;
+  }
+
+  .neutral-docs-actions a {
+    min-height: 2.15rem;
+    padding: 0.46rem 0.78rem;
+    color: var(--main-color);
+    background: var(--neutral-surface-raised);
+    border: 1px solid var(--neutral-nav-border);
+    border-radius: 0.5rem;
+    font: 600 0.8rem/1.2 var(--font-family);
+    text-decoration: none;
+  }
+
+  .neutral-docs-actions a:hover {
+    color: var(--neutral-accent);
+    border-color: var(--neutral-accent);
+  }
+
+  .sidebar {
+    top: 3.65rem;
+    height: calc(100vh - 3.65rem);
+    border-right-color: var(--neutral-nav-border);
+  }
+
+  .sidebar-resizer {
+    top: 3.65rem;
+    height: calc(100% - 3.65rem);
+    color: var(--neutral-nav-border);
+  }
+
+  .sidebar-crate {
+    margin-top: 1.15rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .sidebar-crate h2 a {
+    color: var(--main-color);
+    font-weight: 650;
+  }
+
+  .sidebar .version {
+    display: inline-block;
+    margin-top: 0.2rem;
+    color: var(--neutral-muted);
+    font-size: 0.75rem;
+  }
+
+  .sidebar h3 {
+    margin: 1.2rem 0 0.35rem;
+    color: var(--neutral-muted);
+    font-size: 0.78rem;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .sidebar-elems a,
+  .sidebar > h2 a {
+    margin-block: 0.08rem;
+    border-radius: 0.34rem;
+  }
+
+  .sidebar-elems .block {
+    margin-bottom: 1.4rem;
+  }
+
+  body.rustdoc > main {
+    padding: 2.2rem clamp(1.4rem, 4vw, 4rem) 5rem;
+  }
+
+  .width-limiter {
+    max-width: 72rem;
+  }
+
+  .main-heading {
+    margin-bottom: 1.7rem;
+    padding-bottom: 1.15rem;
+    border-bottom: 1px solid var(--neutral-nav-border);
+  }
+
+  .main-heading h1 {
+    font-size: clamp(1.75rem, 3vw, 2.45rem);
+    font-weight: 650;
+    letter-spacing: -0.025em;
+  }
+
+  .rustdoc-breadcrumbs,
+  .rustdoc-breadcrumbs a {
+    color: var(--neutral-muted);
+  }
+
+  .docblock {
+    color: var(--main-color);
+    font-size: 1rem;
+    line-height: 1.72;
+  }
+
+  .content h2,
+  .top-doc .docblock > h3,
+  .top-doc .docblock > h4 {
+    margin-top: 2.5rem;
+    border-bottom-color: var(--neutral-nav-border);
+    font-weight: 650;
+    letter-spacing: -0.015em;
+  }
+
+  .docblock :not(pre) > code,
+  .item-table dd code,
+  .item-info code {
+    padding: 0.1em 0.34em;
+    color: var(--main-color);
+    background: var(--neutral-code-surface);
+    border: 1px solid var(--neutral-code-border);
+    border-radius: 0.28rem;
+    font-weight: 550;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  .impl > .code-header,
+  .method > .code-header,
+  .trait-impl > .code-header,
+  pre.item-decl,
+  .docblock pre {
+    background: var(--neutral-code-surface);
+    border: 1px solid var(--neutral-code-border);
+    border-left: 3px solid var(--neutral-accent);
+    border-radius: 0.45rem;
+    box-shadow: none;
+  }
+
+  .impl > .code-header,
+  .method > .code-header,
+  .trait-impl > .code-header {
+    padding: 0.62rem 0.78rem;
+  }
+
+  .impl-items > details.toggle,
+  .methods > details.toggle,
+  .implementors-toggle {
+    margin-bottom: 0.7rem;
+  }
+
+  details.toggle > summary {
+    border-radius: 0.45rem;
+  }
+
+  a.src,
+  .impl a.src.rightside,
+  .impl .rightside a.src {
+    display: inline-block;
+    padding: 0.2rem 0.48rem;
+    color: var(--neutral-accent) !important;
+    background: var(--neutral-accent-soft);
+    border: 1px solid color-mix(in srgb, var(--neutral-accent) 48%, transparent);
+    border-radius: 0.32rem;
+    font-weight: 650;
+  }
+
+  a.src:hover,
+  a.src:focus-visible {
+    color: var(--main-color) !important;
+    border-color: var(--neutral-accent);
+  }
+
+  .stab {
+    padding: 0.2rem 0.45rem;
+    color: var(--neutral-muted);
+    background: var(--neutral-surface-raised);
+    border: 1px solid var(--neutral-code-border);
+    border-radius: 0.32rem;
+  }
+
+  .stab code,
+  .since a {
+    color: var(--neutral-muted) !important;
+    font-weight: 650;
+  }
+
+  #copy-path {
+    color: var(--neutral-muted);
+    border-radius: 0.35rem;
+  }
+
+  .item-table > dt,
+  .item-table > dd {
+    padding-block: 0.65rem;
+    border-bottom: 1px solid var(--neutral-nav-border);
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  summary:focus-visible,
+  input:focus-visible {
+    outline: 2px solid var(--neutral-focus) !important;
+    outline-offset: 3px;
+  }
+
+  :target {
+    scroll-margin-top: 5rem;
+  }
+
+  @media (max-width: 700px) {
+    body.rustdoc {
+      padding-top: 3.35rem;
+    }
+
+    #neutral-docs-nav {
+      min-height: 3.35rem;
+      padding: 0.42rem 0.65rem;
+    }
+
+    .neutral-docs-brand img {
+      width: 1.95rem;
+      height: 1.95rem;
+    }
+
+    .neutral-docs-brand span,
+    .neutral-docs-context {
+      display: none;
+    }
+
+    .neutral-docs-actions a {
+      min-height: 2rem;
+      padding: 0.4rem 0.62rem;
+    }
+
+    rustdoc-topbar {
+      top: 3.35rem;
+    }
+
+    .sidebar {
+      top: calc(3.35rem + var(--topbar-height));
+      height: calc(100vh - 3.35rem - var(--topbar-height));
+    }
+
+    body.rustdoc > main {
+      padding: 1.3rem 1rem 4rem;
+    }
+
+    .main-heading h1 {
+      font-size: 1.65rem;
+    }
+  }
+
+  @media print {
+    body.rustdoc {
+      padding-top: 0;
+    }
+
+    #neutral-docs-nav {
+      display: none;
+    }
+  }
+</style>
+<script>
+  "use strict";
+
+  /** Builds the shared Neutral navigation and favicon for one Rustdoc page. */
+  function configureNeutralDocumentation() {
+    const rustdocVariables = document.querySelector('meta[name="rustdoc-vars"]');
+    if (!rustdocVariables || document.getElementById("neutral-docs-nav")) {
+      return;
+    }
+    const rootPath = rustdocVariables.dataset.rootPath || "./";
+    const favicon = document.createElement("link");
+    favicon.rel = "icon";
+    favicon.type = "image/png";
+    favicon.href = `${rootPath}assets/neutral-logo-rounded.png`;
+    document.head.append(favicon);
+
+    const navigation = document.createElement("nav");
+    navigation.id = "neutral-docs-nav";
+    navigation.setAttribute("aria-label", "Documentation navigation");
+
+    const brand = document.createElement("a");
+    brand.className = "neutral-docs-brand";
+    brand.href = `${rootPath}index.html`;
+    brand.setAttribute("aria-label", "Neutral documentation home");
+
+    const logo = document.createElement("img");
+    logo.src = `${rootPath}assets/neutral-logo.png`;
+    logo.alt = "";
+    logo.width = 34;
+    logo.height = 34;
+    brand.append(logo);
+
+    const brandName = document.createElement("span");
+    brandName.textContent = "Neutral documentation";
+    brand.append(brandName);
+
+    const context = document.createElement("span");
+    context.className = "neutral-docs-context";
+    context.textContent = rustdocVariables.dataset.currentCrate
+      ? rustdocVariables.dataset.currentCrate.replaceAll("_", "-")
+      : "Rust API";
+    brand.append(context);
+
+    const actions = document.createElement("div");
+    actions.className = "neutral-docs-actions";
+    const workspace = document.createElement("a");
+    workspace.href = `${rootPath}index.html`;
+    workspace.textContent = "Workspace";
+    actions.append(workspace);
+
+    navigation.append(brand, actions);
+    document.body.prepend(navigation);
+  }
+
+  document.addEventListener("DOMContentLoaded", configureNeutralDocumentation);
+</script>
+
+</head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">neutral_ir/composition/</div>project.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// SPDX-License-Identifier: Apache-2.0
+<a href=#2 id=2 data-nosnippet>2</a>
+<a href=#3 id=3 data-nosnippet>3</a></span><span class="doccomment">//! Complete successor logical data and independent companions, not validated authority.
+<a href=#4 id=4 data-nosnippet>4</a>
+<a href=#5 id=5 data-nosnippet>5</a></span><span class="kw">use super</span>::{BindingValue, CompositionBody, CompositionBundle, ValueOriginKind, ValuePathSegment};
+<a href=#6 id=6 data-nosnippet>6</a><span class="kw">use crate</span>::{
+<a href=#7 id=7 data-nosnippet>7</a>    ModuleSymbolIdentity,
+<a href=#8 id=8 data-nosnippet>8</a>    project::{
+<a href=#9 id=9 data-nosnippet>9</a>        ProjectLimits, ProjectModule, ProjectProvenance, ProjectResourceFacts, ProjectSource,
+<a href=#10 id=10 data-nosnippet>10</a>        ProjectSourceMap, ProjectVocabularySource,
+<a href=#11 id=11 data-nosnippet>11</a>    },
+<a href=#12 id=12 data-nosnippet>12</a>};
+<a href=#13 id=13 data-nosnippet>13</a><span class="kw">use </span>neutral_core::{ByteSpan, SemanticDigest, SourceLocation};
+<a href=#14 id=14 data-nosnippet>14</a><span class="kw">mod </span>inspection;
+<a href=#15 id=15 data-nosnippet>15</a><span class="kw">pub use </span>inspection::{CompositionShapeError, inspect_composition_ir};
+<a href=#16 id=16 data-nosnippet>16</a>
+<a href=#17 id=17 data-nosnippet>17</a><span class="doccomment">/// Independent composition policy in frozen wire/derivation order, excluding JSON parser controls.
+<a href=#18 id=18 data-nosnippet>18</a></span><span class="attr">#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+<a href=#19 id=19 data-nosnippet>19</a></span><span class="kw">pub struct </span>CompositionPolicy {
+<a href=#20 id=20 data-nosnippet>20</a>    <span class="doccomment">/// Bundle count.
+<a href=#21 id=21 data-nosnippet>21</a>    </span><span class="kw">pub </span>bundles: u64,
+<a href=#22 id=22 data-nosnippet>22</a>    <span class="doccomment">/// Aggregate captured vocabulary bytes.
+<a href=#23 id=23 data-nosnippet>23</a>    </span><span class="kw">pub </span>captured_bytes: u64,
+<a href=#24 id=24 data-nosnippet>24</a>    <span class="doccomment">/// Direct dependencies per bundle.
+<a href=#25 id=25 data-nosnippet>25</a>    </span><span class="kw">pub </span>dependencies_per_bundle: u64,
+<a href=#26 id=26 data-nosnippet>26</a>    <span class="doccomment">/// Aggregate dependency edges.
+<a href=#27 id=27 data-nosnippet>27</a>    </span><span class="kw">pub </span>dependency_edges: u64,
+<a href=#28 id=28 data-nosnippet>28</a>    <span class="doccomment">/// Longest bundle path, including root and leaf.
+<a href=#29 id=29 data-nosnippet>29</a>    </span><span class="kw">pub </span>dependency_depth: u64,
+<a href=#30 id=30 data-nosnippet>30</a>    <span class="doccomment">/// Source and vocabulary nominal definitions.
+<a href=#31 id=31 data-nosnippet>31</a>    </span><span class="kw">pub </span>total_types: u64,
+<a href=#32 id=32 data-nosnippet>32</a>    <span class="doccomment">/// Aggregate record fields.
+<a href=#33 id=33 data-nosnippet>33</a>    </span><span class="kw">pub </span>total_fields: u64,
+<a href=#34 id=34 data-nosnippet>34</a>    <span class="doccomment">/// Alternatives in one variant.
+<a href=#35 id=35 data-nosnippet>35</a>    </span><span class="kw">pub </span>alternatives_per_type: u64,
+<a href=#36 id=36 data-nosnippet>36</a>    <span class="doccomment">/// Aggregate alternatives.
+<a href=#37 id=37 data-nosnippet>37</a>    </span><span class="kw">pub </span>total_alternatives: u64,
+<a href=#38 id=38 data-nosnippet>38</a>    <span class="doccomment">/// Choices in one field.
+<a href=#39 id=39 data-nosnippet>39</a>    </span><span class="kw">pub </span>choices_per_field: u64,
+<a href=#40 id=40 data-nosnippet>40</a>    <span class="doccomment">/// Aggregate choices.
+<a href=#41 id=41 data-nosnippet>41</a>    </span><span class="kw">pub </span>total_choices: u64,
+<a href=#42 id=42 data-nosnippet>42</a>    <span class="doccomment">/// Composed wrapper depth, root zero.
+<a href=#43 id=43 data-nosnippet>43</a>    </span><span class="kw">pub </span>type_depth: u64,
+<a href=#44 id=44 data-nosnippet>44</a>    <span class="doccomment">/// Value occurrence depth, root zero.
+<a href=#45 id=45 data-nosnippet>45</a>    </span><span class="kw">pub </span>value_depth: u64,
+<a href=#46 id=46 data-nosnippet>46</a>    <span class="doccomment">/// Cumulative materialization visits.
+<a href=#47 id=47 data-nosnippet>47</a>    </span><span class="kw">pub </span>value_nodes: u64,
+<a href=#48 id=48 data-nosnippet>48</a>    <span class="doccomment">/// Semantic traversal and comparison work.
+<a href=#49 id=49 data-nosnippet>49</a>    </span><span class="kw">pub </span>work: u64,
+<a href=#50 id=50 data-nosnippet>50</a>}
+<a href=#51 id=51 data-nosnippet>51</a>
+<a href=#52 id=52 data-nosnippet>52</a><span class="kw">impl </span>CompositionPolicy {
+<a href=#53 id=53 data-nosnippet>53</a>    <span class="doccomment">/// Projects explicit named controls into the immutable fifteen-position contract.
+<a href=#54 id=54 data-nosnippet>54</a>    </span><span class="attr">#[must_use]
+<a href=#55 id=55 data-nosnippet>55</a>    </span><span class="kw">pub const fn </span>values(<span class="self">self</span>) -&gt; [u64; <span class="number">15</span>] {
+<a href=#56 id=56 data-nosnippet>56</a>        [
+<a href=#57 id=57 data-nosnippet>57</a>            <span class="self">self</span>.bundles,
+<a href=#58 id=58 data-nosnippet>58</a>            <span class="self">self</span>.captured_bytes,
+<a href=#59 id=59 data-nosnippet>59</a>            <span class="self">self</span>.dependencies_per_bundle,
+<a href=#60 id=60 data-nosnippet>60</a>            <span class="self">self</span>.dependency_edges,
+<a href=#61 id=61 data-nosnippet>61</a>            <span class="self">self</span>.dependency_depth,
+<a href=#62 id=62 data-nosnippet>62</a>            <span class="self">self</span>.total_types,
+<a href=#63 id=63 data-nosnippet>63</a>            <span class="self">self</span>.total_fields,
+<a href=#64 id=64 data-nosnippet>64</a>            <span class="self">self</span>.alternatives_per_type,
+<a href=#65 id=65 data-nosnippet>65</a>            <span class="self">self</span>.total_alternatives,
+<a href=#66 id=66 data-nosnippet>66</a>            <span class="self">self</span>.choices_per_field,
+<a href=#67 id=67 data-nosnippet>67</a>            <span class="self">self</span>.total_choices,
+<a href=#68 id=68 data-nosnippet>68</a>            <span class="self">self</span>.type_depth,
+<a href=#69 id=69 data-nosnippet>69</a>            <span class="self">self</span>.value_depth,
+<a href=#70 id=70 data-nosnippet>70</a>            <span class="self">self</span>.value_nodes,
+<a href=#71 id=71 data-nosnippet>71</a>            <span class="self">self</span>.work,
+<a href=#72 id=72 data-nosnippet>72</a>        ]
+<a href=#73 id=73 data-nosnippet>73</a>    }
+<a href=#74 id=74 data-nosnippet>74</a>
+<a href=#75 id=75 data-nosnippet>75</a>    <span class="doccomment">/// Reads an already shape-checked contract tuple; positive/hard bounds remain a validator's job.
+<a href=#76 id=76 data-nosnippet>76</a>    </span><span class="attr">#[must_use]
+<a href=#77 id=77 data-nosnippet>77</a>    </span><span class="kw">pub const fn </span>from_values(v: [u64; <span class="number">15</span>]) -&gt; <span class="self">Self </span>{
+<a href=#78 id=78 data-nosnippet>78</a>        <span class="self">Self </span>{
+<a href=#79 id=79 data-nosnippet>79</a>            bundles: v[<span class="number">0</span>],
+<a href=#80 id=80 data-nosnippet>80</a>            captured_bytes: v[<span class="number">1</span>],
+<a href=#81 id=81 data-nosnippet>81</a>            dependencies_per_bundle: v[<span class="number">2</span>],
+<a href=#82 id=82 data-nosnippet>82</a>            dependency_edges: v[<span class="number">3</span>],
+<a href=#83 id=83 data-nosnippet>83</a>            dependency_depth: v[<span class="number">4</span>],
+<a href=#84 id=84 data-nosnippet>84</a>            total_types: v[<span class="number">5</span>],
+<a href=#85 id=85 data-nosnippet>85</a>            total_fields: v[<span class="number">6</span>],
+<a href=#86 id=86 data-nosnippet>86</a>            alternatives_per_type: v[<span class="number">7</span>],
+<a href=#87 id=87 data-nosnippet>87</a>            total_alternatives: v[<span class="number">8</span>],
+<a href=#88 id=88 data-nosnippet>88</a>            choices_per_field: v[<span class="number">9</span>],
+<a href=#89 id=89 data-nosnippet>89</a>            total_choices: v[<span class="number">10</span>],
+<a href=#90 id=90 data-nosnippet>90</a>            type_depth: v[<span class="number">11</span>],
+<a href=#91 id=91 data-nosnippet>91</a>            value_depth: v[<span class="number">12</span>],
+<a href=#92 id=92 data-nosnippet>92</a>            value_nodes: v[<span class="number">13</span>],
+<a href=#93 id=93 data-nosnippet>93</a>            work: v[<span class="number">14</span>],
+<a href=#94 id=94 data-nosnippet>94</a>        }
+<a href=#95 id=95 data-nosnippet>95</a>    }
+<a href=#96 id=96 data-nosnippet>96</a>
+<a href=#97 id=97 data-nosnippet>97</a>    <span class="doccomment">/// Intersects producer and independent consumer policies without relaxing either.
+<a href=#98 id=98 data-nosnippet>98</a>    </span><span class="attr">#[must_use]
+<a href=#99 id=99 data-nosnippet>99</a>    </span><span class="kw">pub fn </span>intersect(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+<a href=#100 id=100 data-nosnippet>100</a>        <span class="kw">let </span>left = <span class="self">self</span>.values();
+<a href=#101 id=101 data-nosnippet>101</a>        <span class="kw">let </span>right = other.values();
+<a href=#102 id=102 data-nosnippet>102</a>        <span class="self">Self</span>::from_values(std::array::from_fn(|i| left[i].min(right[i])))
+<a href=#103 id=103 data-nosnippet>103</a>    }
+<a href=#104 id=104 data-nosnippet>104</a>}
+<a href=#105 id=105 data-nosnippet>105</a>
+<a href=#106 id=106 data-nosnippet>106</a><span class="doccomment">/// Complete resolved source signature, including all unused default/restriction facts.
+<a href=#107 id=107 data-nosnippet>107</a></span><span class="attr">#[derive(Clone, Debug, Eq, PartialEq)]
+<a href=#108 id=108 data-nosnippet>108</a></span><span class="kw">pub enum </span>CompositionSignature {
+<a href=#109 id=109 data-nosnippet>109</a>    <span class="doccomment">/// Immutable binding's invariant expected type.
+<a href=#110 id=110 data-nosnippet>110</a>    </span>Binding(<span class="kw">crate</span>::project_interface::ProjectPublicType),
+<a href=#111 id=111 data-nosnippet>111</a>    <span class="doccomment">/// Source record/variant using the exact shared vocabulary body model.
+<a href=#112 id=112 data-nosnippet>112</a>    </span>Definition(CompositionBody),
+<a href=#113 id=113 data-nosnippet>113</a>}
+<a href=#114 id=114 data-nosnippet>114</a>
+<a href=#115 id=115 data-nosnippet>115</a><span class="doccomment">/// One private or public declaration; type declarations never carry a binding value.
+<a href=#116 id=116 data-nosnippet>116</a></span><span class="attr">#[derive(Clone, Debug, Eq, PartialEq)]
+<a href=#117 id=117 data-nosnippet>117</a></span><span class="kw">pub struct </span>CompositionDeclaration {
+<a href=#118 id=118 data-nosnippet>118</a>    <span class="doccomment">/// Exact source module-symbol identity.
+<a href=#119 id=119 data-nosnippet>119</a>    </span><span class="kw">pub </span>identity: ModuleSymbolIdentity,
+<a href=#120 id=120 data-nosnippet>120</a>    <span class="doccomment">/// Explicit source visibility.
+<a href=#121 id=121 data-nosnippet>121</a>    </span><span class="kw">pub </span>public: bool,
+<a href=#122 id=122 data-nosnippet>122</a>    <span class="doccomment">/// Complete canonical signature.
+<a href=#123 id=123 data-nosnippet>123</a>    </span><span class="kw">pub </span>signature: CompositionSignature,
+<a href=#124 id=124 data-nosnippet>124</a>    <span class="doccomment">/// Fully materialized meaning, absent exactly for nominal definitions.
+<a href=#125 id=125 data-nosnippet>125</a>    </span><span class="kw">pub </span>value: <span class="prelude-ty">Option</span>&lt;BindingValue&gt;,
+<a href=#126 id=126 data-nosnippet>126</a>}
+<a href=#127 id=127 data-nosnippet>127</a>
+<a href=#128 id=128 data-nosnippet>128</a><span class="doccomment">/// Attribution evidence, not authentication or a host acquisition hint.
+<a href=#129 id=129 data-nosnippet>129</a></span><span class="attr">#[derive(Clone, Debug, Eq, PartialEq)]
+<a href=#130 id=130 data-nosnippet>130</a></span><span class="kw">pub enum </span>CompositionAttribution {
+<a href=#131 id=131 data-nosnippet>131</a>    <span class="doccomment">/// Checked original source bytes, distinct from a host filesystem path.
+<a href=#132 id=132 data-nosnippet>132</a>    </span>Source(SourceLocation),
+<a href=#133 id=133 data-nosnippet>133</a>    <span class="doccomment">/// Exact vocabulary contract owner with an optional checked bundle-byte span.
+<a href=#134 id=134 data-nosnippet>134</a>    </span>Vocabulary {
+<a href=#135 id=135 data-nosnippet>135</a>        <span class="doccomment">/// Canonical bundle identity.
+<a href=#136 id=136 data-nosnippet>136</a>        </span>identity: String,
+<a href=#137 id=137 data-nosnippet>137</a>        <span class="doccomment">/// Exact semantic revision.
+<a href=#138 id=138 data-nosnippet>138</a>        </span>version: String,
+<a href=#139 id=139 data-nosnippet>139</a>        <span class="doccomment">/// Nominal contract name.
+<a href=#140 id=140 data-nosnippet>140</a>        </span>type_name: String,
+<a href=#141 id=141 data-nosnippet>141</a>        <span class="doccomment">/// Field whose closed default supplied this occurrence.
+<a href=#142 id=142 data-nosnippet>142</a>        </span>field_name: String,
+<a href=#143 id=143 data-nosnippet>143</a>        <span class="doccomment">/// Optional original-byte bundle occurrence; absence is explicit.
+<a href=#144 id=144 data-nosnippet>144</a>        </span>span: <span class="prelude-ty">Option</span>&lt;ByteSpan&gt;,
+<a href=#145 id=145 data-nosnippet>145</a>    },
+<a href=#146 id=146 data-nosnippet>146</a>}
+<a href=#147 id=147 data-nosnippet>147</a>
+<a href=#148 id=148 data-nosnippet>148</a><span class="doccomment">/// One non-semantic materialized occurrence companion, including optional absence.
+<a href=#149 id=149 data-nosnippet>149</a></span><span class="attr">#[derive(Clone, Debug, Eq, PartialEq)]
+<a href=#150 id=150 data-nosnippet>150</a></span><span class="kw">pub struct </span>CompositionOrigin {
+<a href=#151 id=151 data-nosnippet>151</a>    <span class="doccomment">/// Consuming binding identity.
+<a href=#152 id=152 data-nosnippet>152</a>    </span><span class="kw">pub </span>binding: ModuleSymbolIdentity,
+<a href=#153 id=153 data-nosnippet>153</a>    <span class="doccomment">/// Canonical field/list/selected-payload occurrence path.
+<a href=#154 id=154 data-nosnippet>154</a>    </span><span class="kw">pub </span>path: Vec&lt;ValuePathSegment&gt;,
+<a href=#155 id=155 data-nosnippet>155</a>    <span class="doccomment">/// Supplied/null/omitted/default classification.
+<a href=#156 id=156 data-nosnippet>156</a>    </span><span class="kw">pub </span>kind: ValueOriginKind,
+<a href=#157 id=157 data-nosnippet>157</a>    <span class="doccomment">/// Checked evidence or explicit unavailable/redacted attribution.
+<a href=#158 id=158 data-nosnippet>158</a>    </span><span class="kw">pub </span>attribution: <span class="prelude-ty">Option</span>&lt;CompositionAttribution&gt;,
+<a href=#159 id=159 data-nosnippet>159</a>}
+<a href=#160 id=160 data-nosnippet>160</a>
+<a href=#161 id=161 data-nosnippet>161</a><span class="doccomment">/// Independently recomputable retained contract/value facts, never execution-work observations.
+<a href=#162 id=162 data-nosnippet>162</a></span><span class="attr">#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+<a href=#163 id=163 data-nosnippet>163</a></span><span class="kw">pub struct </span>CompositionResourceFacts {
+<a href=#164 id=164 data-nosnippet>164</a>    <span class="doccomment">/// Exact canonical bundle count.
+<a href=#165 id=165 data-nosnippet>165</a>    </span><span class="kw">pub </span>bundles: u64,
+<a href=#166 id=166 data-nosnippet>166</a>    <span class="doccomment">/// Direct dependency edges after diamond deduplication.
+<a href=#167 id=167 data-nosnippet>167</a>    </span><span class="kw">pub </span>dependency_edges: u64,
+<a href=#168 id=168 data-nosnippet>168</a>    <span class="doccomment">/// All source/vocabulary definitions.
+<a href=#169 id=169 data-nosnippet>169</a>    </span><span class="kw">pub </span>types: u64,
+<a href=#170 id=170 data-nosnippet>170</a>    <span class="doccomment">/// All record fields.
+<a href=#171 id=171 data-nosnippet>171</a>    </span><span class="kw">pub </span>fields: u64,
+<a href=#172 id=172 data-nosnippet>172</a>    <span class="doccomment">/// All variant alternatives.
+<a href=#173 id=173 data-nosnippet>173</a>    </span><span class="kw">pub </span>alternatives: u64,
+<a href=#174 id=174 data-nosnippet>174</a>    <span class="doccomment">/// All finite choices.
+<a href=#175 id=175 data-nosnippet>175</a>    </span><span class="kw">pub </span>choices: u64,
+<a href=#176 id=176 data-nosnippet>176</a>    <span class="doccomment">/// All retained binding/default/choice value nodes, including optional absence.
+<a href=#177 id=177 data-nosnippet>177</a>    </span><span class="kw">pub </span>retained_value_nodes: u64,
+<a href=#178 id=178 data-nosnippet>178</a>}
+<a href=#179 id=179 data-nosnippet>179</a>
+<a href=#180 id=180 data-nosnippet>180</a><span class="kw">impl </span>CompositionResourceFacts {
+<a href=#181 id=181 data-nosnippet>181</a>    <span class="doccomment">/// Projects retained facts in the immutable seven-position transport order.
+<a href=#182 id=182 data-nosnippet>182</a>    </span><span class="attr">#[must_use]
+<a href=#183 id=183 data-nosnippet>183</a>    </span><span class="kw">pub const fn </span>values(<span class="self">self</span>) -&gt; [u64; <span class="number">7</span>] {
+<a href=#184 id=184 data-nosnippet>184</a>        [
+<a href=#185 id=185 data-nosnippet>185</a>            <span class="self">self</span>.bundles,
+<a href=#186 id=186 data-nosnippet>186</a>            <span class="self">self</span>.dependency_edges,
+<a href=#187 id=187 data-nosnippet>187</a>            <span class="self">self</span>.types,
+<a href=#188 id=188 data-nosnippet>188</a>            <span class="self">self</span>.fields,
+<a href=#189 id=189 data-nosnippet>189</a>            <span class="self">self</span>.alternatives,
+<a href=#190 id=190 data-nosnippet>190</a>            <span class="self">self</span>.choices,
+<a href=#191 id=191 data-nosnippet>191</a>            <span class="self">self</span>.retained_value_nodes,
+<a href=#192 id=192 data-nosnippet>192</a>        ]
+<a href=#193 id=193 data-nosnippet>193</a>    }
+<a href=#194 id=194 data-nosnippet>194</a>
+<a href=#195 id=195 data-nosnippet>195</a>    <span class="doccomment">/// Reads an already shape-checked fact tuple; independent recomputation remains mandatory.
+<a href=#196 id=196 data-nosnippet>196</a>    </span><span class="attr">#[must_use]
+<a href=#197 id=197 data-nosnippet>197</a>    </span><span class="kw">pub const fn </span>from_values(v: [u64; <span class="number">7</span>]) -&gt; <span class="self">Self </span>{
+<a href=#198 id=198 data-nosnippet>198</a>        <span class="self">Self </span>{
+<a href=#199 id=199 data-nosnippet>199</a>            bundles: v[<span class="number">0</span>],
+<a href=#200 id=200 data-nosnippet>200</a>            dependency_edges: v[<span class="number">1</span>],
+<a href=#201 id=201 data-nosnippet>201</a>            types: v[<span class="number">2</span>],
+<a href=#202 id=202 data-nosnippet>202</a>            fields: v[<span class="number">3</span>],
+<a href=#203 id=203 data-nosnippet>203</a>            alternatives: v[<span class="number">4</span>],
+<a href=#204 id=204 data-nosnippet>204</a>            choices: v[<span class="number">5</span>],
+<a href=#205 id=205 data-nosnippet>205</a>            retained_value_nodes: v[<span class="number">6</span>],
+<a href=#206 id=206 data-nosnippet>206</a>        }
+<a href=#207 id=207 data-nosnippet>207</a>    }
+<a href=#208 id=208 data-nosnippet>208</a>}
+<a href=#209 id=209 data-nosnippet>209</a>
+<a href=#210 id=210 data-nosnippet>210</a><span class="doccomment">/// Complete successor producer data; construction does not confer independent reader validity.
+<a href=#211 id=211 data-nosnippet>211</a></span><span class="attr">#[derive(Clone, Debug, Eq, PartialEq)]
+<a href=#212 id=212 data-nosnippet>212</a></span><span class="kw">pub struct </span>CompositionProjectIr {
+<a href=#213 id=213 data-nosnippet>213</a>    <span class="doccomment">/// Exact successor selector; no implicit old-profile conversion.
+<a href=#214 id=214 data-nosnippet>214</a>    </span><span class="kw">pub </span>schema: String,
+<a href=#215 id=215 data-nosnippet>215</a>    <span class="doccomment">/// Complete modules and logical imports, including disconnected/private-only units.
+<a href=#216 id=216 data-nosnippet>216</a>    </span><span class="kw">pub </span>modules: Vec&lt;ProjectModule&gt;,
+<a href=#217 id=217 data-nosnippet>217</a>    <span class="doccomment">/// All source declarations, in exact module-symbol order.
+<a href=#218 id=218 data-nosnippet>218</a>    </span><span class="kw">pub </span>declarations: Vec&lt;CompositionDeclaration&gt;,
+<a href=#219 id=219 data-nosnippet>219</a>    <span class="doccomment">/// Complete canonical vocabulary contracts; capture digests remain separate from meaning.
+<a href=#220 id=220 data-nosnippet>220</a>    </span><span class="kw">pub </span>vocabularies: Vec&lt;CompositionBundle&gt;,
+<a href=#221 id=221 data-nosnippet>221</a>    <span class="doccomment">/// Declared public interface /2 digest, independently recomputed by the reader.
+<a href=#222 id=222 data-nosnippet>222</a>    </span><span class="kw">pub </span>interface_digest: SemanticDigest,
+<a href=#223 id=223 data-nosnippet>223</a>    <span class="doccomment">/// Original source accounting, in module order.
+<a href=#224 id=224 data-nosnippet>224</a>    </span><span class="kw">pub </span>sources: Vec&lt;ProjectSource&gt;,
+<a href=#225 id=225 data-nosnippet>225</a>    <span class="doccomment">/// Complete declaration source maps.
+<a href=#226 id=226 data-nosnippet>226</a>    </span><span class="kw">pub </span>source_maps: Vec&lt;ProjectSourceMap&gt;,
+<a href=#227 id=227 data-nosnippet>227</a>    <span class="doccomment">/// Actual source type/value/reference dependency occurrences.
+<a href=#228 id=228 data-nosnippet>228</a>    </span><span class="kw">pub </span>provenance: Vec&lt;ProjectProvenance&gt;,
+<a href=#229 id=229 data-nosnippet>229</a>    <span class="doccomment">/// Independent retained/output processing controls.
+<a href=#230 id=230 data-nosnippet>230</a>    </span><span class="kw">pub </span>limits: ProjectLimits,
+<a href=#231 id=231 data-nosnippet>231</a>    <span class="doccomment">/// Independently recomputable complete source/project facts.
+<a href=#232 id=232 data-nosnippet>232</a>    </span><span class="kw">pub </span>resources: ProjectResourceFacts,
+<a href=#233 id=233 data-nosnippet>233</a>    <span class="doccomment">/// Exact captured vocabulary source accounting.
+<a href=#234 id=234 data-nosnippet>234</a>    </span><span class="kw">pub </span>vocabulary_sources: Vec&lt;ProjectVocabularySource&gt;,
+<a href=#235 id=235 data-nosnippet>235</a>    <span class="doccomment">/// Canonical binding occurrence facts, separately attributed from logical meaning.
+<a href=#236 id=236 data-nosnippet>236</a>    </span><span class="kw">pub </span>origins: Vec&lt;CompositionOrigin&gt;,
+<a href=#237 id=237 data-nosnippet>237</a>    <span class="doccomment">/// Frozen independent composition acceptance controls.
+<a href=#238 id=238 data-nosnippet>238</a>    </span><span class="kw">pub </span>composition_limits: CompositionPolicy,
+<a href=#239 id=239 data-nosnippet>239</a>    <span class="doccomment">/// Independently recomputable complete contract/value facts.
+<a href=#240 id=240 data-nosnippet>240</a>    </span><span class="kw">pub </span>composition_resources: CompositionResourceFacts,
+<a href=#241 id=241 data-nosnippet>241</a>}
+</code></pre></div></section></main></body></html>

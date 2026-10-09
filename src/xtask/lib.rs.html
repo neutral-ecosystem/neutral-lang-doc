@@ -534,7 +534,7 @@
 <a href=#68 id=68 data-nosnippet>68</a><span class="kw">use </span>checks::traceability::{check_portable_traceability_at, check_traceability};
 <a href=#69 id=69 data-nosnippet>69</a><span class="kw">use </span>commands::analysis::{coverage, fuzz, mutate, performance};
 <a href=#70 id=70 data-nosnippet>70</a><span class="kw">use </span>commands::development::{build, check, ci, develop, format_workspace, lint};
-<a href=#71 id=71 data-nosnippet>71</a><span class="kw">use </span>commands::distribution::{package, release_prepare, validate};
+<a href=#71 id=71 data-nosnippet>71</a><span class="kw">use </span>commands::distribution::{package, release_qualify, validate};
 <a href=#72 id=72 data-nosnippet>72</a><span class="kw">use </span>commands::documentation::documentation;
 <a href=#73 id=73 data-nosnippet>73</a><span class="kw">use </span>commands::portable::{portable, verify_frozen_input_digests, verify_optional_portable};
 <a href=#74 id=74 data-nosnippet>74</a><span class="kw">use </span>commands::quality::{quality, quality_action, quality_profile_name};
@@ -604,24 +604,26 @@
 <a href=#138 id=138 data-nosnippet>138</a>        Task::Quality(action) =&gt; quality_action(action),
 <a href=#139 id=139 data-nosnippet>139</a>        Task::Validate(target) =&gt; validate(target),
 <a href=#140 id=140 data-nosnippet>140</a>        Task::Package =&gt; package(),
-<a href=#141 id=141 data-nosnippet>141</a>        Task::ReleasePrepare =&gt; release_prepare(),
-<a href=#142 id=142 data-nosnippet>142</a>        Task::ReleaseTag =&gt; output::machine(release_plan()<span class="question-mark">?</span>.release_tag),
-<a href=#143 id=143 data-nosnippet>143</a>        Task::Version(action) =&gt; version(action),
-<a href=#144 id=144 data-nosnippet>144</a>        Task::Portable(action) =&gt; portable(action),
-<a href=#145 id=145 data-nosnippet>145</a>        Task::Clean =&gt; clean_results(),
-<a href=#146 id=146 data-nosnippet>146</a>        Task::Ci(profile) =&gt; ci(profile),
-<a href=#147 id=147 data-nosnippet>147</a>        Task::Fixtures { check } =&gt; fixtures::sync_fixtures(<span class="kw-2">&amp;</span>workspace_root()<span class="question-mark">?</span>, check),
-<a href=#148 id=148 data-nosnippet>148</a>    }
-<a href=#149 id=149 data-nosnippet>149</a>}
-<a href=#150 id=150 data-nosnippet>150</a>
-<a href=#151 id=151 data-nosnippet>151</a><span class="doccomment">/// Finds the owning Cargo workspace even if the automation crate moves.
-<a href=#152 id=152 data-nosnippet>152</a></span><span class="kw">fn </span>workspace_root() -&gt; <span class="prelude-ty">Result</span>&lt;PathBuf, String&gt; {
-<a href=#153 id=153 data-nosnippet>153</a>    <span class="kw">let </span>current = env::current_dir()
-<a href=#154 id=154 data-nosnippet>154</a>        .map_err(|error| <span class="macro">format!</span>(<span class="string">"could not locate the current directory: {error}"</span>))<span class="question-mark">?</span>;
-<a href=#155 id=155 data-nosnippet>155</a>    workspace::discover(<span class="kw-2">&amp;</span>current)
-<a href=#156 id=156 data-nosnippet>156</a>}
-<a href=#157 id=157 data-nosnippet>157</a>
-<a href=#158 id=158 data-nosnippet>158</a><span class="attr">#[cfg(test)]
-<a href=#159 id=159 data-nosnippet>159</a>#[path = <span class="string">"../tests/unit/mod.rs"</span>]
-<a href=#160 id=160 data-nosnippet>160</a></span><span class="kw">mod </span>tests;
+<a href=#141 id=141 data-nosnippet>141</a>        Task::ReleasePrepare(version) =&gt; release::lifecycle::prepare(version.as_deref()),
+<a href=#142 id=142 data-nosnippet>142</a>        Task::ReleasePublish =&gt; release::lifecycle::publish(),
+<a href=#143 id=143 data-nosnippet>143</a>        Task::ReleaseQualify =&gt; release_qualify(),
+<a href=#144 id=144 data-nosnippet>144</a>        Task::ReleaseTag =&gt; output::machine(release_plan()<span class="question-mark">?</span>.release_tag),
+<a href=#145 id=145 data-nosnippet>145</a>        Task::Version(action) =&gt; version(action),
+<a href=#146 id=146 data-nosnippet>146</a>        Task::Portable(action) =&gt; portable(action),
+<a href=#147 id=147 data-nosnippet>147</a>        Task::Clean =&gt; clean_results(),
+<a href=#148 id=148 data-nosnippet>148</a>        Task::Ci(profile) =&gt; ci(profile),
+<a href=#149 id=149 data-nosnippet>149</a>        Task::Fixtures { check } =&gt; fixtures::sync_fixtures(<span class="kw-2">&amp;</span>workspace_root()<span class="question-mark">?</span>, check),
+<a href=#150 id=150 data-nosnippet>150</a>    }
+<a href=#151 id=151 data-nosnippet>151</a>}
+<a href=#152 id=152 data-nosnippet>152</a>
+<a href=#153 id=153 data-nosnippet>153</a><span class="doccomment">/// Finds the owning Cargo workspace even if the automation crate moves.
+<a href=#154 id=154 data-nosnippet>154</a></span><span class="kw">fn </span>workspace_root() -&gt; <span class="prelude-ty">Result</span>&lt;PathBuf, String&gt; {
+<a href=#155 id=155 data-nosnippet>155</a>    <span class="kw">let </span>current = env::current_dir()
+<a href=#156 id=156 data-nosnippet>156</a>        .map_err(|error| <span class="macro">format!</span>(<span class="string">"could not locate the current directory: {error}"</span>))<span class="question-mark">?</span>;
+<a href=#157 id=157 data-nosnippet>157</a>    workspace::discover(<span class="kw-2">&amp;</span>current)
+<a href=#158 id=158 data-nosnippet>158</a>}
+<a href=#159 id=159 data-nosnippet>159</a>
+<a href=#160 id=160 data-nosnippet>160</a><span class="attr">#[cfg(test)]
+<a href=#161 id=161 data-nosnippet>161</a>#[path = <span class="string">"../tests/unit/mod.rs"</span>]
+<a href=#162 id=162 data-nosnippet>162</a></span><span class="kw">mod </span>tests;
 </code></pre></div></section></main></body></html>

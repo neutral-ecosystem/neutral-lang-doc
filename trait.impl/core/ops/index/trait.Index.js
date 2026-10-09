@@ -1,0 +1,9 @@
+(function() {
+    const implementors = Object.fromEntries([["neutral_core",[["impl&lt;K: <a class=\"trait\" href=\"https://doc.rust-lang.org/1.98.1/core/cmp/trait.Ord.html\" title=\"trait core::cmp::Ord\">Ord</a> + <a class=\"trait\" href=\"https://doc.rust-lang.org/1.98.1/core/borrow/trait.Borrow.html\" title=\"trait core::borrow::Borrow\">Borrow</a>&lt;Q&gt;, Q: <a class=\"trait\" href=\"https://doc.rust-lang.org/1.98.1/core/cmp/trait.Ord.html\" title=\"trait core::cmp::Ord\">Ord</a> + ?<a class=\"trait\" href=\"https://doc.rust-lang.org/1.98.1/core/marker/trait.Sized.html\" title=\"trait core::marker::Sized\">Sized</a>, V&gt; <a class=\"trait\" href=\"https://doc.rust-lang.org/1.98.1/core/ops/index/trait.Index.html\" title=\"trait core::ops::index::Index\">Index</a>&lt;<a class=\"primitive\" href=\"https://doc.rust-lang.org/1.98.1/std/primitive.reference.html\">&amp;Q</a>&gt; for <a class=\"struct\" href=\"neutral_core/ordered/struct.OrderedMap.html\" title=\"struct neutral_core::ordered::OrderedMap\">OrderedMap</a>&lt;K, V&gt;",0]]]]);
+    if (window.register_implementors) {
+        window.register_implementors(implementors);
+    } else {
+        window.pending_implementors = implementors;
+    }
+})()
+//{"start":59,"fragment_lengths":[993]}
