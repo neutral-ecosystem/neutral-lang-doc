@@ -11,6 +11,6 @@
     "deploy": "pnpm build && wrangler deploy"
   },
   "devDependencies": {
-    "wrangler": "^4.142.0"
+    "wrangler": "^4.148.0"
   }
 }
