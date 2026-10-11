@@ -1,5 +1,16 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Atomic inspection failures without private root names or partial projections."><title>CompositionProbeError in neutral_probe::composition - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-1ed95124.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="neutral_probe" data-themes="" data-resource-suffix="" data-rustdoc-version="1.98.1 (48a229cea 2026-09-01)" data-channel="1.98.1" data-search-js="search-9944d736.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="sidebar-items.js"></script><script defer src="../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"><!-- SPDX-License-Identifier: Apache-2.0 -->
 <style>
+  :root {
+    --neutral-ui-font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --neutral-header-height: 3.65rem;
+    scroll-padding-top: calc(var(--neutral-header-height) + 0.75rem);
+  }
+
+  /* Keep Rustdoc's explicit sans-serif setting while improving the default prose font. */
+  :root:not(.sans-serif-fonts) {
+    --font-family: var(--neutral-ui-font);
+  }
+
   :root,
   :root:not([data-theme]),
   :root[data-theme="light"] {
@@ -93,7 +104,7 @@
   }
 
   body.rustdoc {
-    padding-top: 3.65rem;
+    padding-top: var(--neutral-header-height);
   }
 
   #neutral-docs-nav {
@@ -101,7 +112,7 @@
     inset: 0 0 auto;
     z-index: 10000;
     display: flex;
-    min-height: 3.65rem;
+    min-height: var(--neutral-header-height);
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
@@ -123,7 +134,7 @@
     min-width: 0;
     gap: 0.7rem;
     color: var(--main-color);
-    font: 650 0.9rem/1.2 var(--font-family);
+    font: 650 0.9rem/1.2 var(--neutral-ui-font);
     text-decoration: none;
   }
 
@@ -154,32 +165,40 @@
     gap: 0.4rem;
   }
 
-  .neutral-docs-actions a {
+  .neutral-docs-actions a,
+  .neutral-docs-actions button {
     min-height: 2.15rem;
     padding: 0.46rem 0.78rem;
     color: var(--main-color);
     background: var(--neutral-surface-raised);
     border: 1px solid var(--neutral-nav-border);
     border-radius: 0.5rem;
-    font: 600 0.8rem/1.2 var(--font-family);
+    font: 600 0.8rem/1.2 var(--neutral-ui-font);
     text-decoration: none;
+    cursor: pointer;
   }
 
-  .neutral-docs-actions a:hover {
+  .neutral-docs-actions a:hover,
+  .neutral-docs-actions button:hover,
+  .neutral-docs-actions button[aria-pressed="true"] {
     color: var(--neutral-accent);
     border-color: var(--neutral-accent);
   }
 
   .sidebar {
-    top: 3.65rem;
-    height: calc(100vh - 3.65rem);
+    top: var(--neutral-header-height);
+    height: calc(100vh - var(--neutral-header-height));
     border-right-color: var(--neutral-nav-border);
   }
 
   .sidebar-resizer {
-    top: 3.65rem;
-    height: calc(100% - 3.65rem);
+    top: var(--neutral-header-height);
+    height: calc(100% - var(--neutral-header-height));
     color: var(--neutral-nav-border);
+  }
+
+  .src #sidebar-button {
+    top: calc(var(--neutral-header-height) + 0.5rem);
   }
 
   .sidebar-crate {
@@ -317,6 +336,12 @@
     border-color: var(--neutral-accent);
   }
 
+  .impl > .rightside,
+  .method > .rightside,
+  .trait-impl > .rightside {
+    margin: 0.42rem 0.5rem 0 0.75rem;
+  }
+
   .stab {
     padding: 0.2rem 0.45rem;
     color: var(--neutral-muted);
@@ -350,17 +375,17 @@
     outline-offset: 3px;
   }
 
-  :target {
-    scroll-margin-top: 5rem;
+  body.rustdoc [id] {
+    scroll-margin-top: 0.75rem;
   }
 
   @media (max-width: 700px) {
-    body.rustdoc {
-      padding-top: 3.35rem;
+    :root {
+      --neutral-header-height: 3.35rem;
+      scroll-padding-top: calc(var(--neutral-header-height) + var(--topbar-height) + 0.75rem);
     }
 
     #neutral-docs-nav {
-      min-height: 3.35rem;
       padding: 0.42rem 0.65rem;
     }
 
@@ -374,18 +399,34 @@
       display: none;
     }
 
-    .neutral-docs-actions a {
+    .neutral-docs-brand {
+      flex-shrink: 0;
+    }
+
+    .neutral-docs-actions {
+      min-width: 0;
+      flex-shrink: 1;
+      overflow-x: auto;
+    }
+
+    .neutral-docs-actions > * {
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .neutral-docs-actions a,
+    .neutral-docs-actions button {
       min-height: 2rem;
       padding: 0.4rem 0.62rem;
     }
 
     rustdoc-topbar {
-      top: 3.35rem;
+      top: var(--neutral-header-height);
     }
 
     .sidebar {
-      top: calc(3.35rem + var(--topbar-height));
-      height: calc(100vh - 3.35rem - var(--topbar-height));
+      top: calc(var(--neutral-header-height) + var(--topbar-height));
+      height: calc(100vh - var(--neutral-header-height) - var(--topbar-height));
     }
 
     body.rustdoc > main {
@@ -452,24 +493,70 @@
 
     const actions = document.createElement("div");
     actions.className = "neutral-docs-actions";
+    for (const [label, direction] of [["←", -1], ["→", 1]]) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = label;
+      button.dataset.history = direction;
+      button.setAttribute("aria-label", direction < 0 ? "Back" : "Forward");
+      button.title = direction < 0 ? "Previous browser history entry" : "Next browser history entry";
+      button.addEventListener("click", navigateDocumentationHistory);
+      actions.append(button);
+    }
     const workspace = document.createElement("a");
     workspace.href = `${rootPath}index.html`;
     workspace.textContent = "Workspace";
     actions.append(workspace);
 
+    const map = document.createElement("a");
+    map.href = `${rootPath}index.html#codebase-map`;
+    map.textContent = "Codebase map";
+    actions.append(map);
+
+    const themeToggle = document.createElement("button");
+    themeToggle.id = "neutral-theme-toggle";
+    themeToggle.type = "button";
+    themeToggle.textContent = "Dark mode";
+
+    /** Reflects Rustdoc theme changes, including changes made in its settings. */
+    function syncThemeToggle() {
+      const theme = document.documentElement.dataset.theme;
+      themeToggle.setAttribute("aria-pressed", String(theme === "dark" || theme === "ayu"));
+    }
+
+    /** Applies and persists the requested theme through Rustdoc's settings API. */
+    function toggleNeutralTheme() {
+      const dark = themeToggle.getAttribute("aria-pressed") === "true";
+      updateLocalStorage("use-system-theme", "false");
+      switchTheme(dark ? "light" : "dark", true);
+    }
+
+    themeToggle.addEventListener("click", toggleNeutralTheme);
+    new MutationObserver(syncThemeToggle).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+    syncThemeToggle();
+    actions.append(themeToggle);
+
     navigation.append(brand, actions);
     document.body.prepend(navigation);
+  }
+
+  /** Restores the previous or next page, anchor, or search using browser history. */
+  function navigateDocumentationHistory(event) {
+    window.history.go(Number(event.currentTarget.dataset.history));
   }
 
   document.addEventListener("DOMContentLoaded", configureNeutralDocumentation);
 </script>
 
 </head><body class="rustdoc enum"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">CompositionProbeError</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../neutral_probe/index.html">neutral_<wbr>probe</a><span class="version">0.8.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Composition<wbr>Probe<wbr>Error</a></h2><h3><a href="#variants">Variants</a></h3><ul class="block variant"><li><a href="#variant.Decode" title="Decode">Decode</a></li><li><a href="#variant.Identity" title="Identity">Identity</a></li><li><a href="#variant.View" title="View">View</a></li></ul><h3><a href="#trait-implementations">Trait Implementations</a></h3><ul class="block trait-implementation"><li><a href="#impl-Clone-for-CompositionProbeError" title="Clone">Clone</a></li><li><a href="#impl-Copy-for-CompositionProbeError" title="Copy">Copy</a></li><li><a href="#impl-Debug-for-CompositionProbeError" title="Debug">Debug</a></li><li><a href="#impl-Eq-for-CompositionProbeError" title="Eq">Eq</a></li><li><a href="#impl-PartialEq-for-CompositionProbeError" title="PartialEq">PartialEq</a></li><li><a href="#impl-StructuralPartialEq-for-CompositionProbeError" title="StructuralPartialEq">StructuralPartialEq</a></li></ul><h3><a href="#synthetic-implementations">Auto Trait Implementations</a></h3><ul class="block synthetic-implementation"><li><a href="#impl-Freeze-for-CompositionProbeError" title="Freeze">Freeze</a></li><li><a href="#impl-RefUnwindSafe-for-CompositionProbeError" title="RefUnwindSafe">RefUnwindSafe</a></li><li><a href="#impl-Send-for-CompositionProbeError" title="Send">Send</a></li><li><a href="#impl-Sync-for-CompositionProbeError" title="Sync">Sync</a></li><li><a href="#impl-Unpin-for-CompositionProbeError" title="Unpin">Unpin</a></li><li><a href="#impl-UnsafeUnpin-for-CompositionProbeError" title="UnsafeUnpin">UnsafeUnpin</a></li><li><a href="#impl-UnwindSafe-for-CompositionProbeError" title="UnwindSafe">UnwindSafe</a></li></ul><h3><a href="#blanket-implementations">Blanket Implementations</a></h3><ul class="block blanket-implementation"><li><a href="#impl-Any-for-T" title="Any">Any</a></li><li><a href="#impl-Borrow%3CT%3E-for-T" title="Borrow&#60;T&#62;">Borrow&#60;T&#62;</a></li><li><a href="#impl-BorrowMut%3CT%3E-for-T" title="BorrowMut&#60;T&#62;">BorrowMut&#60;T&#62;</a></li><li><a href="#impl-CloneToUninit-for-T" title="CloneToUninit">CloneToUninit</a></li><li><a href="#impl-From%3CT%3E-for-T" title="From&#60;T&#62;">From&#60;T&#62;</a></li><li><a href="#impl-Into%3CU%3E-for-T" title="Into&#60;U&#62;">Into&#60;U&#62;</a></li><li><a href="#impl-Same-for-T" title="Same">Same</a></li><li><a href="#impl-ToOwned-for-T" title="ToOwned">ToOwned</a></li><li><a href="#impl-TryFrom%3CU%3E-for-T" title="TryFrom&#60;U&#62;">TryFrom&#60;U&#62;</a></li><li><a href="#impl-TryInto%3CU%3E-for-T" title="TryInto&#60;U&#62;">TryInto&#60;U&#62;</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="index.html">In neutral_<wbr>probe::<wbr>composition</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../index.html">neutral_probe</a>::<wbr><a href="index.html">composition</a></div><h1>Enum <span class="enum">Composition<wbr>Probe<wbr>Error</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/neutral_probe/composition.rs.html#20-27">Source</a> </span></div><pre class="rust item-decl"><code>pub enum CompositionProbeError {
-    Decode(<a class="struct" href="../../neutral_encoding/struct.DecodeError.html" title="struct neutral_encoding::DecodeError">DecodeError</a>),
+    Decode(DecodeError),
     View(<a class="enum" href="../../neutral_reader/composition/project/enum.CompositionReadError.html" title="enum neutral_reader::composition::project::CompositionReadError">CompositionReadError</a>),
     Identity(<a class="enum" href="../../neutral_ir/project_identity/enum.IdentityError.html" title="enum neutral_ir::project_identity::IdentityError">IdentityError</a>),
 }</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Atomic inspection failures without private root names or partial projections.</p>
-</div></details><h2 id="variants" class="variants section-header">Variants<a href="#variants" class="anchor">§</a></h2><div class="variants"><section id="variant.Decode" class="variant"><a href="#variant.Decode" class="anchor">§</a><h3 class="code-header">Decode(<a class="struct" href="../../neutral_encoding/struct.DecodeError.html" title="struct neutral_encoding::DecodeError">DecodeError</a>)</h3></section><div class="docblock"><p>Hostile wire or complete reader validation failed.</p>
+</div></details><h2 id="variants" class="variants section-header">Variants<a href="#variants" class="anchor">§</a></h2><div class="variants"><section id="variant.Decode" class="variant"><a href="#variant.Decode" class="anchor">§</a><h3 class="code-header">Decode(DecodeError)</h3></section><div class="docblock"><p>Hostile wire or complete reader validation failed.</p>
 </div><section id="variant.View" class="variant"><a href="#variant.View" class="anchor">§</a><h3 class="code-header">View(<a class="enum" href="../../neutral_reader/composition/project/enum.CompositionReadError.html" title="enum neutral_reader::composition::project::CompositionReadError">CompositionReadError</a>)</h3></section><div class="docblock"><p>Selection is invalid, private, unknown, duplicate or cancelled.</p>
 </div><section id="variant.Identity" class="variant"><a href="#variant.Identity" class="anchor">§</a><h3 class="code-header">Identity(<a class="enum" href="../../neutral_ir/project_identity/enum.IdentityError.html" title="enum neutral_ir::project_identity::IdentityError">IdentityError</a>)</h3></section><div class="docblock"><p>Complete identity exceeded its independent framing bounds.</p>
 </div></div><h2 id="trait-implementations" class="section-header">Trait Implementations<a href="#trait-implementations" class="anchor">§</a></h2><div id="trait-implementations-list"><details class="toggle implementors-toggle" open><summary><section id="impl-Clone-for-CompositionProbeError" class="impl"><a class="src rightside" href="../../src/neutral_probe/composition.rs.html#19">Source</a><a href="#impl-Clone-for-CompositionProbeError" class="anchor">§</a><h3 class="code-header">impl <a class="trait" href="https://doc.rust-lang.org/1.98.1/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> for <a class="enum" href="enum.CompositionProbeError.html" title="enum neutral_probe::composition::CompositionProbeError">CompositionProbeError</a></h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.clone" class="method trait-impl"><a class="src rightside" href="../../src/neutral_probe/composition.rs.html#19">Source</a><a href="#method.clone" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/1.98.1/core/clone/trait.Clone.html#tymethod.clone" class="fn">clone</a>(&amp;self) -&gt; <a class="enum" href="enum.CompositionProbeError.html" title="enum neutral_probe::composition::CompositionProbeError">CompositionProbeError</a></h4></section></summary><div class='docblock'>Returns a duplicate of the value. <a href="https://doc.rust-lang.org/1.98.1/core/clone/trait.Clone.html#tymethod.clone">Read more</a></div></details><details class="toggle method-toggle" open><summary><section id="method.clone_from" class="method trait-impl"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0, const unstable">1.0.0 (const: <a href="https://github.com/rust-lang/rust/issues/142757" title="Tracking issue for const_clone">unstable</a>)</span> · <a class="src" href="https://doc.rust-lang.org/1.98.1/src/core/clone.rs.html#245-247">Source</a></span><a href="#method.clone_from" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/1.98.1/core/clone/trait.Clone.html#method.clone_from" class="fn">clone_from</a>(&amp;mut self, source: &amp;Self)</h4></section></summary><div class='docblock'>Performs copy-assignment from <code>source</code>. <a href="https://doc.rust-lang.org/1.98.1/core/clone/trait.Clone.html#method.clone_from">Read more</a></div></details></div></details><section id="impl-Copy-for-CompositionProbeError" class="impl"><a class="src rightside" href="../../src/neutral_probe/composition.rs.html#19">Source</a><a href="#impl-Copy-for-CompositionProbeError" class="anchor">§</a><h3 class="code-header">impl <a class="trait" href="https://doc.rust-lang.org/1.98.1/core/marker/trait.Copy.html" title="trait core::marker::Copy">Copy</a> for <a class="enum" href="enum.CompositionProbeError.html" title="enum neutral_probe::composition::CompositionProbeError">CompositionProbeError</a></h3></section><details class="toggle implementors-toggle" open><summary><section id="impl-Debug-for-CompositionProbeError" class="impl"><a class="src rightside" href="../../src/neutral_probe/composition.rs.html#19">Source</a><a href="#impl-Debug-for-CompositionProbeError" class="anchor">§</a><h3 class="code-header">impl <a class="trait" href="https://doc.rust-lang.org/1.98.1/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="enum" href="enum.CompositionProbeError.html" title="enum neutral_probe::composition::CompositionProbeError">CompositionProbeError</a></h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.fmt" class="method trait-impl"><a class="src rightside" href="../../src/neutral_probe/composition.rs.html#19">Source</a><a href="#method.fmt" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/1.98.1/core/fmt/trait.Debug.html#tymethod.fmt" class="fn">fmt</a>(&amp;self, f: &amp;mut <a class="struct" href="https://doc.rust-lang.org/1.98.1/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>&lt;'_&gt;) -&gt; <a class="type" href="https://doc.rust-lang.org/1.98.1/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></h4></section></summary><div class='docblock'>Formats the value using the given formatter. <a href="https://doc.rust-lang.org/1.98.1/core/fmt/trait.Debug.html#tymethod.fmt">Read more</a></div></details></div></details><section id="impl-Eq-for-CompositionProbeError" class="impl"><a class="src rightside" href="../../src/neutral_probe/composition.rs.html#19">Source</a><a href="#impl-Eq-for-CompositionProbeError" class="anchor">§</a><h3 class="code-header">impl <a class="trait" href="https://doc.rust-lang.org/1.98.1/core/cmp/trait.Eq.html" title="trait core::cmp::Eq">Eq</a> for <a class="enum" href="enum.CompositionProbeError.html" title="enum neutral_probe::composition::CompositionProbeError">CompositionProbeError</a></h3></section><details class="toggle implementors-toggle" open><summary><section id="impl-PartialEq-for-CompositionProbeError" class="impl"><a class="src rightside" href="../../src/neutral_probe/composition.rs.html#19">Source</a><a href="#impl-PartialEq-for-CompositionProbeError" class="anchor">§</a><h3 class="code-header">impl <a class="trait" href="https://doc.rust-lang.org/1.98.1/core/cmp/trait.PartialEq.html" title="trait core::cmp::PartialEq">PartialEq</a> for <a class="enum" href="enum.CompositionProbeError.html" title="enum neutral_probe::composition::CompositionProbeError">CompositionProbeError</a></h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.eq" class="method trait-impl"><a class="src rightside" href="../../src/neutral_probe/composition.rs.html#19">Source</a><a href="#method.eq" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/1.98.1/core/cmp/trait.PartialEq.html#tymethod.eq" class="fn">eq</a>(&amp;self, other: &amp;<a class="enum" href="enum.CompositionProbeError.html" title="enum neutral_probe::composition::CompositionProbeError">CompositionProbeError</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/1.98.1/std/primitive.bool.html">bool</a></h4></section></summary><div class='docblock'>Tests for <code>self</code> and <code>other</code> values to be equal, and is used by <code>==</code>.</div></details><details class="toggle method-toggle" open><summary><section id="method.ne" class="method trait-impl"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0, const unstable">1.0.0 (const: <a href="https://github.com/rust-lang/rust/issues/143800" title="Tracking issue for const_cmp">unstable</a>)</span> · <a class="src" href="https://doc.rust-lang.org/1.98.1/src/core/cmp.rs.html#263">Source</a></span><a href="#method.ne" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/1.98.1/core/cmp/trait.PartialEq.html#method.ne" class="fn">ne</a>(&amp;self, other: <a class="primitive" href="https://doc.rust-lang.org/1.98.1/std/primitive.reference.html">&amp;Rhs</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/1.98.1/std/primitive.bool.html">bool</a></h4></section></summary><div class='docblock'>Tests for <code>!=</code>. The default implementation is almost always sufficient,

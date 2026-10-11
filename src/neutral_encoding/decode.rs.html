@@ -1,5 +1,16 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/neutral-encoding/src/decode.rs`."><title>decode.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-1ed95124.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="neutral_encoding" data-themes="" data-resource-suffix="" data-rustdoc-version="1.98.1 (48a229cea 2026-09-01)" data-channel="1.98.1" data-search-js="search-9944d736.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"><!-- SPDX-License-Identifier: Apache-2.0 -->
 <style>
+  :root {
+    --neutral-ui-font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --neutral-header-height: 3.65rem;
+    scroll-padding-top: calc(var(--neutral-header-height) + 0.75rem);
+  }
+
+  /* Keep Rustdoc's explicit sans-serif setting while improving the default prose font. */
+  :root:not(.sans-serif-fonts) {
+    --font-family: var(--neutral-ui-font);
+  }
+
   :root,
   :root:not([data-theme]),
   :root[data-theme="light"] {
@@ -93,7 +104,7 @@
   }
 
   body.rustdoc {
-    padding-top: 3.65rem;
+    padding-top: var(--neutral-header-height);
   }
 
   #neutral-docs-nav {
@@ -101,7 +112,7 @@
     inset: 0 0 auto;
     z-index: 10000;
     display: flex;
-    min-height: 3.65rem;
+    min-height: var(--neutral-header-height);
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
@@ -123,7 +134,7 @@
     min-width: 0;
     gap: 0.7rem;
     color: var(--main-color);
-    font: 650 0.9rem/1.2 var(--font-family);
+    font: 650 0.9rem/1.2 var(--neutral-ui-font);
     text-decoration: none;
   }
 
@@ -154,32 +165,40 @@
     gap: 0.4rem;
   }
 
-  .neutral-docs-actions a {
+  .neutral-docs-actions a,
+  .neutral-docs-actions button {
     min-height: 2.15rem;
     padding: 0.46rem 0.78rem;
     color: var(--main-color);
     background: var(--neutral-surface-raised);
     border: 1px solid var(--neutral-nav-border);
     border-radius: 0.5rem;
-    font: 600 0.8rem/1.2 var(--font-family);
+    font: 600 0.8rem/1.2 var(--neutral-ui-font);
     text-decoration: none;
+    cursor: pointer;
   }
 
-  .neutral-docs-actions a:hover {
+  .neutral-docs-actions a:hover,
+  .neutral-docs-actions button:hover,
+  .neutral-docs-actions button[aria-pressed="true"] {
     color: var(--neutral-accent);
     border-color: var(--neutral-accent);
   }
 
   .sidebar {
-    top: 3.65rem;
-    height: calc(100vh - 3.65rem);
+    top: var(--neutral-header-height);
+    height: calc(100vh - var(--neutral-header-height));
     border-right-color: var(--neutral-nav-border);
   }
 
   .sidebar-resizer {
-    top: 3.65rem;
-    height: calc(100% - 3.65rem);
+    top: var(--neutral-header-height);
+    height: calc(100% - var(--neutral-header-height));
     color: var(--neutral-nav-border);
+  }
+
+  .src #sidebar-button {
+    top: calc(var(--neutral-header-height) + 0.5rem);
   }
 
   .sidebar-crate {
@@ -317,6 +336,12 @@
     border-color: var(--neutral-accent);
   }
 
+  .impl > .rightside,
+  .method > .rightside,
+  .trait-impl > .rightside {
+    margin: 0.42rem 0.5rem 0 0.75rem;
+  }
+
   .stab {
     padding: 0.2rem 0.45rem;
     color: var(--neutral-muted);
@@ -350,17 +375,17 @@
     outline-offset: 3px;
   }
 
-  :target {
-    scroll-margin-top: 5rem;
+  body.rustdoc [id] {
+    scroll-margin-top: 0.75rem;
   }
 
   @media (max-width: 700px) {
-    body.rustdoc {
-      padding-top: 3.35rem;
+    :root {
+      --neutral-header-height: 3.35rem;
+      scroll-padding-top: calc(var(--neutral-header-height) + var(--topbar-height) + 0.75rem);
     }
 
     #neutral-docs-nav {
-      min-height: 3.35rem;
       padding: 0.42rem 0.65rem;
     }
 
@@ -374,18 +399,34 @@
       display: none;
     }
 
-    .neutral-docs-actions a {
+    .neutral-docs-brand {
+      flex-shrink: 0;
+    }
+
+    .neutral-docs-actions {
+      min-width: 0;
+      flex-shrink: 1;
+      overflow-x: auto;
+    }
+
+    .neutral-docs-actions > * {
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .neutral-docs-actions a,
+    .neutral-docs-actions button {
       min-height: 2rem;
       padding: 0.4rem 0.62rem;
     }
 
     rustdoc-topbar {
-      top: 3.35rem;
+      top: var(--neutral-header-height);
     }
 
     .sidebar {
-      top: calc(3.35rem + var(--topbar-height));
-      height: calc(100vh - 3.35rem - var(--topbar-height));
+      top: calc(var(--neutral-header-height) + var(--topbar-height));
+      height: calc(100vh - var(--neutral-header-height) - var(--topbar-height));
     }
 
     body.rustdoc > main {
@@ -452,13 +493,59 @@
 
     const actions = document.createElement("div");
     actions.className = "neutral-docs-actions";
+    for (const [label, direction] of [["←", -1], ["→", 1]]) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = label;
+      button.dataset.history = direction;
+      button.setAttribute("aria-label", direction < 0 ? "Back" : "Forward");
+      button.title = direction < 0 ? "Previous browser history entry" : "Next browser history entry";
+      button.addEventListener("click", navigateDocumentationHistory);
+      actions.append(button);
+    }
     const workspace = document.createElement("a");
     workspace.href = `${rootPath}index.html`;
     workspace.textContent = "Workspace";
     actions.append(workspace);
 
+    const map = document.createElement("a");
+    map.href = `${rootPath}index.html#codebase-map`;
+    map.textContent = "Codebase map";
+    actions.append(map);
+
+    const themeToggle = document.createElement("button");
+    themeToggle.id = "neutral-theme-toggle";
+    themeToggle.type = "button";
+    themeToggle.textContent = "Dark mode";
+
+    /** Reflects Rustdoc theme changes, including changes made in its settings. */
+    function syncThemeToggle() {
+      const theme = document.documentElement.dataset.theme;
+      themeToggle.setAttribute("aria-pressed", String(theme === "dark" || theme === "ayu"));
+    }
+
+    /** Applies and persists the requested theme through Rustdoc's settings API. */
+    function toggleNeutralTheme() {
+      const dark = themeToggle.getAttribute("aria-pressed") === "true";
+      updateLocalStorage("use-system-theme", "false");
+      switchTheme(dark ? "light" : "dark", true);
+    }
+
+    themeToggle.addEventListener("click", toggleNeutralTheme);
+    new MutationObserver(syncThemeToggle).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+    syncThemeToggle();
+    actions.append(themeToggle);
+
     navigation.append(brand, actions);
     document.body.prepend(navigation);
+  }
+
+  /** Restores the previous or next page, anchor, or search using browser history. */
+  function navigateDocumentationHistory(event) {
+    window.history.go(Number(event.currentTarget.dataset.history));
   }
 
   document.addEventListener("DOMContentLoaded", configureNeutralDocumentation);
@@ -627,7 +714,7 @@
 <a href=#161 id=161 data-nosnippet>161</a>            .with_field_provenance(provenance.fields)
 <a href=#162 id=162 data-nosnippet>162</a>            .with_reuse_provenance(provenance.reuses)
 <a href=#163 id=163 data-nosnippet>163</a>            .with_reference_provenance(provenance.references);
-<a href=#164 id=164 data-nosnippet>164</a>    validate_cross_sections(<span class="kw-2">&amp;</span>artifacts)<span class="question-mark">?</span>;
+<a href=#164 id=164 data-nosnippet>164</a>    neutral_reader::validate_document_companions(<span class="kw-2">&amp;</span>artifacts).map_err(map_reader_error)<span class="question-mark">?</span>;
 <a href=#165 id=165 data-nosnippet>165</a>    <span class="kw">let </span><span class="kw-2">mut </span>capability_budget = TraversalBudget::new();
 <a href=#166 id=166 data-nosnippet>166</a>    <span class="kw">let </span>actual = derive_capabilities(<span class="kw-2">&amp;</span>artifacts, <span class="kw-2">&amp;mut </span>capability_budget)
 <a href=#167 id=167 data-nosnippet>167</a>        .map_err(|<span class="kw">_</span>| error(DecodeErrorClass::EncodedSizeLimit))<span class="question-mark">?</span>;
@@ -1737,363 +1824,234 @@
 <a href=#1271 id=1271 data-nosnippet>1271</a>        .with_traversal_nodes(saturating_usize(captured.traversal_nodes()))
 <a href=#1272 id=1272 data-nosnippet>1272</a>}
 <a href=#1273 id=1273 data-nosnippet>1273</a>
-<a href=#1274 id=1274 data-nosnippet>1274</a><span class="doccomment">/// Validates source, derivation, identity, and resource cross-section facts.
-<a href=#1275 id=1275 data-nosnippet>1275</a></span><span class="kw">fn </span>validate_cross_sections(artifacts: <span class="kw-2">&amp;</span>CompilationArtifacts) -&gt; <span class="prelude-ty">Result</span>&lt;(), DecodeError&gt; {
-<a href=#1276 id=1276 data-nosnippet>1276</a>    <span class="kw">let </span>logical = artifacts.logical_document();
-<a href=#1277 id=1277 data-nosnippet>1277</a>    <span class="kw">let </span>source = artifacts.source_map();
-<a href=#1278 id=1278 data-nosnippet>1278</a>    <span class="kw">let </span>derivation = artifacts.derivation();
-<a href=#1279 id=1279 data-nosnippet>1279</a>    <span class="kw">if </span>derivation.meaning().source_digest() != source.source_digest()
-<a href=#1280 id=1280 data-nosnippet>1280</a>        || derivation.language_behavior_version() != logical.module().language_behavior_version()
-<a href=#1281 id=1281 data-nosnippet>1281</a>        || derivation.vocabulary() != logical.vocabulary().map(VocabularyContract::identity)
-<a href=#1282 id=1282 data-nosnippet>1282</a>        || derivation.resource_facts().source_bytes() != source.source_byte_length()
-<a href=#1283 id=1283 data-nosnippet>1283</a>        || derivation.resource_facts().diagnostics() != <span class="number">0
-<a href=#1284 id=1284 data-nosnippet>1284</a>        </span>|| derivation.resource_facts().declarations()
-<a href=#1285 id=1285 data-nosnippet>1285</a>            != u64::try_from(logical.record_types().len() + logical.declarations().len())
-<a href=#1286 id=1286 data-nosnippet>1286</a>                .unwrap_or(u64::MAX)
-<a href=#1287 id=1287 data-nosnippet>1287</a>        || source.source_byte_length() &gt; derivation.acceptance().source_byte_limit()
-<a href=#1288 id=1288 data-nosnippet>1288</a>        || derivation.resource_facts().decoded_string_bytes()
-<a href=#1289 id=1289 data-nosnippet>1289</a>            &gt; derivation.acceptance().string_byte_limit()
-<a href=#1290 id=1290 data-nosnippet>1290</a>    {
-<a href=#1291 id=1291 data-nosnippet>1291</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(error(DecodeErrorClass::InvalidDerivation));
-<a href=#1292 id=1292 data-nosnippet>1292</a>    }
-<a href=#1293 id=1293 data-nosnippet>1293</a>    validate_logical_identities(logical)<span class="question-mark">?</span>;
-<a href=#1294 id=1294 data-nosnippet>1294</a>    validate_source_coverage(artifacts)<span class="question-mark">?</span>;
-<a href=#1295 id=1295 data-nosnippet>1295</a>    validate_provenance_coverage(artifacts)<span class="question-mark">?</span>;
-<a href=#1296 id=1296 data-nosnippet>1296</a>    <span class="prelude-val">Ok</span>(())
-<a href=#1297 id=1297 data-nosnippet>1297</a>}
-<a href=#1298 id=1298 data-nosnippet>1298</a>
-<a href=#1299 id=1299 data-nosnippet>1299</a><span class="doccomment">/// Validates root module, symbol, identity, and canonical-name consistency.
-<a href=#1300 id=1300 data-nosnippet>1300</a></span><span class="kw">fn </span>validate_logical_identities(logical: <span class="kw-2">&amp;</span>LogicalDocument) -&gt; <span class="prelude-ty">Result</span>&lt;(), DecodeError&gt; {
-<a href=#1301 id=1301 data-nosnippet>1301</a>    <span class="kw">let </span>module = logical.module();
-<a href=#1302 id=1302 data-nosnippet>1302</a>    <span class="kw">let </span><span class="kw-2">mut </span>previous_record = <span class="prelude-val">None</span>;
-<a href=#1303 id=1303 data-nosnippet>1303</a>    <span class="kw">for </span>record <span class="kw">in </span>logical.record_types() {
-<a href=#1304 id=1304 data-nosnippet>1304</a>        <span class="kw">if </span>record.symbol_identity().module() != module
-<a href=#1305 id=1305 data-nosnippet>1305</a>            || record.nominal_identity().module() != module
-<a href=#1306 id=1306 data-nosnippet>1306</a>            || record.symbol_identity().declaration_name() != record.name()
-<a href=#1307 id=1307 data-nosnippet>1307</a>            || previous_record.is_some_and(|name| name &gt;= record.name())
-<a href=#1308 id=1308 data-nosnippet>1308</a>        {
-<a href=#1309 id=1309 data-nosnippet>1309</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(error(DecodeErrorClass::InvalidLogicalIr));
-<a href=#1310 id=1310 data-nosnippet>1310</a>        }
-<a href=#1311 id=1311 data-nosnippet>1311</a>        previous_record = <span class="prelude-val">Some</span>(record.name());
-<a href=#1312 id=1312 data-nosnippet>1312</a>    }
-<a href=#1313 id=1313 data-nosnippet>1313</a>    <span class="kw">let </span><span class="kw-2">mut </span>previous_declaration = <span class="prelude-val">None</span>;
-<a href=#1314 id=1314 data-nosnippet>1314</a>    <span class="kw">for </span>declaration <span class="kw">in </span>logical.declarations() {
-<a href=#1315 id=1315 data-nosnippet>1315</a>        <span class="kw">if </span>declaration.symbol_identity().module() != module
-<a href=#1316 id=1316 data-nosnippet>1316</a>            || declaration.symbol_identity().declaration_name() != declaration.name()
-<a href=#1317 id=1317 data-nosnippet>1317</a>            || previous_declaration.is_some_and(|name| name &gt;= declaration.name())
-<a href=#1318 id=1318 data-nosnippet>1318</a>        {
-<a href=#1319 id=1319 data-nosnippet>1319</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(error(DecodeErrorClass::InvalidLogicalIr));
-<a href=#1320 id=1320 data-nosnippet>1320</a>        }
-<a href=#1321 id=1321 data-nosnippet>1321</a>        previous_declaration = <span class="prelude-val">Some</span>(declaration.name());
-<a href=#1322 id=1322 data-nosnippet>1322</a>    }
-<a href=#1323 id=1323 data-nosnippet>1323</a>    <span class="prelude-val">Ok</span>(())
+<a href=#1274 id=1274 data-nosnippet>1274</a><span class="doccomment">/// Maps trusted-model validation failures into frozen external result classes.
+<a href=#1275 id=1275 data-nosnippet>1275</a></span><span class="kw">fn </span>map_reader_error(error_value: ReaderError) -&gt; DecodeError {
+<a href=#1276 id=1276 data-nosnippet>1276</a>    <span class="kw">let </span>class = <span class="kw">match </span>error_value {
+<a href=#1277 id=1277 data-nosnippet>1277</a>        ReaderError::MissingSourceMapEntry | ReaderError::InvalidSourceMap =&gt; {
+<a href=#1278 id=1278 data-nosnippet>1278</a>            DecodeErrorClass::InvalidSourceMap
+<a href=#1279 id=1279 data-nosnippet>1279</a>        }
+<a href=#1280 id=1280 data-nosnippet>1280</a>        ReaderError::InvalidDerivation =&gt; DecodeErrorClass::InvalidDerivation,
+<a href=#1281 id=1281 data-nosnippet>1281</a>        ReaderError::InvalidProvenance
+<a href=#1282 id=1282 data-nosnippet>1282</a>        | ReaderError::InvalidFieldProvenance
+<a href=#1283 id=1283 data-nosnippet>1283</a>        | ReaderError::InvalidReuseProvenance
+<a href=#1284 id=1284 data-nosnippet>1284</a>        | ReaderError::InvalidReferenceEdge
+<a href=#1285 id=1285 data-nosnippet>1285</a>        | ReaderError::MissingProvenanceRecord =&gt; DecodeErrorClass::InvalidProvenance,
+<a href=#1286 id=1286 data-nosnippet>1286</a>        ReaderError::InvalidLogicalIdentity
+<a href=#1287 id=1287 data-nosnippet>1287</a>        | ReaderError::InvalidVocabularyContract
+<a href=#1288 id=1288 data-nosnippet>1288</a>        | ReaderError::DuplicateElementId
+<a href=#1289 id=1289 data-nosnippet>1289</a>        | ReaderError::DuplicateDeclarationName
+<a href=#1290 id=1290 data-nosnippet>1290</a>        | ReaderError::TypeValueMismatch
+<a href=#1291 id=1291 data-nosnippet>1291</a>        | ReaderError::InvalidRecordSchema
+<a href=#1292 id=1292 data-nosnippet>1292</a>        | ReaderError::InvalidDeclarationFingerprint =&gt; DecodeErrorClass::InvalidLogicalIr,
+<a href=#1293 id=1293 data-nosnippet>1293</a>    };
+<a href=#1294 id=1294 data-nosnippet>1294</a>    error(class)
+<a href=#1295 id=1295 data-nosnippet>1295</a>}
+<a href=#1296 id=1296 data-nosnippet>1296</a>
+<a href=#1297 id=1297 data-nosnippet>1297</a><span class="doccomment">/// Returns the discriminator text without accepting a non-map sum.
+<a href=#1298 id=1298 data-nosnippet>1298</a></span><span class="kw">fn </span>discriminator(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>str, DecodeError&gt; {
+<a href=#1299 id=1299 data-nosnippet>1299</a>    <span class="kw">let </span>CborValue::Map(members) = <span class="kw-2">&amp;</span>value.value <span class="kw">else </span>{
+<a href=#1300 id=1300 data-nosnippet>1300</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(at(DecodeErrorClass::InvalidEncodedSchema, value.offset));
+<a href=#1301 id=1301 data-nosnippet>1301</a>    };
+<a href=#1302 id=1302 data-nosnippet>1302</a>    <span class="kw">let </span><span class="kw-2">mut </span>found = <span class="prelude-val">None</span>;
+<a href=#1303 id=1303 data-nosnippet>1303</a>    <span class="kw">for </span>(key, candidate) <span class="kw">in </span>members {
+<a href=#1304 id=1304 data-nosnippet>1304</a>        <span class="kw">if </span>key == constants::key::KIND {
+<a href=#1305 id=1305 data-nosnippet>1305</a>            <span class="kw">if </span>found.is_some() {
+<a href=#1306 id=1306 data-nosnippet>1306</a>                <span class="kw">return </span><span class="prelude-val">Err</span>(at(DecodeErrorClass::InvalidEncodedSchema, candidate.offset));
+<a href=#1307 id=1307 data-nosnippet>1307</a>            }
+<a href=#1308 id=1308 data-nosnippet>1308</a>            found = <span class="prelude-val">Some</span>(text(candidate)<span class="question-mark">?</span>);
+<a href=#1309 id=1309 data-nosnippet>1309</a>        }
+<a href=#1310 id=1310 data-nosnippet>1310</a>    }
+<a href=#1311 id=1311 data-nosnippet>1311</a>    found.ok_or_else(|| at(DecodeErrorClass::InvalidEncodedSchema, value.offset))
+<a href=#1312 id=1312 data-nosnippet>1312</a>}
+<a href=#1313 id=1313 data-nosnippet>1313</a>
+<a href=#1314 id=1314 data-nosnippet>1314</a><span class="doccomment">/// Validates a discriminator-only sum object.
+<a href=#1315 id=1315 data-nosnippet>1315</a></span><span class="kw">fn </span>kind_object(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;(), DecodeError&gt; {
+<a href=#1316 id=1316 data-nosnippet>1316</a>    Object::exact(value, <span class="kw-2">&amp;</span>[constants::key::KIND]).map(|<span class="kw">_</span>| ())
+<a href=#1317 id=1317 data-nosnippet>1317</a>}
+<a href=#1318 id=1318 data-nosnippet>1318</a>
+<a href=#1319 id=1319 data-nosnippet>1319</a><span class="doccomment">/// Decodes a fingerprint byte string into its typed representation.
+<a href=#1320 id=1320 data-nosnippet>1320</a></span><span class="kw">fn </span>decode_fingerprint(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;DeclarationFingerprint, DecodeError&gt; {
+<a href=#1321 id=1321 data-nosnippet>1321</a>    <span class="prelude-val">Ok</span>(DeclarationFingerprint::from_digest(
+<a href=#1322 id=1322 data-nosnippet>1322</a>        SemanticDigest::from_raw_bytes(digest_bytes(value)<span class="question-mark">?</span>),
+<a href=#1323 id=1323 data-nosnippet>1323</a>    ))
 <a href=#1324 id=1324 data-nosnippet>1324</a>}
 <a href=#1325 id=1325 data-nosnippet>1325</a>
-<a href=#1326 id=1326 data-nosnippet>1326</a><span class="doccomment">/// Validates exact one-to-one source-map ownership and span coverage.
-<a href=#1327 id=1327 data-nosnippet>1327</a></span><span class="kw">fn </span>validate_source_coverage(artifacts: <span class="kw-2">&amp;</span>CompilationArtifacts) -&gt; <span class="prelude-ty">Result</span>&lt;(), DecodeError&gt; {
-<a href=#1328 id=1328 data-nosnippet>1328</a>    <span class="kw">let </span>logical = artifacts.logical_document();
-<a href=#1329 id=1329 data-nosnippet>1329</a>    <span class="kw">let </span>expected = logical
-<a href=#1330 id=1330 data-nosnippet>1330</a>        .record_types()
-<a href=#1331 id=1331 data-nosnippet>1331</a>        .iter()
-<a href=#1332 id=1332 data-nosnippet>1332</a>        .map(RecordTypeDefinition::element_id)
-<a href=#1333 id=1333 data-nosnippet>1333</a>        .chain(logical.declarations().iter().map(Declaration::element_id))
-<a href=#1334 id=1334 data-nosnippet>1334</a>        .collect::&lt;BTreeSet&lt;<span class="kw">_</span>&gt;&gt;();
-<a href=#1335 id=1335 data-nosnippet>1335</a>    <span class="kw">let </span>observed = artifacts
-<a href=#1336 id=1336 data-nosnippet>1336</a>        .source_map()
-<a href=#1337 id=1337 data-nosnippet>1337</a>        .entries()
-<a href=#1338 id=1338 data-nosnippet>1338</a>        .iter()
-<a href=#1339 id=1339 data-nosnippet>1339</a>        .map(|entry| entry.element_id())
-<a href=#1340 id=1340 data-nosnippet>1340</a>        .collect::&lt;BTreeSet&lt;<span class="kw">_</span>&gt;&gt;();
-<a href=#1341 id=1341 data-nosnippet>1341</a>    <span class="kw">if </span>expected.len() != artifacts.source_map().entries().len()
-<a href=#1342 id=1342 data-nosnippet>1342</a>        || expected != observed
-<a href=#1343 id=1343 data-nosnippet>1343</a>        || !artifacts
-<a href=#1344 id=1344 data-nosnippet>1344</a>            .source_map()
-<a href=#1345 id=1345 data-nosnippet>1345</a>            .entries()
-<a href=#1346 id=1346 data-nosnippet>1346</a>            .windows(<span class="number">2</span>)
-<a href=#1347 id=1347 data-nosnippet>1347</a>            .all(|pair| pair[<span class="number">0</span>].element_id() &lt; pair[<span class="number">1</span>].element_id())
-<a href=#1348 id=1348 data-nosnippet>1348</a>    {
-<a href=#1349 id=1349 data-nosnippet>1349</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(error(DecodeErrorClass::InvalidSourceMap));
-<a href=#1350 id=1350 data-nosnippet>1350</a>    }
-<a href=#1351 id=1351 data-nosnippet>1351</a>    <span class="prelude-val">Ok</span>(())
+<a href=#1326 id=1326 data-nosnippet>1326</a><span class="doccomment">/// Returns an exact text scalar.
+<a href=#1327 id=1327 data-nosnippet>1327</a></span><span class="kw">fn </span>text(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>str, DecodeError&gt; {
+<a href=#1328 id=1328 data-nosnippet>1328</a>    <span class="kw">match </span><span class="kw-2">&amp;</span>value.value {
+<a href=#1329 id=1329 data-nosnippet>1329</a>        CborValue::Text(text_value) =&gt; <span class="prelude-val">Ok</span>(text_value),
+<a href=#1330 id=1330 data-nosnippet>1330</a>        <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(at(DecodeErrorClass::InvalidEncodedSchema, value.offset)),
+<a href=#1331 id=1331 data-nosnippet>1331</a>    }
+<a href=#1332 id=1332 data-nosnippet>1332</a>}
+<a href=#1333 id=1333 data-nosnippet>1333</a>
+<a href=#1334 id=1334 data-nosnippet>1334</a><span class="doccomment">/// Returns one valid non-protected lower-snake logical name.
+<a href=#1335 id=1335 data-nosnippet>1335</a></span><span class="kw">fn </span>snake_name(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>str, DecodeError&gt; {
+<a href=#1336 id=1336 data-nosnippet>1336</a>    <span class="kw">let </span>name = text(value)<span class="question-mark">?</span>;
+<a href=#1337 id=1337 data-nosnippet>1337</a>    <span class="kw">if </span>language::is_snake_name(name) &amp;&amp; !language::is_protected_name(name) {
+<a href=#1338 id=1338 data-nosnippet>1338</a>        <span class="prelude-val">Ok</span>(name)
+<a href=#1339 id=1339 data-nosnippet>1339</a>    } <span class="kw">else </span>{
+<a href=#1340 id=1340 data-nosnippet>1340</a>        <span class="prelude-val">Err</span>(at(DecodeErrorClass::InvalidLogicalIr, value.offset))
+<a href=#1341 id=1341 data-nosnippet>1341</a>    }
+<a href=#1342 id=1342 data-nosnippet>1342</a>}
+<a href=#1343 id=1343 data-nosnippet>1343</a>
+<a href=#1344 id=1344 data-nosnippet>1344</a><span class="doccomment">/// Returns one valid non-protected uppercase-leading logical name.
+<a href=#1345 id=1345 data-nosnippet>1345</a></span><span class="kw">fn </span>upper_name(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>str, DecodeError&gt; {
+<a href=#1346 id=1346 data-nosnippet>1346</a>    <span class="kw">let </span>name = text(value)<span class="question-mark">?</span>;
+<a href=#1347 id=1347 data-nosnippet>1347</a>    <span class="kw">if </span>language::is_upper_name(name) &amp;&amp; !language::is_protected_name(name) {
+<a href=#1348 id=1348 data-nosnippet>1348</a>        <span class="prelude-val">Ok</span>(name)
+<a href=#1349 id=1349 data-nosnippet>1349</a>    } <span class="kw">else </span>{
+<a href=#1350 id=1350 data-nosnippet>1350</a>        <span class="prelude-val">Err</span>(at(DecodeErrorClass::InvalidLogicalIr, value.offset))
+<a href=#1351 id=1351 data-nosnippet>1351</a>    }
 <a href=#1352 id=1352 data-nosnippet>1352</a>}
 <a href=#1353 id=1353 data-nosnippet>1353</a>
-<a href=#1354 id=1354 data-nosnippet>1354</a><span class="doccomment">/// Validates exact root coverage and canonical ordering for every provenance array.
-<a href=#1355 id=1355 data-nosnippet>1355</a></span><span class="kw">fn </span>validate_provenance_coverage(artifacts: <span class="kw-2">&amp;</span>CompilationArtifacts) -&gt; <span class="prelude-ty">Result</span>&lt;(), DecodeError&gt; {
-<a href=#1356 id=1356 data-nosnippet>1356</a>    <span class="kw">let </span>expected = artifacts
-<a href=#1357 id=1357 data-nosnippet>1357</a>        .logical_document()
-<a href=#1358 id=1358 data-nosnippet>1358</a>        .declarations()
-<a href=#1359 id=1359 data-nosnippet>1359</a>        .iter()
-<a href=#1360 id=1360 data-nosnippet>1360</a>        .map(Declaration::element_id)
-<a href=#1361 id=1361 data-nosnippet>1361</a>        .collect::&lt;BTreeSet&lt;<span class="kw">_</span>&gt;&gt;();
-<a href=#1362 id=1362 data-nosnippet>1362</a>    <span class="kw">let </span>observed = artifacts
-<a href=#1363 id=1363 data-nosnippet>1363</a>        .provenance()
-<a href=#1364 id=1364 data-nosnippet>1364</a>        .iter()
-<a href=#1365 id=1365 data-nosnippet>1365</a>        .map(|record| record.element_id())
-<a href=#1366 id=1366 data-nosnippet>1366</a>        .collect::&lt;BTreeSet&lt;<span class="kw">_</span>&gt;&gt;();
-<a href=#1367 id=1367 data-nosnippet>1367</a>    <span class="kw">let </span>values_ordered = artifacts
-<a href=#1368 id=1368 data-nosnippet>1368</a>        .provenance()
-<a href=#1369 id=1369 data-nosnippet>1369</a>        .windows(<span class="number">2</span>)
-<a href=#1370 id=1370 data-nosnippet>1370</a>        .all(|pair| pair[<span class="number">0</span>].element_id() &lt; pair[<span class="number">1</span>].element_id());
-<a href=#1371 id=1371 data-nosnippet>1371</a>    <span class="kw">let </span>fields_ordered = artifacts.field_provenance().windows(<span class="number">2</span>).all(|pair| {
-<a href=#1372 id=1372 data-nosnippet>1372</a>        (pair[<span class="number">0</span>].element_id(), pair[<span class="number">0</span>].field_path()) &lt; (pair[<span class="number">1</span>].element_id(), pair[<span class="number">1</span>].field_path())
-<a href=#1373 id=1373 data-nosnippet>1373</a>    });
-<a href=#1374 id=1374 data-nosnippet>1374</a>    <span class="kw">let </span>reuses_ordered = artifacts.reuse_provenance().windows(<span class="number">2</span>).all(|pair| {
-<a href=#1375 id=1375 data-nosnippet>1375</a>        (
-<a href=#1376 id=1376 data-nosnippet>1376</a>            pair[<span class="number">0</span>].element_id(),
-<a href=#1377 id=1377 data-nosnippet>1377</a>            pair[<span class="number">0</span>].value_path(),
-<a href=#1378 id=1378 data-nosnippet>1378</a>            pair[<span class="number">0</span>].source_element_id(),
-<a href=#1379 id=1379 data-nosnippet>1379</a>        ) &lt; (
-<a href=#1380 id=1380 data-nosnippet>1380</a>            pair[<span class="number">1</span>].element_id(),
-<a href=#1381 id=1381 data-nosnippet>1381</a>            pair[<span class="number">1</span>].value_path(),
-<a href=#1382 id=1382 data-nosnippet>1382</a>            pair[<span class="number">1</span>].source_element_id(),
-<a href=#1383 id=1383 data-nosnippet>1383</a>        )
-<a href=#1384 id=1384 data-nosnippet>1384</a>    });
-<a href=#1385 id=1385 data-nosnippet>1385</a>    <span class="kw">let </span>references_ordered = artifacts.reference_provenance().windows(<span class="number">2</span>).all(|pair| {
-<a href=#1386 id=1386 data-nosnippet>1386</a>        (
-<a href=#1387 id=1387 data-nosnippet>1387</a>            pair[<span class="number">0</span>].element_id(),
-<a href=#1388 id=1388 data-nosnippet>1388</a>            pair[<span class="number">0</span>].value_path(),
-<a href=#1389 id=1389 data-nosnippet>1389</a>            pair[<span class="number">0</span>].target_element_id(),
-<a href=#1390 id=1390 data-nosnippet>1390</a>        ) &lt; (
-<a href=#1391 id=1391 data-nosnippet>1391</a>            pair[<span class="number">1</span>].element_id(),
-<a href=#1392 id=1392 data-nosnippet>1392</a>            pair[<span class="number">1</span>].value_path(),
-<a href=#1393 id=1393 data-nosnippet>1393</a>            pair[<span class="number">1</span>].target_element_id(),
-<a href=#1394 id=1394 data-nosnippet>1394</a>        )
-<a href=#1395 id=1395 data-nosnippet>1395</a>    });
-<a href=#1396 id=1396 data-nosnippet>1396</a>    <span class="kw">if </span>expected.len() != artifacts.provenance().len()
-<a href=#1397 id=1397 data-nosnippet>1397</a>        || expected != observed
-<a href=#1398 id=1398 data-nosnippet>1398</a>        || !values_ordered
-<a href=#1399 id=1399 data-nosnippet>1399</a>        || !fields_ordered
-<a href=#1400 id=1400 data-nosnippet>1400</a>        || !reuses_ordered
-<a href=#1401 id=1401 data-nosnippet>1401</a>        || !references_ordered
-<a href=#1402 id=1402 data-nosnippet>1402</a>    {
-<a href=#1403 id=1403 data-nosnippet>1403</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(error(DecodeErrorClass::InvalidProvenance));
-<a href=#1404 id=1404 data-nosnippet>1404</a>    }
-<a href=#1405 id=1405 data-nosnippet>1405</a>    <span class="prelude-val">Ok</span>(())
-<a href=#1406 id=1406 data-nosnippet>1406</a>}
-<a href=#1407 id=1407 data-nosnippet>1407</a>
-<a href=#1408 id=1408 data-nosnippet>1408</a><span class="doccomment">/// Maps trusted-model validation failures into frozen external result classes.
-<a href=#1409 id=1409 data-nosnippet>1409</a></span><span class="kw">fn </span>map_reader_error(error_value: ReaderError) -&gt; DecodeError {
-<a href=#1410 id=1410 data-nosnippet>1410</a>    <span class="kw">let </span>class = <span class="kw">match </span>error_value {
-<a href=#1411 id=1411 data-nosnippet>1411</a>        ReaderError::MissingSourceMapEntry =&gt; DecodeErrorClass::InvalidSourceMap,
-<a href=#1412 id=1412 data-nosnippet>1412</a>        ReaderError::InvalidFieldProvenance
-<a href=#1413 id=1413 data-nosnippet>1413</a>        | ReaderError::InvalidReuseProvenance
-<a href=#1414 id=1414 data-nosnippet>1414</a>        | ReaderError::InvalidReferenceEdge
-<a href=#1415 id=1415 data-nosnippet>1415</a>        | ReaderError::MissingProvenanceRecord =&gt; DecodeErrorClass::InvalidProvenance,
-<a href=#1416 id=1416 data-nosnippet>1416</a>        ReaderError::InvalidVocabularyContract
-<a href=#1417 id=1417 data-nosnippet>1417</a>        | ReaderError::DuplicateElementId
-<a href=#1418 id=1418 data-nosnippet>1418</a>        | ReaderError::DuplicateDeclarationName
-<a href=#1419 id=1419 data-nosnippet>1419</a>        | ReaderError::TypeValueMismatch
-<a href=#1420 id=1420 data-nosnippet>1420</a>        | ReaderError::InvalidRecordSchema
-<a href=#1421 id=1421 data-nosnippet>1421</a>        | ReaderError::InvalidDeclarationFingerprint =&gt; DecodeErrorClass::InvalidLogicalIr,
-<a href=#1422 id=1422 data-nosnippet>1422</a>    };
-<a href=#1423 id=1423 data-nosnippet>1423</a>    error(class)
-<a href=#1424 id=1424 data-nosnippet>1424</a>}
-<a href=#1425 id=1425 data-nosnippet>1425</a>
-<a href=#1426 id=1426 data-nosnippet>1426</a><span class="doccomment">/// Returns the discriminator text without accepting a non-map sum.
-<a href=#1427 id=1427 data-nosnippet>1427</a></span><span class="kw">fn </span>discriminator(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>str, DecodeError&gt; {
-<a href=#1428 id=1428 data-nosnippet>1428</a>    <span class="kw">let </span>CborValue::Map(members) = <span class="kw-2">&amp;</span>value.value <span class="kw">else </span>{
-<a href=#1429 id=1429 data-nosnippet>1429</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(at(DecodeErrorClass::InvalidEncodedSchema, value.offset));
-<a href=#1430 id=1430 data-nosnippet>1430</a>    };
-<a href=#1431 id=1431 data-nosnippet>1431</a>    <span class="kw">let </span><span class="kw-2">mut </span>found = <span class="prelude-val">None</span>;
-<a href=#1432 id=1432 data-nosnippet>1432</a>    <span class="kw">for </span>(key, candidate) <span class="kw">in </span>members {
-<a href=#1433 id=1433 data-nosnippet>1433</a>        <span class="kw">if </span>key == constants::key::KIND {
-<a href=#1434 id=1434 data-nosnippet>1434</a>            <span class="kw">if </span>found.is_some() {
-<a href=#1435 id=1435 data-nosnippet>1435</a>                <span class="kw">return </span><span class="prelude-val">Err</span>(at(DecodeErrorClass::InvalidEncodedSchema, candidate.offset));
-<a href=#1436 id=1436 data-nosnippet>1436</a>            }
-<a href=#1437 id=1437 data-nosnippet>1437</a>            found = <span class="prelude-val">Some</span>(text(candidate)<span class="question-mark">?</span>);
-<a href=#1438 id=1438 data-nosnippet>1438</a>        }
-<a href=#1439 id=1439 data-nosnippet>1439</a>    }
-<a href=#1440 id=1440 data-nosnippet>1440</a>    found.ok_or_else(|| at(DecodeErrorClass::InvalidEncodedSchema, value.offset))
-<a href=#1441 id=1441 data-nosnippet>1441</a>}
-<a href=#1442 id=1442 data-nosnippet>1442</a>
-<a href=#1443 id=1443 data-nosnippet>1443</a><span class="doccomment">/// Validates a discriminator-only sum object.
-<a href=#1444 id=1444 data-nosnippet>1444</a></span><span class="kw">fn </span>kind_object(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;(), DecodeError&gt; {
-<a href=#1445 id=1445 data-nosnippet>1445</a>    Object::exact(value, <span class="kw-2">&amp;</span>[constants::key::KIND]).map(|<span class="kw">_</span>| ())
-<a href=#1446 id=1446 data-nosnippet>1446</a>}
-<a href=#1447 id=1447 data-nosnippet>1447</a>
-<a href=#1448 id=1448 data-nosnippet>1448</a><span class="doccomment">/// Decodes a fingerprint byte string into its typed representation.
-<a href=#1449 id=1449 data-nosnippet>1449</a></span><span class="kw">fn </span>decode_fingerprint(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;DeclarationFingerprint, DecodeError&gt; {
-<a href=#1450 id=1450 data-nosnippet>1450</a>    <span class="prelude-val">Ok</span>(DeclarationFingerprint::from_digest(
-<a href=#1451 id=1451 data-nosnippet>1451</a>        SemanticDigest::from_raw_bytes(digest_bytes(value)<span class="question-mark">?</span>),
-<a href=#1452 id=1452 data-nosnippet>1452</a>    ))
-<a href=#1453 id=1453 data-nosnippet>1453</a>}
-<a href=#1454 id=1454 data-nosnippet>1454</a>
-<a href=#1455 id=1455 data-nosnippet>1455</a><span class="doccomment">/// Returns an exact text scalar.
-<a href=#1456 id=1456 data-nosnippet>1456</a></span><span class="kw">fn </span>text(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>str, DecodeError&gt; {
-<a href=#1457 id=1457 data-nosnippet>1457</a>    <span class="kw">match </span><span class="kw-2">&amp;</span>value.value {
-<a href=#1458 id=1458 data-nosnippet>1458</a>        CborValue::Text(text_value) =&gt; <span class="prelude-val">Ok</span>(text_value),
-<a href=#1459 id=1459 data-nosnippet>1459</a>        <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(at(DecodeErrorClass::InvalidEncodedSchema, value.offset)),
-<a href=#1460 id=1460 data-nosnippet>1460</a>    }
-<a href=#1461 id=1461 data-nosnippet>1461</a>}
-<a href=#1462 id=1462 data-nosnippet>1462</a>
-<a href=#1463 id=1463 data-nosnippet>1463</a><span class="doccomment">/// Returns one valid non-protected lower-snake logical name.
-<a href=#1464 id=1464 data-nosnippet>1464</a></span><span class="kw">fn </span>snake_name(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>str, DecodeError&gt; {
-<a href=#1465 id=1465 data-nosnippet>1465</a>    <span class="kw">let </span>name = text(value)<span class="question-mark">?</span>;
-<a href=#1466 id=1466 data-nosnippet>1466</a>    <span class="kw">if </span>language::is_snake_name(name) &amp;&amp; !language::is_protected_name(name) {
-<a href=#1467 id=1467 data-nosnippet>1467</a>        <span class="prelude-val">Ok</span>(name)
-<a href=#1468 id=1468 data-nosnippet>1468</a>    } <span class="kw">else </span>{
-<a href=#1469 id=1469 data-nosnippet>1469</a>        <span class="prelude-val">Err</span>(at(DecodeErrorClass::InvalidLogicalIr, value.offset))
-<a href=#1470 id=1470 data-nosnippet>1470</a>    }
-<a href=#1471 id=1471 data-nosnippet>1471</a>}
-<a href=#1472 id=1472 data-nosnippet>1472</a>
-<a href=#1473 id=1473 data-nosnippet>1473</a><span class="doccomment">/// Returns one valid non-protected uppercase-leading logical name.
-<a href=#1474 id=1474 data-nosnippet>1474</a></span><span class="kw">fn </span>upper_name(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>str, DecodeError&gt; {
-<a href=#1475 id=1475 data-nosnippet>1475</a>    <span class="kw">let </span>name = text(value)<span class="question-mark">?</span>;
-<a href=#1476 id=1476 data-nosnippet>1476</a>    <span class="kw">if </span>language::is_upper_name(name) &amp;&amp; !language::is_protected_name(name) {
-<a href=#1477 id=1477 data-nosnippet>1477</a>        <span class="prelude-val">Ok</span>(name)
-<a href=#1478 id=1478 data-nosnippet>1478</a>    } <span class="kw">else </span>{
-<a href=#1479 id=1479 data-nosnippet>1479</a>        <span class="prelude-val">Err</span>(at(DecodeErrorClass::InvalidLogicalIr, value.offset))
-<a href=#1480 id=1480 data-nosnippet>1480</a>    }
-<a href=#1481 id=1481 data-nosnippet>1481</a>}
-<a href=#1482 id=1482 data-nosnippet>1482</a>
-<a href=#1483 id=1483 data-nosnippet>1483</a><span class="doccomment">/// Returns an exact unsigned scalar.
-<a href=#1484 id=1484 data-nosnippet>1484</a></span><span class="kw">fn </span>unsigned(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;u64, DecodeError&gt; {
-<a href=#1485 id=1485 data-nosnippet>1485</a>    <span class="kw">match </span>value.value {
-<a href=#1486 id=1486 data-nosnippet>1486</a>        CborValue::Unsigned(number) =&gt; <span class="prelude-val">Ok</span>(number),
-<a href=#1487 id=1487 data-nosnippet>1487</a>        <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(at(DecodeErrorClass::InvalidEncodedSchema, value.offset)),
-<a href=#1488 id=1488 data-nosnippet>1488</a>    }
+<a href=#1354 id=1354 data-nosnippet>1354</a><span class="doccomment">/// Returns an exact unsigned scalar.
+<a href=#1355 id=1355 data-nosnippet>1355</a></span><span class="kw">fn </span>unsigned(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;u64, DecodeError&gt; {
+<a href=#1356 id=1356 data-nosnippet>1356</a>    <span class="kw">match </span>value.value {
+<a href=#1357 id=1357 data-nosnippet>1357</a>        CborValue::Unsigned(number) =&gt; <span class="prelude-val">Ok</span>(number),
+<a href=#1358 id=1358 data-nosnippet>1358</a>        <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(at(DecodeErrorClass::InvalidEncodedSchema, value.offset)),
+<a href=#1359 id=1359 data-nosnippet>1359</a>    }
+<a href=#1360 id=1360 data-nosnippet>1360</a>}
+<a href=#1361 id=1361 data-nosnippet>1361</a>
+<a href=#1362 id=1362 data-nosnippet>1362</a><span class="doccomment">/// Returns an exact signed scalar.
+<a href=#1363 id=1363 data-nosnippet>1363</a></span><span class="kw">fn </span>signed(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;i64, DecodeError&gt; {
+<a href=#1364 id=1364 data-nosnippet>1364</a>    <span class="kw">match </span>value.value {
+<a href=#1365 id=1365 data-nosnippet>1365</a>        CborValue::Unsigned(number) =&gt; i64::try_from(number)
+<a href=#1366 id=1366 data-nosnippet>1366</a>            .map_err(|<span class="kw">_</span>| at(DecodeErrorClass::InvalidEncodedSchema, value.offset)),
+<a href=#1367 id=1367 data-nosnippet>1367</a>        CborValue::Negative(number) =&gt; <span class="prelude-val">Ok</span>(number),
+<a href=#1368 id=1368 data-nosnippet>1368</a>        <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(at(DecodeErrorClass::InvalidEncodedSchema, value.offset)),
+<a href=#1369 id=1369 data-nosnippet>1369</a>    }
+<a href=#1370 id=1370 data-nosnippet>1370</a>}
+<a href=#1371 id=1371 data-nosnippet>1371</a>
+<a href=#1372 id=1372 data-nosnippet>1372</a><span class="doccomment">/// Returns an exact Boolean scalar.
+<a href=#1373 id=1373 data-nosnippet>1373</a></span><span class="kw">fn </span>boolean(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;bool, DecodeError&gt; {
+<a href=#1374 id=1374 data-nosnippet>1374</a>    <span class="kw">match </span>value.value {
+<a href=#1375 id=1375 data-nosnippet>1375</a>        CborValue::Boolean(boolean_value) =&gt; <span class="prelude-val">Ok</span>(boolean_value),
+<a href=#1376 id=1376 data-nosnippet>1376</a>        <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(at(DecodeErrorClass::InvalidEncodedSchema, value.offset)),
+<a href=#1377 id=1377 data-nosnippet>1377</a>    }
+<a href=#1378 id=1378 data-nosnippet>1378</a>}
+<a href=#1379 id=1379 data-nosnippet>1379</a>
+<a href=#1380 id=1380 data-nosnippet>1380</a><span class="doccomment">/// Returns an exact array.
+<a href=#1381 id=1381 data-nosnippet>1381</a></span><span class="kw">fn </span>array(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>[LocatedValue], DecodeError&gt; {
+<a href=#1382 id=1382 data-nosnippet>1382</a>    <span class="kw">match </span><span class="kw-2">&amp;</span>value.value {
+<a href=#1383 id=1383 data-nosnippet>1383</a>        CborValue::Array(values) =&gt; <span class="prelude-val">Ok</span>(values),
+<a href=#1384 id=1384 data-nosnippet>1384</a>        <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(at(DecodeErrorClass::InvalidEncodedSchema, value.offset)),
+<a href=#1385 id=1385 data-nosnippet>1385</a>    }
+<a href=#1386 id=1386 data-nosnippet>1386</a>}
+<a href=#1387 id=1387 data-nosnippet>1387</a>
+<a href=#1388 id=1388 data-nosnippet>1388</a><span class="doccomment">/// Returns a copied exact 32-byte digest.
+<a href=#1389 id=1389 data-nosnippet>1389</a></span><span class="kw">fn </span>digest_bytes(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;[u8; <span class="number">32</span>], DecodeError&gt; {
+<a href=#1390 id=1390 data-nosnippet>1390</a>    <span class="kw">let </span>CborValue::Bytes(bytes) = <span class="kw-2">&amp;</span>value.value <span class="kw">else </span>{
+<a href=#1391 id=1391 data-nosnippet>1391</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(at(DecodeErrorClass::InvalidEncodedSchema, value.offset));
+<a href=#1392 id=1392 data-nosnippet>1392</a>    };
+<a href=#1393 id=1393 data-nosnippet>1393</a>    bytes
+<a href=#1394 id=1394 data-nosnippet>1394</a>        .as_slice()
+<a href=#1395 id=1395 data-nosnippet>1395</a>        .try_into()
+<a href=#1396 id=1396 data-nosnippet>1396</a>        .map_err(|<span class="kw">_</span>| at(DecodeErrorClass::InvalidEncodedSchema, value.offset))
+<a href=#1397 id=1397 data-nosnippet>1397</a>}
+<a href=#1398 id=1398 data-nosnippet>1398</a>
+<a href=#1399 id=1399 data-nosnippet>1399</a><span class="doccomment">/// Decodes one array of text values.
+<a href=#1400 id=1400 data-nosnippet>1400</a></span><span class="kw">fn </span>text_array(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;String&gt;, DecodeError&gt; {
+<a href=#1401 id=1401 data-nosnippet>1401</a>    array(value)<span class="question-mark">?
+<a href=#1402 id=1402 data-nosnippet>1402</a>        </span>.iter()
+<a href=#1403 id=1403 data-nosnippet>1403</a>        .map(|item| text(item).map(str::to_owned))
+<a href=#1404 id=1404 data-nosnippet>1404</a>        .collect()
+<a href=#1405 id=1405 data-nosnippet>1405</a>}
+<a href=#1406 id=1406 data-nosnippet>1406</a>
+<a href=#1407 id=1407 data-nosnippet>1407</a><span class="doccomment">/// Requires one exact supported version value.
+<a href=#1408 id=1408 data-nosnippet>1408</a></span><span class="kw">fn </span>require_version(value: <span class="kw-2">&amp;</span>LocatedValue, expected: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;(), DecodeError&gt; {
+<a href=#1409 id=1409 data-nosnippet>1409</a>    <span class="kw">if </span>text(value)<span class="question-mark">? </span>== expected {
+<a href=#1410 id=1410 data-nosnippet>1410</a>        <span class="prelude-val">Ok</span>(())
+<a href=#1411 id=1411 data-nosnippet>1411</a>    } <span class="kw">else </span>{
+<a href=#1412 id=1412 data-nosnippet>1412</a>        <span class="prelude-val">Err</span>(at(DecodeErrorClass::UnsupportedVersion, value.offset))
+<a href=#1413 id=1413 data-nosnippet>1413</a>    }
+<a href=#1414 id=1414 data-nosnippet>1414</a>}
+<a href=#1415 id=1415 data-nosnippet>1415</a>
+<a href=#1416 id=1416 data-nosnippet>1416</a><span class="doccomment">/// Returns whether strings are unique and strictly increasing.
+<a href=#1417 id=1417 data-nosnippet>1417</a></span><span class="kw">fn </span>is_strictly_ordered(values: <span class="kw-2">&amp;</span>[String]) -&gt; bool {
+<a href=#1418 id=1418 data-nosnippet>1418</a>    values.windows(<span class="number">2</span>).all(|pair| pair[<span class="number">0</span>] &lt; pair[<span class="number">1</span>])
+<a href=#1419 id=1419 data-nosnippet>1419</a>}
+<a href=#1420 id=1420 data-nosnippet>1420</a>
+<a href=#1421 id=1421 data-nosnippet>1421</a><span class="doccomment">/// Checks one collection length against a captured u64 limit.
+<a href=#1422 id=1422 data-nosnippet>1422</a></span><span class="kw">fn </span>check_collection(length: usize, limit: u64) -&gt; <span class="prelude-ty">Result</span>&lt;(), DecodeError&gt; {
+<a href=#1423 id=1423 data-nosnippet>1423</a>    <span class="kw">if </span>u64::try_from(length).unwrap_or(u64::MAX) &gt; limit {
+<a href=#1424 id=1424 data-nosnippet>1424</a>        <span class="prelude-val">Err</span>(error(DecodeErrorClass::EncodedSizeLimit))
+<a href=#1425 id=1425 data-nosnippet>1425</a>    } <span class="kw">else </span>{
+<a href=#1426 id=1426 data-nosnippet>1426</a>        <span class="prelude-val">Ok</span>(())
+<a href=#1427 id=1427 data-nosnippet>1427</a>    }
+<a href=#1428 id=1428 data-nosnippet>1428</a>}
+<a href=#1429 id=1429 data-nosnippet>1429</a>
+<a href=#1430 id=1430 data-nosnippet>1430</a><span class="doccomment">/// Checks cooperative cancellation before major phases.
+<a href=#1431 id=1431 data-nosnippet>1431</a></span><span class="kw">fn </span>check_cancelled(cancellation: <span class="kw-2">&amp;</span>CancellationToken) -&gt; <span class="prelude-ty">Result</span>&lt;(), DecodeError&gt; {
+<a href=#1432 id=1432 data-nosnippet>1432</a>    <span class="kw">if </span>cancellation.is_cancelled() {
+<a href=#1433 id=1433 data-nosnippet>1433</a>        <span class="prelude-val">Err</span>(error(DecodeErrorClass::Cancelled))
+<a href=#1434 id=1434 data-nosnippet>1434</a>    } <span class="kw">else </span>{
+<a href=#1435 id=1435 data-nosnippet>1435</a>        <span class="prelude-val">Ok</span>(())
+<a href=#1436 id=1436 data-nosnippet>1436</a>    }
+<a href=#1437 id=1437 data-nosnippet>1437</a>}
+<a href=#1438 id=1438 data-nosnippet>1438</a>
+<a href=#1439 id=1439 data-nosnippet>1439</a><span class="doccomment">/// Reads one big-endian u16 from checked frame bytes.
+<a href=#1440 id=1440 data-nosnippet>1440</a></span><span class="kw">fn </span>read_u16(bytes: <span class="kw-2">&amp;</span>[u8], offset: usize) -&gt; <span class="prelude-ty">Result</span>&lt;u16, DecodeError&gt; {
+<a href=#1441 id=1441 data-nosnippet>1441</a>    <span class="prelude-val">Ok</span>(u16::from_be_bytes(read_fixed(bytes, offset)<span class="question-mark">?</span>))
+<a href=#1442 id=1442 data-nosnippet>1442</a>}
+<a href=#1443 id=1443 data-nosnippet>1443</a>
+<a href=#1444 id=1444 data-nosnippet>1444</a><span class="doccomment">/// Reads one big-endian u32 from checked frame bytes.
+<a href=#1445 id=1445 data-nosnippet>1445</a></span><span class="kw">fn </span>read_u32(bytes: <span class="kw-2">&amp;</span>[u8], offset: usize) -&gt; <span class="prelude-ty">Result</span>&lt;u32, DecodeError&gt; {
+<a href=#1446 id=1446 data-nosnippet>1446</a>    <span class="prelude-val">Ok</span>(u32::from_be_bytes(read_fixed(bytes, offset)<span class="question-mark">?</span>))
+<a href=#1447 id=1447 data-nosnippet>1447</a>}
+<a href=#1448 id=1448 data-nosnippet>1448</a>
+<a href=#1449 id=1449 data-nosnippet>1449</a><span class="doccomment">/// Reads one big-endian u64 from checked frame bytes.
+<a href=#1450 id=1450 data-nosnippet>1450</a></span><span class="kw">fn </span>read_u64(bytes: <span class="kw-2">&amp;</span>[u8], offset: usize) -&gt; <span class="prelude-ty">Result</span>&lt;u64, DecodeError&gt; {
+<a href=#1451 id=1451 data-nosnippet>1451</a>    <span class="prelude-val">Ok</span>(u64::from_be_bytes(read_fixed(bytes, offset)<span class="question-mark">?</span>))
+<a href=#1452 id=1452 data-nosnippet>1452</a>}
+<a href=#1453 id=1453 data-nosnippet>1453</a>
+<a href=#1454 id=1454 data-nosnippet>1454</a><span class="doccomment">/// Reads one fixed frame field without unchecked slicing.
+<a href=#1455 id=1455 data-nosnippet>1455</a></span><span class="kw">fn </span>read_fixed&lt;<span class="kw">const </span>N: usize&gt;(bytes: <span class="kw-2">&amp;</span>[u8], offset: usize) -&gt; <span class="prelude-ty">Result</span>&lt;[u8; N], DecodeError&gt; {
+<a href=#1456 id=1456 data-nosnippet>1456</a>    <span class="kw">let </span>end = offset
+<a href=#1457 id=1457 data-nosnippet>1457</a>        .checked_add(N)
+<a href=#1458 id=1458 data-nosnippet>1458</a>        .ok_or_else(|| error(DecodeErrorClass::MalformedFrame))<span class="question-mark">?</span>;
+<a href=#1459 id=1459 data-nosnippet>1459</a>    bytes
+<a href=#1460 id=1460 data-nosnippet>1460</a>        .get(offset..end)
+<a href=#1461 id=1461 data-nosnippet>1461</a>        .ok_or_else(|| {
+<a href=#1462 id=1462 data-nosnippet>1462</a>            at(
+<a href=#1463 id=1463 data-nosnippet>1463</a>                DecodeErrorClass::MalformedFrame,
+<a href=#1464 id=1464 data-nosnippet>1464</a>                u64_from_usize(offset).unwrap_or(<span class="number">0</span>),
+<a href=#1465 id=1465 data-nosnippet>1465</a>            )
+<a href=#1466 id=1466 data-nosnippet>1466</a>        })<span class="question-mark">?
+<a href=#1467 id=1467 data-nosnippet>1467</a>        </span>.try_into()
+<a href=#1468 id=1468 data-nosnippet>1468</a>        .map_err(|<span class="kw">_</span>| error(DecodeErrorClass::InternalDefect))
+<a href=#1469 id=1469 data-nosnippet>1469</a>}
+<a href=#1470 id=1470 data-nosnippet>1470</a>
+<a href=#1471 id=1471 data-nosnippet>1471</a><span class="doccomment">/// Converts u64 framing values to host offsets without truncation.
+<a href=#1472 id=1472 data-nosnippet>1472</a></span><span class="kw">fn </span>usize_from_u64(value: u64) -&gt; <span class="prelude-ty">Result</span>&lt;usize, DecodeError&gt; {
+<a href=#1473 id=1473 data-nosnippet>1473</a>    usize::try_from(value).map_err(|<span class="kw">_</span>| error(DecodeErrorClass::MalformedFrame))
+<a href=#1474 id=1474 data-nosnippet>1474</a>}
+<a href=#1475 id=1475 data-nosnippet>1475</a>
+<a href=#1476 id=1476 data-nosnippet>1476</a><span class="doccomment">/// Converts u32 framing values to host offsets without truncation.
+<a href=#1477 id=1477 data-nosnippet>1477</a></span><span class="kw">fn </span>usize_from_u32(value: u32) -&gt; <span class="prelude-ty">Result</span>&lt;usize, DecodeError&gt; {
+<a href=#1478 id=1478 data-nosnippet>1478</a>    usize::try_from(value).map_err(|<span class="kw">_</span>| error(DecodeErrorClass::MalformedFrame))
+<a href=#1479 id=1479 data-nosnippet>1479</a>}
+<a href=#1480 id=1480 data-nosnippet>1480</a>
+<a href=#1481 id=1481 data-nosnippet>1481</a><span class="doccomment">/// Converts host offsets to bounded diagnostic offsets.
+<a href=#1482 id=1482 data-nosnippet>1482</a></span><span class="kw">fn </span>u64_from_usize(value: usize) -&gt; <span class="prelude-ty">Result</span>&lt;u64, DecodeError&gt; {
+<a href=#1483 id=1483 data-nosnippet>1483</a>    u64::try_from(value).map_err(|<span class="kw">_</span>| error(DecodeErrorClass::InternalDefect))
+<a href=#1484 id=1484 data-nosnippet>1484</a>}
+<a href=#1485 id=1485 data-nosnippet>1485</a>
+<a href=#1486 id=1486 data-nosnippet>1486</a><span class="doccomment">/// Saturates a captured u64 limit to the host word width.
+<a href=#1487 id=1487 data-nosnippet>1487</a></span><span class="kw">fn </span>saturating_usize(value: u64) -&gt; usize {
+<a href=#1488 id=1488 data-nosnippet>1488</a>    usize::try_from(value).unwrap_or(usize::MAX)
 <a href=#1489 id=1489 data-nosnippet>1489</a>}
 <a href=#1490 id=1490 data-nosnippet>1490</a>
-<a href=#1491 id=1491 data-nosnippet>1491</a><span class="doccomment">/// Returns an exact signed scalar.
-<a href=#1492 id=1492 data-nosnippet>1492</a></span><span class="kw">fn </span>signed(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;i64, DecodeError&gt; {
-<a href=#1493 id=1493 data-nosnippet>1493</a>    <span class="kw">match </span>value.value {
-<a href=#1494 id=1494 data-nosnippet>1494</a>        CborValue::Unsigned(number) =&gt; i64::try_from(number)
-<a href=#1495 id=1495 data-nosnippet>1495</a>            .map_err(|<span class="kw">_</span>| at(DecodeErrorClass::InvalidEncodedSchema, value.offset)),
-<a href=#1496 id=1496 data-nosnippet>1496</a>        CborValue::Negative(number) =&gt; <span class="prelude-val">Ok</span>(number),
-<a href=#1497 id=1497 data-nosnippet>1497</a>        <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(at(DecodeErrorClass::InvalidEncodedSchema, value.offset)),
-<a href=#1498 id=1498 data-nosnippet>1498</a>    }
+<a href=#1491 id=1491 data-nosnippet>1491</a><span class="doccomment">/// Constructs an offset-free bounded error.
+<a href=#1492 id=1492 data-nosnippet>1492</a></span><span class="kw">const fn </span>error(class: DecodeErrorClass) -&gt; DecodeError {
+<a href=#1493 id=1493 data-nosnippet>1493</a>    DecodeError::new(class, <span class="prelude-val">None</span>)
+<a href=#1494 id=1494 data-nosnippet>1494</a>}
+<a href=#1495 id=1495 data-nosnippet>1495</a>
+<a href=#1496 id=1496 data-nosnippet>1496</a><span class="doccomment">/// Constructs a bounded error at one absolute byte offset.
+<a href=#1497 id=1497 data-nosnippet>1497</a></span><span class="kw">const fn </span>at(class: DecodeErrorClass, offset: u64) -&gt; DecodeError {
+<a href=#1498 id=1498 data-nosnippet>1498</a>    DecodeError::new(class, <span class="prelude-val">Some</span>(offset))
 <a href=#1499 id=1499 data-nosnippet>1499</a>}
 <a href=#1500 id=1500 data-nosnippet>1500</a>
-<a href=#1501 id=1501 data-nosnippet>1501</a><span class="doccomment">/// Returns an exact Boolean scalar.
-<a href=#1502 id=1502 data-nosnippet>1502</a></span><span class="kw">fn </span>boolean(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;bool, DecodeError&gt; {
-<a href=#1503 id=1503 data-nosnippet>1503</a>    <span class="kw">match </span>value.value {
-<a href=#1504 id=1504 data-nosnippet>1504</a>        CborValue::Boolean(boolean_value) =&gt; <span class="prelude-val">Ok</span>(boolean_value),
-<a href=#1505 id=1505 data-nosnippet>1505</a>        <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(at(DecodeErrorClass::InvalidEncodedSchema, value.offset)),
-<a href=#1506 id=1506 data-nosnippet>1506</a>    }
-<a href=#1507 id=1507 data-nosnippet>1507</a>}
-<a href=#1508 id=1508 data-nosnippet>1508</a>
-<a href=#1509 id=1509 data-nosnippet>1509</a><span class="doccomment">/// Returns an exact array.
-<a href=#1510 id=1510 data-nosnippet>1510</a></span><span class="kw">fn </span>array(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>[LocatedValue], DecodeError&gt; {
-<a href=#1511 id=1511 data-nosnippet>1511</a>    <span class="kw">match </span><span class="kw-2">&amp;</span>value.value {
-<a href=#1512 id=1512 data-nosnippet>1512</a>        CborValue::Array(values) =&gt; <span class="prelude-val">Ok</span>(values),
-<a href=#1513 id=1513 data-nosnippet>1513</a>        <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(at(DecodeErrorClass::InvalidEncodedSchema, value.offset)),
-<a href=#1514 id=1514 data-nosnippet>1514</a>    }
-<a href=#1515 id=1515 data-nosnippet>1515</a>}
-<a href=#1516 id=1516 data-nosnippet>1516</a>
-<a href=#1517 id=1517 data-nosnippet>1517</a><span class="doccomment">/// Returns a copied exact 32-byte digest.
-<a href=#1518 id=1518 data-nosnippet>1518</a></span><span class="kw">fn </span>digest_bytes(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;[u8; <span class="number">32</span>], DecodeError&gt; {
-<a href=#1519 id=1519 data-nosnippet>1519</a>    <span class="kw">let </span>CborValue::Bytes(bytes) = <span class="kw-2">&amp;</span>value.value <span class="kw">else </span>{
-<a href=#1520 id=1520 data-nosnippet>1520</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(at(DecodeErrorClass::InvalidEncodedSchema, value.offset));
-<a href=#1521 id=1521 data-nosnippet>1521</a>    };
-<a href=#1522 id=1522 data-nosnippet>1522</a>    bytes
-<a href=#1523 id=1523 data-nosnippet>1523</a>        .as_slice()
-<a href=#1524 id=1524 data-nosnippet>1524</a>        .try_into()
-<a href=#1525 id=1525 data-nosnippet>1525</a>        .map_err(|<span class="kw">_</span>| at(DecodeErrorClass::InvalidEncodedSchema, value.offset))
-<a href=#1526 id=1526 data-nosnippet>1526</a>}
-<a href=#1527 id=1527 data-nosnippet>1527</a>
-<a href=#1528 id=1528 data-nosnippet>1528</a><span class="doccomment">/// Decodes one array of text values.
-<a href=#1529 id=1529 data-nosnippet>1529</a></span><span class="kw">fn </span>text_array(value: <span class="kw-2">&amp;</span>LocatedValue) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;String&gt;, DecodeError&gt; {
-<a href=#1530 id=1530 data-nosnippet>1530</a>    array(value)<span class="question-mark">?
-<a href=#1531 id=1531 data-nosnippet>1531</a>        </span>.iter()
-<a href=#1532 id=1532 data-nosnippet>1532</a>        .map(|item| text(item).map(str::to_owned))
-<a href=#1533 id=1533 data-nosnippet>1533</a>        .collect()
-<a href=#1534 id=1534 data-nosnippet>1534</a>}
-<a href=#1535 id=1535 data-nosnippet>1535</a>
-<a href=#1536 id=1536 data-nosnippet>1536</a><span class="doccomment">/// Requires one exact supported version value.
-<a href=#1537 id=1537 data-nosnippet>1537</a></span><span class="kw">fn </span>require_version(value: <span class="kw-2">&amp;</span>LocatedValue, expected: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;(), DecodeError&gt; {
-<a href=#1538 id=1538 data-nosnippet>1538</a>    <span class="kw">if </span>text(value)<span class="question-mark">? </span>== expected {
-<a href=#1539 id=1539 data-nosnippet>1539</a>        <span class="prelude-val">Ok</span>(())
-<a href=#1540 id=1540 data-nosnippet>1540</a>    } <span class="kw">else </span>{
-<a href=#1541 id=1541 data-nosnippet>1541</a>        <span class="prelude-val">Err</span>(at(DecodeErrorClass::UnsupportedVersion, value.offset))
-<a href=#1542 id=1542 data-nosnippet>1542</a>    }
-<a href=#1543 id=1543 data-nosnippet>1543</a>}
-<a href=#1544 id=1544 data-nosnippet>1544</a>
-<a href=#1545 id=1545 data-nosnippet>1545</a><span class="doccomment">/// Returns whether strings are unique and strictly increasing.
-<a href=#1546 id=1546 data-nosnippet>1546</a></span><span class="kw">fn </span>is_strictly_ordered(values: <span class="kw-2">&amp;</span>[String]) -&gt; bool {
-<a href=#1547 id=1547 data-nosnippet>1547</a>    values.windows(<span class="number">2</span>).all(|pair| pair[<span class="number">0</span>] &lt; pair[<span class="number">1</span>])
-<a href=#1548 id=1548 data-nosnippet>1548</a>}
-<a href=#1549 id=1549 data-nosnippet>1549</a>
-<a href=#1550 id=1550 data-nosnippet>1550</a><span class="doccomment">/// Checks one collection length against a captured u64 limit.
-<a href=#1551 id=1551 data-nosnippet>1551</a></span><span class="kw">fn </span>check_collection(length: usize, limit: u64) -&gt; <span class="prelude-ty">Result</span>&lt;(), DecodeError&gt; {
-<a href=#1552 id=1552 data-nosnippet>1552</a>    <span class="kw">if </span>u64::try_from(length).unwrap_or(u64::MAX) &gt; limit {
-<a href=#1553 id=1553 data-nosnippet>1553</a>        <span class="prelude-val">Err</span>(error(DecodeErrorClass::EncodedSizeLimit))
-<a href=#1554 id=1554 data-nosnippet>1554</a>    } <span class="kw">else </span>{
-<a href=#1555 id=1555 data-nosnippet>1555</a>        <span class="prelude-val">Ok</span>(())
-<a href=#1556 id=1556 data-nosnippet>1556</a>    }
-<a href=#1557 id=1557 data-nosnippet>1557</a>}
-<a href=#1558 id=1558 data-nosnippet>1558</a>
-<a href=#1559 id=1559 data-nosnippet>1559</a><span class="doccomment">/// Checks cooperative cancellation before major phases.
-<a href=#1560 id=1560 data-nosnippet>1560</a></span><span class="kw">fn </span>check_cancelled(cancellation: <span class="kw-2">&amp;</span>CancellationToken) -&gt; <span class="prelude-ty">Result</span>&lt;(), DecodeError&gt; {
-<a href=#1561 id=1561 data-nosnippet>1561</a>    <span class="kw">if </span>cancellation.is_cancelled() {
-<a href=#1562 id=1562 data-nosnippet>1562</a>        <span class="prelude-val">Err</span>(error(DecodeErrorClass::Cancelled))
-<a href=#1563 id=1563 data-nosnippet>1563</a>    } <span class="kw">else </span>{
-<a href=#1564 id=1564 data-nosnippet>1564</a>        <span class="prelude-val">Ok</span>(())
-<a href=#1565 id=1565 data-nosnippet>1565</a>    }
-<a href=#1566 id=1566 data-nosnippet>1566</a>}
-<a href=#1567 id=1567 data-nosnippet>1567</a>
-<a href=#1568 id=1568 data-nosnippet>1568</a><span class="doccomment">/// Reads one big-endian u16 from checked frame bytes.
-<a href=#1569 id=1569 data-nosnippet>1569</a></span><span class="kw">fn </span>read_u16(bytes: <span class="kw-2">&amp;</span>[u8], offset: usize) -&gt; <span class="prelude-ty">Result</span>&lt;u16, DecodeError&gt; {
-<a href=#1570 id=1570 data-nosnippet>1570</a>    <span class="prelude-val">Ok</span>(u16::from_be_bytes(read_fixed(bytes, offset)<span class="question-mark">?</span>))
-<a href=#1571 id=1571 data-nosnippet>1571</a>}
-<a href=#1572 id=1572 data-nosnippet>1572</a>
-<a href=#1573 id=1573 data-nosnippet>1573</a><span class="doccomment">/// Reads one big-endian u32 from checked frame bytes.
-<a href=#1574 id=1574 data-nosnippet>1574</a></span><span class="kw">fn </span>read_u32(bytes: <span class="kw-2">&amp;</span>[u8], offset: usize) -&gt; <span class="prelude-ty">Result</span>&lt;u32, DecodeError&gt; {
-<a href=#1575 id=1575 data-nosnippet>1575</a>    <span class="prelude-val">Ok</span>(u32::from_be_bytes(read_fixed(bytes, offset)<span class="question-mark">?</span>))
-<a href=#1576 id=1576 data-nosnippet>1576</a>}
-<a href=#1577 id=1577 data-nosnippet>1577</a>
-<a href=#1578 id=1578 data-nosnippet>1578</a><span class="doccomment">/// Reads one big-endian u64 from checked frame bytes.
-<a href=#1579 id=1579 data-nosnippet>1579</a></span><span class="kw">fn </span>read_u64(bytes: <span class="kw-2">&amp;</span>[u8], offset: usize) -&gt; <span class="prelude-ty">Result</span>&lt;u64, DecodeError&gt; {
-<a href=#1580 id=1580 data-nosnippet>1580</a>    <span class="prelude-val">Ok</span>(u64::from_be_bytes(read_fixed(bytes, offset)<span class="question-mark">?</span>))
-<a href=#1581 id=1581 data-nosnippet>1581</a>}
-<a href=#1582 id=1582 data-nosnippet>1582</a>
-<a href=#1583 id=1583 data-nosnippet>1583</a><span class="doccomment">/// Reads one fixed frame field without unchecked slicing.
-<a href=#1584 id=1584 data-nosnippet>1584</a></span><span class="kw">fn </span>read_fixed&lt;<span class="kw">const </span>N: usize&gt;(bytes: <span class="kw-2">&amp;</span>[u8], offset: usize) -&gt; <span class="prelude-ty">Result</span>&lt;[u8; N], DecodeError&gt; {
-<a href=#1585 id=1585 data-nosnippet>1585</a>    <span class="kw">let </span>end = offset
-<a href=#1586 id=1586 data-nosnippet>1586</a>        .checked_add(N)
-<a href=#1587 id=1587 data-nosnippet>1587</a>        .ok_or_else(|| error(DecodeErrorClass::MalformedFrame))<span class="question-mark">?</span>;
-<a href=#1588 id=1588 data-nosnippet>1588</a>    bytes
-<a href=#1589 id=1589 data-nosnippet>1589</a>        .get(offset..end)
-<a href=#1590 id=1590 data-nosnippet>1590</a>        .ok_or_else(|| {
-<a href=#1591 id=1591 data-nosnippet>1591</a>            at(
-<a href=#1592 id=1592 data-nosnippet>1592</a>                DecodeErrorClass::MalformedFrame,
-<a href=#1593 id=1593 data-nosnippet>1593</a>                u64_from_usize(offset).unwrap_or(<span class="number">0</span>),
-<a href=#1594 id=1594 data-nosnippet>1594</a>            )
-<a href=#1595 id=1595 data-nosnippet>1595</a>        })<span class="question-mark">?
-<a href=#1596 id=1596 data-nosnippet>1596</a>        </span>.try_into()
-<a href=#1597 id=1597 data-nosnippet>1597</a>        .map_err(|<span class="kw">_</span>| error(DecodeErrorClass::InternalDefect))
-<a href=#1598 id=1598 data-nosnippet>1598</a>}
-<a href=#1599 id=1599 data-nosnippet>1599</a>
-<a href=#1600 id=1600 data-nosnippet>1600</a><span class="doccomment">/// Converts u64 framing values to host offsets without truncation.
-<a href=#1601 id=1601 data-nosnippet>1601</a></span><span class="kw">fn </span>usize_from_u64(value: u64) -&gt; <span class="prelude-ty">Result</span>&lt;usize, DecodeError&gt; {
-<a href=#1602 id=1602 data-nosnippet>1602</a>    usize::try_from(value).map_err(|<span class="kw">_</span>| error(DecodeErrorClass::MalformedFrame))
-<a href=#1603 id=1603 data-nosnippet>1603</a>}
-<a href=#1604 id=1604 data-nosnippet>1604</a>
-<a href=#1605 id=1605 data-nosnippet>1605</a><span class="doccomment">/// Converts u32 framing values to host offsets without truncation.
-<a href=#1606 id=1606 data-nosnippet>1606</a></span><span class="kw">fn </span>usize_from_u32(value: u32) -&gt; <span class="prelude-ty">Result</span>&lt;usize, DecodeError&gt; {
-<a href=#1607 id=1607 data-nosnippet>1607</a>    usize::try_from(value).map_err(|<span class="kw">_</span>| error(DecodeErrorClass::MalformedFrame))
-<a href=#1608 id=1608 data-nosnippet>1608</a>}
-<a href=#1609 id=1609 data-nosnippet>1609</a>
-<a href=#1610 id=1610 data-nosnippet>1610</a><span class="doccomment">/// Converts host offsets to bounded diagnostic offsets.
-<a href=#1611 id=1611 data-nosnippet>1611</a></span><span class="kw">fn </span>u64_from_usize(value: usize) -&gt; <span class="prelude-ty">Result</span>&lt;u64, DecodeError&gt; {
-<a href=#1612 id=1612 data-nosnippet>1612</a>    u64::try_from(value).map_err(|<span class="kw">_</span>| error(DecodeErrorClass::InternalDefect))
-<a href=#1613 id=1613 data-nosnippet>1613</a>}
-<a href=#1614 id=1614 data-nosnippet>1614</a>
-<a href=#1615 id=1615 data-nosnippet>1615</a><span class="doccomment">/// Saturates a captured u64 limit to the host word width.
-<a href=#1616 id=1616 data-nosnippet>1616</a></span><span class="kw">fn </span>saturating_usize(value: u64) -&gt; usize {
-<a href=#1617 id=1617 data-nosnippet>1617</a>    usize::try_from(value).unwrap_or(usize::MAX)
-<a href=#1618 id=1618 data-nosnippet>1618</a>}
-<a href=#1619 id=1619 data-nosnippet>1619</a>
-<a href=#1620 id=1620 data-nosnippet>1620</a><span class="doccomment">/// Constructs an offset-free bounded error.
-<a href=#1621 id=1621 data-nosnippet>1621</a></span><span class="kw">const fn </span>error(class: DecodeErrorClass) -&gt; DecodeError {
-<a href=#1622 id=1622 data-nosnippet>1622</a>    DecodeError::new(class, <span class="prelude-val">None</span>)
-<a href=#1623 id=1623 data-nosnippet>1623</a>}
-<a href=#1624 id=1624 data-nosnippet>1624</a>
-<a href=#1625 id=1625 data-nosnippet>1625</a><span class="doccomment">/// Constructs a bounded error at one absolute byte offset.
-<a href=#1626 id=1626 data-nosnippet>1626</a></span><span class="kw">const fn </span>at(class: DecodeErrorClass, offset: u64) -&gt; DecodeError {
-<a href=#1627 id=1627 data-nosnippet>1627</a>    DecodeError::new(class, <span class="prelude-val">Some</span>(offset))
-<a href=#1628 id=1628 data-nosnippet>1628</a>}
-<a href=#1629 id=1629 data-nosnippet>1629</a>
-<a href=#1630 id=1630 data-nosnippet>1630</a><span class="attr">#[cfg(test)]
-<a href=#1631 id=1631 data-nosnippet>1631</a>#[path = <span class="string">"../tests/decode/mod.rs"</span>]
-<a href=#1632 id=1632 data-nosnippet>1632</a></span><span class="kw">mod </span>tests;
+<a href=#1501 id=1501 data-nosnippet>1501</a><span class="attr">#[cfg(test)]
+<a href=#1502 id=1502 data-nosnippet>1502</a>#[path = <span class="string">"../tests/decode/mod.rs"</span>]
+<a href=#1503 id=1503 data-nosnippet>1503</a></span><span class="kw">mod </span>tests;
 </code></pre></div></section></main></body></html>

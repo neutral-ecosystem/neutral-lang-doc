@@ -1,5 +1,16 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/neutral-vocabulary/src/composition/values.rs`."><title>values.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-1ed95124.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="neutral_vocabulary" data-themes="" data-resource-suffix="" data-rustdoc-version="1.98.1 (48a229cea 2026-09-01)" data-channel="1.98.1" data-search-js="search-9944d736.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"><!-- SPDX-License-Identifier: Apache-2.0 -->
 <style>
+  :root {
+    --neutral-ui-font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --neutral-header-height: 3.65rem;
+    scroll-padding-top: calc(var(--neutral-header-height) + 0.75rem);
+  }
+
+  /* Keep Rustdoc's explicit sans-serif setting while improving the default prose font. */
+  :root:not(.sans-serif-fonts) {
+    --font-family: var(--neutral-ui-font);
+  }
+
   :root,
   :root:not([data-theme]),
   :root[data-theme="light"] {
@@ -93,7 +104,7 @@
   }
 
   body.rustdoc {
-    padding-top: 3.65rem;
+    padding-top: var(--neutral-header-height);
   }
 
   #neutral-docs-nav {
@@ -101,7 +112,7 @@
     inset: 0 0 auto;
     z-index: 10000;
     display: flex;
-    min-height: 3.65rem;
+    min-height: var(--neutral-header-height);
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
@@ -123,7 +134,7 @@
     min-width: 0;
     gap: 0.7rem;
     color: var(--main-color);
-    font: 650 0.9rem/1.2 var(--font-family);
+    font: 650 0.9rem/1.2 var(--neutral-ui-font);
     text-decoration: none;
   }
 
@@ -154,32 +165,40 @@
     gap: 0.4rem;
   }
 
-  .neutral-docs-actions a {
+  .neutral-docs-actions a,
+  .neutral-docs-actions button {
     min-height: 2.15rem;
     padding: 0.46rem 0.78rem;
     color: var(--main-color);
     background: var(--neutral-surface-raised);
     border: 1px solid var(--neutral-nav-border);
     border-radius: 0.5rem;
-    font: 600 0.8rem/1.2 var(--font-family);
+    font: 600 0.8rem/1.2 var(--neutral-ui-font);
     text-decoration: none;
+    cursor: pointer;
   }
 
-  .neutral-docs-actions a:hover {
+  .neutral-docs-actions a:hover,
+  .neutral-docs-actions button:hover,
+  .neutral-docs-actions button[aria-pressed="true"] {
     color: var(--neutral-accent);
     border-color: var(--neutral-accent);
   }
 
   .sidebar {
-    top: 3.65rem;
-    height: calc(100vh - 3.65rem);
+    top: var(--neutral-header-height);
+    height: calc(100vh - var(--neutral-header-height));
     border-right-color: var(--neutral-nav-border);
   }
 
   .sidebar-resizer {
-    top: 3.65rem;
-    height: calc(100% - 3.65rem);
+    top: var(--neutral-header-height);
+    height: calc(100% - var(--neutral-header-height));
     color: var(--neutral-nav-border);
+  }
+
+  .src #sidebar-button {
+    top: calc(var(--neutral-header-height) + 0.5rem);
   }
 
   .sidebar-crate {
@@ -317,6 +336,12 @@
     border-color: var(--neutral-accent);
   }
 
+  .impl > .rightside,
+  .method > .rightside,
+  .trait-impl > .rightside {
+    margin: 0.42rem 0.5rem 0 0.75rem;
+  }
+
   .stab {
     padding: 0.2rem 0.45rem;
     color: var(--neutral-muted);
@@ -350,17 +375,17 @@
     outline-offset: 3px;
   }
 
-  :target {
-    scroll-margin-top: 5rem;
+  body.rustdoc [id] {
+    scroll-margin-top: 0.75rem;
   }
 
   @media (max-width: 700px) {
-    body.rustdoc {
-      padding-top: 3.35rem;
+    :root {
+      --neutral-header-height: 3.35rem;
+      scroll-padding-top: calc(var(--neutral-header-height) + var(--topbar-height) + 0.75rem);
     }
 
     #neutral-docs-nav {
-      min-height: 3.35rem;
       padding: 0.42rem 0.65rem;
     }
 
@@ -374,18 +399,34 @@
       display: none;
     }
 
-    .neutral-docs-actions a {
+    .neutral-docs-brand {
+      flex-shrink: 0;
+    }
+
+    .neutral-docs-actions {
+      min-width: 0;
+      flex-shrink: 1;
+      overflow-x: auto;
+    }
+
+    .neutral-docs-actions > * {
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .neutral-docs-actions a,
+    .neutral-docs-actions button {
       min-height: 2rem;
       padding: 0.4rem 0.62rem;
     }
 
     rustdoc-topbar {
-      top: 3.35rem;
+      top: var(--neutral-header-height);
     }
 
     .sidebar {
-      top: calc(3.35rem + var(--topbar-height));
-      height: calc(100vh - 3.35rem - var(--topbar-height));
+      top: calc(var(--neutral-header-height) + var(--topbar-height));
+      height: calc(100vh - var(--neutral-header-height) - var(--topbar-height));
     }
 
     body.rustdoc > main {
@@ -452,13 +493,59 @@
 
     const actions = document.createElement("div");
     actions.className = "neutral-docs-actions";
+    for (const [label, direction] of [["←", -1], ["→", 1]]) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = label;
+      button.dataset.history = direction;
+      button.setAttribute("aria-label", direction < 0 ? "Back" : "Forward");
+      button.title = direction < 0 ? "Previous browser history entry" : "Next browser history entry";
+      button.addEventListener("click", navigateDocumentationHistory);
+      actions.append(button);
+    }
     const workspace = document.createElement("a");
     workspace.href = `${rootPath}index.html`;
     workspace.textContent = "Workspace";
     actions.append(workspace);
 
+    const map = document.createElement("a");
+    map.href = `${rootPath}index.html#codebase-map`;
+    map.textContent = "Codebase map";
+    actions.append(map);
+
+    const themeToggle = document.createElement("button");
+    themeToggle.id = "neutral-theme-toggle";
+    themeToggle.type = "button";
+    themeToggle.textContent = "Dark mode";
+
+    /** Reflects Rustdoc theme changes, including changes made in its settings. */
+    function syncThemeToggle() {
+      const theme = document.documentElement.dataset.theme;
+      themeToggle.setAttribute("aria-pressed", String(theme === "dark" || theme === "ayu"));
+    }
+
+    /** Applies and persists the requested theme through Rustdoc's settings API. */
+    function toggleNeutralTheme() {
+      const dark = themeToggle.getAttribute("aria-pressed") === "true";
+      updateLocalStorage("use-system-theme", "false");
+      switchTheme(dark ? "light" : "dark", true);
+    }
+
+    themeToggle.addEventListener("click", toggleNeutralTheme);
+    new MutationObserver(syncThemeToggle).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+    syncThemeToggle();
+    actions.append(themeToggle);
+
     navigation.append(brand, actions);
     document.body.prepend(navigation);
+  }
+
+  /** Restores the previous or next page, anchor, or search using browser history. */
+  function navigateDocumentationHistory(event) {
+    window.history.go(Number(event.currentTarget.dataset.history));
   }
 
   document.addEventListener("DOMContentLoaded", configureNeutralDocumentation);
@@ -850,262 +937,258 @@
 <a href=#384 id=384 data-nosnippet>384</a>    budget: <span class="kw-2">&amp;mut </span>Budget&lt;<span class="lifetime">'_</span>&gt;,
 <a href=#385 id=385 data-nosnippet>385</a>    depth: u64,
 <a href=#386 id=386 data-nosnippet>386</a>) -&gt; <span class="prelude-ty">Result</span>&lt;V, E&gt; {
-<a href=#387 id=387 data-nosnippet>387</a>    materialize_with(value, ty, catalogue, budget, depth, <span class="kw-2">&amp;</span>ClosedReferences)
-<a href=#388 id=388 data-nosnippet>388</a>}
-<a href=#389 id=389 data-nosnippet>389</a>
-<a href=#390 id=390 data-nosnippet>390</a><span class="doccomment">/// Checks identity-only reference targets without evaluating or embedding their values.
-<a href=#391 id=391 data-nosnippet>391</a></span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">trait </span>ReferencePolicy&lt;R&gt; {
-<a href=#392 id=392 data-nosnippet>392</a>    <span class="doccomment">/// Verifies the exact invariant target type, visibility and lookup budget.
-<a href=#393 id=393 data-nosnippet>393</a>    </span><span class="kw">fn </span>check(<span class="kw-2">&amp;</span><span class="self">self</span>, target: <span class="kw-2">&amp;</span>R, expected: <span class="kw-2">&amp;</span>T, budget: <span class="kw-2">&amp;mut </span>Budget&lt;<span class="lifetime">'_</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), E&gt;;
-<a href=#394 id=394 data-nosnippet>394</a>}
-<a href=#395 id=395 data-nosnippet>395</a>
-<a href=#396 id=396 data-nosnippet>396</a><span class="doccomment">/// Closed defaults cannot construct a reference, including through nested defaults.
-<a href=#397 id=397 data-nosnippet>397</a></span><span class="kw">struct </span>ClosedReferences;
-<a href=#398 id=398 data-nosnippet>398</a>
-<a href=#399 id=399 data-nosnippet>399</a><span class="kw">impl </span>ReferencePolicy&lt;std::convert::Infallible&gt; <span class="kw">for </span>ClosedReferences {
-<a href=#400 id=400 data-nosnippet>400</a>    <span class="doccomment">/// Eliminates an impossible closed reference without adding a runtime escape hatch.
-<a href=#401 id=401 data-nosnippet>401</a>    </span><span class="kw">fn </span>check(<span class="kw-2">&amp;</span><span class="self">self</span>, target: <span class="kw-2">&amp;</span>std::convert::Infallible, <span class="kw">_</span>: <span class="kw-2">&amp;</span>T, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Budget&lt;<span class="lifetime">'_</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), E&gt; {
-<a href=#402 id=402 data-nosnippet>402</a>        <span class="kw">match </span><span class="kw-2">*</span>target {}
-<a href=#403 id=403 data-nosnippet>403</a>    }
-<a href=#404 id=404 data-nosnippet>404</a>}
-<a href=#405 id=405 data-nosnippet>405</a>
-<a href=#406 id=406 data-nosnippet>406</a><span class="doccomment">/// Materializes both closed and binding values with one contextual/default/restriction engine.
-<a href=#407 id=407 data-nosnippet>407</a></span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>materialize_with&lt;R: TryClone&gt;(
-<a href=#408 id=408 data-nosnippet>408</a>    value: <span class="kw-2">&amp;</span>W&lt;R&gt;,
-<a href=#409 id=409 data-nosnippet>409</a>    ty: <span class="kw-2">&amp;</span>T,
-<a href=#410 id=410 data-nosnippet>410</a>    catalogue: <span class="kw-2">&amp;</span>Catalogue&lt;<span class="lifetime">'_</span>&gt;,
-<a href=#411 id=411 data-nosnippet>411</a>    budget: <span class="kw-2">&amp;mut </span>Budget&lt;<span class="lifetime">'_</span>&gt;,
-<a href=#412 id=412 data-nosnippet>412</a>    depth: u64,
-<a href=#413 id=413 data-nosnippet>413</a>    references: <span class="kw-2">&amp;</span><span class="kw">impl </span>ReferencePolicy&lt;R&gt;,
-<a href=#414 id=414 data-nosnippet>414</a>) -&gt; <span class="prelude-ty">Result</span>&lt;W&lt;R&gt;, E&gt; {
-<a href=#415 id=415 data-nosnippet>415</a>    budget.depth(depth, budget.limits.value_depth)<span class="question-mark">?</span>;
-<a href=#416 id=416 data-nosnippet>416</a>    budget.value_node()<span class="question-mark">?</span>;
-<a href=#417 id=417 data-nosnippet>417</a>    <span class="kw">if let </span>T::Nullable(inner) = ty {
-<a href=#418 id=418 data-nosnippet>418</a>        <span class="kw">return if </span><span class="macro">matches!</span>(value, W::Null) {
-<a href=#419 id=419 data-nosnippet>419</a>            <span class="prelude-val">Ok</span>(W::Null)
-<a href=#420 id=420 data-nosnippet>420</a>        } <span class="kw">else </span>{
-<a href=#421 id=421 data-nosnippet>421</a>            materialize_with(
-<a href=#422 id=422 data-nosnippet>422</a>                value,
-<a href=#423 id=423 data-nosnippet>423</a>                inner,
-<a href=#424 id=424 data-nosnippet>424</a>                catalogue,
-<a href=#425 id=425 data-nosnippet>425</a>                budget,
-<a href=#426 id=426 data-nosnippet>426</a>                depth + u64::from(!catalogue.project_depth),
-<a href=#427 id=427 data-nosnippet>427</a>                references,
-<a href=#428 id=428 data-nosnippet>428</a>            )
-<a href=#429 id=429 data-nosnippet>429</a>        };
-<a href=#430 id=430 data-nosnippet>430</a>    }
-<a href=#431 id=431 data-nosnippet>431</a>    <span class="kw">if </span>scalar_matches(value, ty) {
-<a href=#432 id=432 data-nosnippet>432</a>        budget.step(scalar_size(value))<span class="question-mark">?</span>;
-<a href=#433 id=433 data-nosnippet>433</a>        <span class="kw">match </span>value {
-<a href=#434 id=434 data-nosnippet>434</a>            W::Number(number)
-<a href=#435 id=435 data-nosnippet>435</a>                <span class="kw">if </span>number.coefficient().len() <span class="kw">as </span>u64 &gt; budget.limits.json.numeric_digits
-<a href=#436 id=436 data-nosnippet>436</a>                    || number.scale().unsigned_abs() &gt; budget.limits.json.numeric_scale =&gt;
-<a href=#437 id=437 data-nosnippet>437</a>            {
-<a href=#438 id=438 data-nosnippet>438</a>                <span class="kw">return </span><span class="prelude-val">Err</span>(E::Limit);
-<a href=#439 id=439 data-nosnippet>439</a>            }
-<a href=#440 id=440 data-nosnippet>440</a>            W::String(text) | W::Url(text) | W::Path(text)
-<a href=#441 id=441 data-nosnippet>441</a>                <span class="kw">if </span>text.len() <span class="kw">as </span>u64 &gt; budget.limits.json.string_bytes =&gt;
-<a href=#442 id=442 data-nosnippet>442</a>            {
-<a href=#443 id=443 data-nosnippet>443</a>                <span class="kw">return </span><span class="prelude-val">Err</span>(E::Limit);
-<a href=#444 id=444 data-nosnippet>444</a>            }
-<a href=#445 id=445 data-nosnippet>445</a>            <span class="kw">_ </span>=&gt; {}
-<a href=#446 id=446 data-nosnippet>446</a>        }
-<a href=#447 id=447 data-nosnippet>447</a>        <span class="kw">return </span>value.try_clone().map_err(|<span class="kw">_</span>| E::Allocation);
-<a href=#448 id=448 data-nosnippet>448</a>    }
-<a href=#449 id=449 data-nosnippet>449</a>    <span class="kw">match </span>(value, ty) {
-<a href=#450 id=450 data-nosnippet>450</a>        (W::Reference(target), T::Ref(inner)) =&gt; {
-<a href=#451 id=451 data-nosnippet>451</a>            references.check(target, inner, budget)<span class="question-mark">?</span>;
-<a href=#452 id=452 data-nosnippet>452</a>            <span class="prelude-val">Ok</span>(W::Reference(target.try_clone().map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>))
-<a href=#453 id=453 data-nosnippet>453</a>        }
-<a href=#454 id=454 data-nosnippet>454</a>        (W::List(values), T::List(inner)) =&gt; {
-<a href=#455 id=455 data-nosnippet>455</a>            <span class="kw">super</span>::check_count(values.len(), budget.limits.json.array_items)<span class="question-mark">?</span>;
-<a href=#456 id=456 data-nosnippet>456</a>            <span class="kw">super</span>::check_count(
-<a href=#457 id=457 data-nosnippet>457</a>                values.len(),
-<a href=#458 id=458 data-nosnippet>458</a>                budget.limits.value_nodes.saturating_sub(budget.value_nodes),
-<a href=#459 id=459 data-nosnippet>459</a>            )<span class="question-mark">?</span>;
-<a href=#460 id=460 data-nosnippet>460</a>            budget.step(values.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
-<a href=#461 id=461 data-nosnippet>461</a>            <span class="kw">let </span><span class="kw-2">mut </span>result = Vec::new();
-<a href=#462 id=462 data-nosnippet>462</a>            result.try_retain(values.len()).map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>;
-<a href=#463 id=463 data-nosnippet>463</a>            <span class="kw">for </span>value <span class="kw">in </span>values {
-<a href=#464 id=464 data-nosnippet>464</a>                result.push(materialize_with(
-<a href=#465 id=465 data-nosnippet>465</a>                    value,
-<a href=#466 id=466 data-nosnippet>466</a>                    inner,
-<a href=#467 id=467 data-nosnippet>467</a>                    catalogue,
-<a href=#468 id=468 data-nosnippet>468</a>                    budget,
-<a href=#469 id=469 data-nosnippet>469</a>                    depth + <span class="number">1</span>,
-<a href=#470 id=470 data-nosnippet>470</a>                    references,
-<a href=#471 id=471 data-nosnippet>471</a>                )<span class="question-mark">?</span>);
-<a href=#472 id=472 data-nosnippet>472</a>            }
-<a href=#473 id=473 data-nosnippet>473</a>            <span class="prelude-val">Ok</span>(W::List(result))
-<a href=#474 id=474 data-nosnippet>474</a>        }
-<a href=#475 id=475 data-nosnippet>475</a>        (<span class="kw">_</span>, T::VocabularyNominal { .. } | T::Nominal(<span class="kw">_</span>)) =&gt; {
-<a href=#476 id=476 data-nosnippet>476</a>            <span class="kw">let </span>definition = catalogue.resolve(ty, budget)<span class="question-mark">?</span>;
-<a href=#477 id=477 data-nosnippet>477</a>            <span class="kw">match </span>(<span class="kw-2">&amp;</span>definition.body, value) {
-<a href=#478 id=478 data-nosnippet>478</a>                (CompositionBody::Record(fields), W::Record(values)) =&gt; materialize_record(
-<a href=#479 id=479 data-nosnippet>479</a>                    values,
-<a href=#480 id=480 data-nosnippet>480</a>                    fields,
-<a href=#481 id=481 data-nosnippet>481</a>                    catalogue,
-<a href=#482 id=482 data-nosnippet>482</a>                    budget,
-<a href=#483 id=483 data-nosnippet>483</a>                    depth + u64::from(!catalogue.project_depth),
-<a href=#484 id=484 data-nosnippet>484</a>                    references,
-<a href=#485 id=485 data-nosnippet>485</a>                ),
-<a href=#486 id=486 data-nosnippet>486</a>                (CompositionBody::Variant(alternatives), W::Variant { tag, payload }) =&gt; {
-<a href=#487 id=487 data-nosnippet>487</a>                    <span class="kw">if </span>tag.len() <span class="kw">as </span>u64 &gt; budget.limits.json.string_bytes {
-<a href=#488 id=488 data-nosnippet>488</a>                        <span class="kw">return </span><span class="prelude-val">Err</span>(E::Limit);
-<a href=#489 id=489 data-nosnippet>489</a>                    }
-<a href=#490 id=490 data-nosnippet>490</a>                    budget.key(tag.len(), alternatives.len())<span class="question-mark">?</span>;
-<a href=#491 id=491 data-nosnippet>491</a>                    <span class="kw">let </span>index = alternatives
-<a href=#492 id=492 data-nosnippet>492</a>                        .binary_search_by(|alternative| alternative.tag.cmp(tag))
-<a href=#493 id=493 data-nosnippet>493</a>                        .map_err(|<span class="kw">_</span>| E::InvalidDefault)<span class="question-mark">?</span>;
-<a href=#494 id=494 data-nosnippet>494</a>                    <span class="kw">let </span>alternative = <span class="kw-2">&amp;</span>alternatives[index];
-<a href=#495 id=495 data-nosnippet>495</a>                    <span class="prelude-val">Ok</span>(W::Variant {
-<a href=#496 id=496 data-nosnippet>496</a>                        tag: tag.try_clone().map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>,
-<a href=#497 id=497 data-nosnippet>497</a>                        payload: boxed(materialize_with(
-<a href=#498 id=498 data-nosnippet>498</a>                            payload,
-<a href=#499 id=499 data-nosnippet>499</a>                            <span class="kw-2">&amp;</span>alternative.ty,
-<a href=#500 id=500 data-nosnippet>500</a>                            catalogue,
-<a href=#501 id=501 data-nosnippet>501</a>                            budget,
-<a href=#502 id=502 data-nosnippet>502</a>                            depth + <span class="number">1</span>,
-<a href=#503 id=503 data-nosnippet>503</a>                            references,
-<a href=#504 id=504 data-nosnippet>504</a>                        )<span class="question-mark">?</span>)
-<a href=#505 id=505 data-nosnippet>505</a>                        .map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>,
-<a href=#506 id=506 data-nosnippet>506</a>                    })
-<a href=#507 id=507 data-nosnippet>507</a>                }
-<a href=#508 id=508 data-nosnippet>508</a>                <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(E::InvalidDefault),
-<a href=#509 id=509 data-nosnippet>509</a>            }
-<a href=#510 id=510 data-nosnippet>510</a>        }
-<a href=#511 id=511 data-nosnippet>511</a>        <span class="comment">// A closed default has no reference representation. Nullable Ref null
-<a href=#512 id=512 data-nosnippet>512</a>        // was handled above and never creates a target edge.
-<a href=#513 id=513 data-nosnippet>513</a>        </span><span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(E::InvalidDefault),
-<a href=#514 id=514 data-nosnippet>514</a>    }
-<a href=#515 id=515 data-nosnippet>515</a>}
-<a href=#516 id=516 data-nosnippet>516</a>
-<a href=#517 id=517 data-nosnippet>517</a><span class="doccomment">/// Applies required/optional/defaulted field policies without conflating absence and null.
-<a href=#518 id=518 data-nosnippet>518</a></span><span class="kw">fn </span>materialize_record&lt;R: TryClone&gt;(
-<a href=#519 id=519 data-nosnippet>519</a>    values: <span class="kw-2">&amp;</span>[(String, <span class="prelude-ty">Option</span>&lt;W&lt;R&gt;&gt;)],
-<a href=#520 id=520 data-nosnippet>520</a>    fields: <span class="kw-2">&amp;</span>[CompositionField],
-<a href=#521 id=521 data-nosnippet>521</a>    catalogue: <span class="kw-2">&amp;</span>Catalogue&lt;<span class="lifetime">'_</span>&gt;,
-<a href=#522 id=522 data-nosnippet>522</a>    budget: <span class="kw-2">&amp;mut </span>Budget&lt;<span class="lifetime">'_</span>&gt;,
-<a href=#523 id=523 data-nosnippet>523</a>    depth: u64,
-<a href=#524 id=524 data-nosnippet>524</a>    references: <span class="kw-2">&amp;</span><span class="kw">impl </span>ReferencePolicy&lt;R&gt;,
-<a href=#525 id=525 data-nosnippet>525</a>) -&gt; <span class="prelude-ty">Result</span>&lt;W&lt;R&gt;, E&gt; {
-<a href=#526 id=526 data-nosnippet>526</a>    budget.depth(depth, budget.limits.value_depth)<span class="question-mark">?</span>;
-<a href=#527 id=527 data-nosnippet>527</a>    <span class="kw">super</span>::check_count(values.len(), budget.limits.json.fields)<span class="question-mark">?</span>;
-<a href=#528 id=528 data-nosnippet>528</a>    <span class="kw">super</span>::check_count(fields.len(), budget.limits.json.fields)<span class="question-mark">?</span>;
-<a href=#529 id=529 data-nosnippet>529</a>    <span class="kw">super</span>::check_count(
-<a href=#530 id=530 data-nosnippet>530</a>        fields.len(),
-<a href=#531 id=531 data-nosnippet>531</a>        budget.limits.value_nodes.saturating_sub(budget.value_nodes),
-<a href=#532 id=532 data-nosnippet>532</a>    )<span class="question-mark">?</span>;
-<a href=#533 id=533 data-nosnippet>533</a>    budget.step(values.len() <span class="kw">as </span>u64 + fields.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
-<a href=#534 id=534 data-nosnippet>534</a>    <span class="kw">let </span><span class="kw-2">mut </span>supplied = BTreeMap::new();
-<a href=#535 id=535 data-nosnippet>535</a>    <span class="kw">for </span>(name, value) <span class="kw">in </span>values {
-<a href=#536 id=536 data-nosnippet>536</a>        budget.step(<span class="number">1</span>)<span class="question-mark">?</span>;
-<a href=#537 id=537 data-nosnippet>537</a>        budget.key(name.len(), values.len())<span class="question-mark">?</span>;
-<a href=#538 id=538 data-nosnippet>538</a>        budget.step(supplied.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
-<a href=#539 id=539 data-nosnippet>539</a>        <span class="kw">if </span>supplied
-<a href=#540 id=540 data-nosnippet>540</a>            .insert(name.as_str(), value)
-<a href=#541 id=541 data-nosnippet>541</a>            .map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?
-<a href=#542 id=542 data-nosnippet>542</a>            </span>.is_some()
-<a href=#543 id=543 data-nosnippet>543</a>            || fields
-<a href=#544 id=544 data-nosnippet>544</a>                .binary_search_by(|field| field.name.as_str().cmp(name))
-<a href=#545 id=545 data-nosnippet>545</a>                .is_err()
-<a href=#546 id=546 data-nosnippet>546</a>        {
-<a href=#547 id=547 data-nosnippet>547</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(E::InvalidDefault);
-<a href=#548 id=548 data-nosnippet>548</a>        }
-<a href=#549 id=549 data-nosnippet>549</a>    }
-<a href=#550 id=550 data-nosnippet>550</a>    <span class="kw">let </span><span class="kw-2">mut </span>result = Vec::new();
-<a href=#551 id=551 data-nosnippet>551</a>    result.try_retain(fields.len()).map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>;
-<a href=#552 id=552 data-nosnippet>552</a>    <span class="kw">for </span>field <span class="kw">in </span>fields {
-<a href=#553 id=553 data-nosnippet>553</a>        budget.step(<span class="number">1</span>)<span class="question-mark">?</span>;
-<a href=#554 id=554 data-nosnippet>554</a>        <span class="kw">let </span>restrictions = validate_restrictions(field, budget)<span class="question-mark">?</span>;
-<a href=#555 id=555 data-nosnippet>555</a>        <span class="kw">let </span>provided = supplied
-<a href=#556 id=556 data-nosnippet>556</a>            .get(field.name.as_str())
-<a href=#557 id=557 data-nosnippet>557</a>            .and_then(|value| value.as_ref());
-<a href=#558 id=558 data-nosnippet>558</a>        <span class="kw">let </span>value = <span class="kw">match </span>provided {
-<a href=#559 id=559 data-nosnippet>559</a>            <span class="prelude-val">Some</span>(value) =&gt; <span class="prelude-val">Some</span>(materialize_with(
-<a href=#560 id=560 data-nosnippet>560</a>                value,
-<a href=#561 id=561 data-nosnippet>561</a>                <span class="kw-2">&amp;</span>field.ty,
-<a href=#562 id=562 data-nosnippet>562</a>                catalogue,
-<a href=#563 id=563 data-nosnippet>563</a>                budget,
-<a href=#564 id=564 data-nosnippet>564</a>                depth + <span class="number">1</span>,
-<a href=#565 id=565 data-nosnippet>565</a>                references,
-<a href=#566 id=566 data-nosnippet>566</a>            )<span class="question-mark">?</span>),
-<a href=#567 id=567 data-nosnippet>567</a>            <span class="prelude-val">None </span>=&gt; <span class="kw">match </span>field.presence {
-<a href=#568 id=568 data-nosnippet>568</a>                FieldPresence::Required =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(E::InvalidDefault),
-<a href=#569 id=569 data-nosnippet>569</a>                FieldPresence::Optional =&gt; {
-<a href=#570 id=570 data-nosnippet>570</a>                    budget.value_node()<span class="question-mark">?</span>;
-<a href=#571 id=571 data-nosnippet>571</a>                    <span class="prelude-val">None
-<a href=#572 id=572 data-nosnippet>572</a>                </span>}
-<a href=#573 id=573 data-nosnippet>573</a>                FieldPresence::Defaulted =&gt; {
-<a href=#574 id=574 data-nosnippet>574</a>                    <span class="kw">let </span>default = lift_closed(
-<a href=#575 id=575 data-nosnippet>575</a>                        field.default.as_ref().ok_or(E::InvalidDefault)<span class="question-mark">?</span>,
-<a href=#576 id=576 data-nosnippet>576</a>                        budget,
-<a href=#577 id=577 data-nosnippet>577</a>                        depth + <span class="number">1</span>,
-<a href=#578 id=578 data-nosnippet>578</a>                    )<span class="question-mark">?</span>;
-<a href=#579 id=579 data-nosnippet>579</a>                    <span class="prelude-val">Some</span>(materialize_with(
-<a href=#580 id=580 data-nosnippet>580</a>                        <span class="kw-2">&amp;</span>default,
-<a href=#581 id=581 data-nosnippet>581</a>                        <span class="kw-2">&amp;</span>field.ty,
-<a href=#582 id=582 data-nosnippet>582</a>                        catalogue,
-<a href=#583 id=583 data-nosnippet>583</a>                        budget,
-<a href=#584 id=584 data-nosnippet>584</a>                        depth + <span class="number">1</span>,
-<a href=#585 id=585 data-nosnippet>585</a>                        references,
-<a href=#586 id=586 data-nosnippet>586</a>                    )<span class="question-mark">?</span>)
-<a href=#587 id=587 data-nosnippet>587</a>                }
-<a href=#588 id=588 data-nosnippet>588</a>            },
-<a href=#589 id=589 data-nosnippet>589</a>        };
-<a href=#590 id=590 data-nosnippet>590</a>        <span class="kw">if let </span><span class="prelude-val">Some</span>(value) = <span class="kw-2">&amp;</span>value {
-<a href=#591 id=591 data-nosnippet>591</a>            check_restrictions(<span class="kw-2">&amp;</span>restrictions, value, budget)<span class="question-mark">?</span>;
-<a href=#592 id=592 data-nosnippet>592</a>        }
-<a href=#593 id=593 data-nosnippet>593</a>        result.push((field.name.try_clone().map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>, value));
-<a href=#594 id=594 data-nosnippet>594</a>    }
-<a href=#595 id=595 data-nosnippet>595</a>    <span class="prelude-val">Ok</span>(W::Record(result))
-<a href=#596 id=596 data-nosnippet>596</a>}
-<a href=#597 id=597 data-nosnippet>597</a>
-<a href=#598 id=598 data-nosnippet>598</a><span class="doccomment">/// Copies a closed default into a reference-capable representation without inventing a target.
-<a href=#599 id=599 data-nosnippet>599</a></span><span class="kw">fn </span>lift_closed&lt;R&gt;(value: <span class="kw-2">&amp;</span>V, budget: <span class="kw-2">&amp;mut </span>Budget&lt;<span class="lifetime">'_</span>&gt;, depth: u64) -&gt; <span class="prelude-ty">Result</span>&lt;W&lt;R&gt;, E&gt; {
-<a href=#600 id=600 data-nosnippet>600</a>    budget.depth(depth, budget.limits.value_depth)<span class="question-mark">?</span>;
-<a href=#601 id=601 data-nosnippet>601</a>    budget.step(scalar_size(value))<span class="question-mark">?</span>;
-<a href=#602 id=602 data-nosnippet>602</a>    <span class="prelude-val">Ok</span>(<span class="kw">match </span>value {
-<a href=#603 id=603 data-nosnippet>603</a>        V::Number(value) =&gt; W::Number(value.try_clone().map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>),
-<a href=#604 id=604 data-nosnippet>604</a>        V::String(value) =&gt; W::String(value.try_clone().map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>),
-<a href=#605 id=605 data-nosnippet>605</a>        V::Bool(value) =&gt; W::Bool(<span class="kw-2">*</span>value),
-<a href=#606 id=606 data-nosnippet>606</a>        V::Url(value) =&gt; W::Url(value.try_clone().map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>),
-<a href=#607 id=607 data-nosnippet>607</a>        V::Path(value) =&gt; W::Path(value.try_clone().map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>),
-<a href=#608 id=608 data-nosnippet>608</a>        V::Null =&gt; W::Null,
-<a href=#609 id=609 data-nosnippet>609</a>        V::Reference(never) =&gt; <span class="kw">match </span><span class="kw-2">*</span>never {},
-<a href=#610 id=610 data-nosnippet>610</a>        V::List(items) =&gt; {
-<a href=#611 id=611 data-nosnippet>611</a>            <span class="kw">super</span>::check_count(items.len(), budget.limits.json.array_items())<span class="question-mark">?</span>;
-<a href=#612 id=612 data-nosnippet>612</a>            <span class="kw">let </span><span class="kw-2">mut </span>result = Vec::new();
-<a href=#613 id=613 data-nosnippet>613</a>            result.try_retain(items.len()).map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>;
-<a href=#614 id=614 data-nosnippet>614</a>            <span class="kw">for </span>item <span class="kw">in </span>items {
-<a href=#615 id=615 data-nosnippet>615</a>                result.push(lift_closed(item, budget, depth + <span class="number">1</span>)<span class="question-mark">?</span>);
-<a href=#616 id=616 data-nosnippet>616</a>            }
-<a href=#617 id=617 data-nosnippet>617</a>            W::List(result)
-<a href=#618 id=618 data-nosnippet>618</a>        }
-<a href=#619 id=619 data-nosnippet>619</a>        V::Record(fields) =&gt; {
-<a href=#620 id=620 data-nosnippet>620</a>            <span class="kw">super</span>::check_count(fields.len(), budget.limits.json.fields())<span class="question-mark">?</span>;
-<a href=#621 id=621 data-nosnippet>621</a>            <span class="kw">let </span><span class="kw-2">mut </span>result = Vec::new();
-<a href=#622 id=622 data-nosnippet>622</a>            result.try_retain(fields.len()).map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>;
-<a href=#623 id=623 data-nosnippet>623</a>            <span class="kw">for </span>(name, value) <span class="kw">in </span>fields {
-<a href=#624 id=624 data-nosnippet>624</a>                budget.step(name.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
-<a href=#625 id=625 data-nosnippet>625</a>                result.push((
-<a href=#626 id=626 data-nosnippet>626</a>                    name.try_clone().map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>,
-<a href=#627 id=627 data-nosnippet>627</a>                    value
-<a href=#628 id=628 data-nosnippet>628</a>                        .as_ref()
-<a href=#629 id=629 data-nosnippet>629</a>                        .map(|value| lift_closed(value, budget, depth + <span class="number">1</span>))
-<a href=#630 id=630 data-nosnippet>630</a>                        .transpose()<span class="question-mark">?</span>,
-<a href=#631 id=631 data-nosnippet>631</a>                ));
-<a href=#632 id=632 data-nosnippet>632</a>            }
-<a href=#633 id=633 data-nosnippet>633</a>            W::Record(result)
+<a href=#387 id=387 data-nosnippet>387</a>    materialize_with(
+<a href=#388 id=388 data-nosnippet>388</a>        value,
+<a href=#389 id=389 data-nosnippet>389</a>        ty,
+<a href=#390 id=390 data-nosnippet>390</a>        catalogue,
+<a href=#391 id=391 data-nosnippet>391</a>        budget,
+<a href=#392 id=392 data-nosnippet>392</a>        depth,
+<a href=#393 id=393 data-nosnippet>393</a>        <span class="kw-2">&amp;</span>|never, <span class="kw">_</span>, <span class="kw">_</span>| <span class="kw">match </span><span class="kw-2">*</span>never {},
+<a href=#394 id=394 data-nosnippet>394</a>    )
+<a href=#395 id=395 data-nosnippet>395</a>}
+<a href=#396 id=396 data-nosnippet>396</a>
+<a href=#397 id=397 data-nosnippet>397</a><span class="doccomment">/// Materializes both closed and binding values with one contextual/default/restriction engine.
+<a href=#398 id=398 data-nosnippet>398</a></span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>materialize_with&lt;R: TryClone&gt;(
+<a href=#399 id=399 data-nosnippet>399</a>    value: <span class="kw-2">&amp;</span>W&lt;R&gt;,
+<a href=#400 id=400 data-nosnippet>400</a>    ty: <span class="kw-2">&amp;</span>T,
+<a href=#401 id=401 data-nosnippet>401</a>    catalogue: <span class="kw-2">&amp;</span>Catalogue&lt;<span class="lifetime">'_</span>&gt;,
+<a href=#402 id=402 data-nosnippet>402</a>    budget: <span class="kw-2">&amp;mut </span>Budget&lt;<span class="lifetime">'_</span>&gt;,
+<a href=#403 id=403 data-nosnippet>403</a>    depth: u64,
+<a href=#404 id=404 data-nosnippet>404</a>    references: <span class="kw-2">&amp;</span><span class="kw">impl </span>Fn(<span class="kw-2">&amp;</span>R, <span class="kw-2">&amp;</span>T, <span class="kw-2">&amp;mut </span>Budget&lt;<span class="lifetime">'_</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), E&gt;,
+<a href=#405 id=405 data-nosnippet>405</a>) -&gt; <span class="prelude-ty">Result</span>&lt;W&lt;R&gt;, E&gt; {
+<a href=#406 id=406 data-nosnippet>406</a>    budget.depth(depth, budget.limits.value_depth)<span class="question-mark">?</span>;
+<a href=#407 id=407 data-nosnippet>407</a>    budget.value_node()<span class="question-mark">?</span>;
+<a href=#408 id=408 data-nosnippet>408</a>    <span class="kw">if let </span>T::Nullable(inner) = ty {
+<a href=#409 id=409 data-nosnippet>409</a>        <span class="kw">return if </span><span class="macro">matches!</span>(value, W::Null) {
+<a href=#410 id=410 data-nosnippet>410</a>            <span class="prelude-val">Ok</span>(W::Null)
+<a href=#411 id=411 data-nosnippet>411</a>        } <span class="kw">else </span>{
+<a href=#412 id=412 data-nosnippet>412</a>            materialize_with(
+<a href=#413 id=413 data-nosnippet>413</a>                value,
+<a href=#414 id=414 data-nosnippet>414</a>                inner,
+<a href=#415 id=415 data-nosnippet>415</a>                catalogue,
+<a href=#416 id=416 data-nosnippet>416</a>                budget,
+<a href=#417 id=417 data-nosnippet>417</a>                depth + u64::from(!catalogue.project_depth),
+<a href=#418 id=418 data-nosnippet>418</a>                references,
+<a href=#419 id=419 data-nosnippet>419</a>            )
+<a href=#420 id=420 data-nosnippet>420</a>        };
+<a href=#421 id=421 data-nosnippet>421</a>    }
+<a href=#422 id=422 data-nosnippet>422</a>    <span class="kw">if </span>scalar_matches(value, ty) {
+<a href=#423 id=423 data-nosnippet>423</a>        budget.step(scalar_size(value))<span class="question-mark">?</span>;
+<a href=#424 id=424 data-nosnippet>424</a>        <span class="kw">match </span>value {
+<a href=#425 id=425 data-nosnippet>425</a>            W::Number(number)
+<a href=#426 id=426 data-nosnippet>426</a>                <span class="kw">if </span>number.coefficient().len() <span class="kw">as </span>u64 &gt; budget.limits.json.numeric_digits
+<a href=#427 id=427 data-nosnippet>427</a>                    || number.scale().unsigned_abs() &gt; budget.limits.json.numeric_scale =&gt;
+<a href=#428 id=428 data-nosnippet>428</a>            {
+<a href=#429 id=429 data-nosnippet>429</a>                <span class="kw">return </span><span class="prelude-val">Err</span>(E::Limit);
+<a href=#430 id=430 data-nosnippet>430</a>            }
+<a href=#431 id=431 data-nosnippet>431</a>            W::String(text) | W::Url(text) | W::Path(text)
+<a href=#432 id=432 data-nosnippet>432</a>                <span class="kw">if </span>text.len() <span class="kw">as </span>u64 &gt; budget.limits.json.string_bytes =&gt;
+<a href=#433 id=433 data-nosnippet>433</a>            {
+<a href=#434 id=434 data-nosnippet>434</a>                <span class="kw">return </span><span class="prelude-val">Err</span>(E::Limit);
+<a href=#435 id=435 data-nosnippet>435</a>            }
+<a href=#436 id=436 data-nosnippet>436</a>            <span class="kw">_ </span>=&gt; {}
+<a href=#437 id=437 data-nosnippet>437</a>        }
+<a href=#438 id=438 data-nosnippet>438</a>        <span class="kw">return </span>value.try_clone().map_err(|<span class="kw">_</span>| E::Allocation);
+<a href=#439 id=439 data-nosnippet>439</a>    }
+<a href=#440 id=440 data-nosnippet>440</a>    <span class="kw">match </span>(value, ty) {
+<a href=#441 id=441 data-nosnippet>441</a>        (W::Reference(target), T::Ref(inner)) =&gt; {
+<a href=#442 id=442 data-nosnippet>442</a>            references(target, inner, budget)<span class="question-mark">?</span>;
+<a href=#443 id=443 data-nosnippet>443</a>            <span class="prelude-val">Ok</span>(W::Reference(target.try_clone().map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>))
+<a href=#444 id=444 data-nosnippet>444</a>        }
+<a href=#445 id=445 data-nosnippet>445</a>        (W::List(values), T::List(inner)) =&gt; {
+<a href=#446 id=446 data-nosnippet>446</a>            <span class="kw">super</span>::check_count(values.len(), budget.limits.json.array_items)<span class="question-mark">?</span>;
+<a href=#447 id=447 data-nosnippet>447</a>            <span class="kw">super</span>::check_count(
+<a href=#448 id=448 data-nosnippet>448</a>                values.len(),
+<a href=#449 id=449 data-nosnippet>449</a>                budget.limits.value_nodes.saturating_sub(budget.value_nodes),
+<a href=#450 id=450 data-nosnippet>450</a>            )<span class="question-mark">?</span>;
+<a href=#451 id=451 data-nosnippet>451</a>            budget.step(values.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
+<a href=#452 id=452 data-nosnippet>452</a>            <span class="kw">let </span><span class="kw-2">mut </span>result = Vec::new();
+<a href=#453 id=453 data-nosnippet>453</a>            result.try_retain(values.len()).map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>;
+<a href=#454 id=454 data-nosnippet>454</a>            <span class="kw">for </span>value <span class="kw">in </span>values {
+<a href=#455 id=455 data-nosnippet>455</a>                result.push(materialize_with(
+<a href=#456 id=456 data-nosnippet>456</a>                    value,
+<a href=#457 id=457 data-nosnippet>457</a>                    inner,
+<a href=#458 id=458 data-nosnippet>458</a>                    catalogue,
+<a href=#459 id=459 data-nosnippet>459</a>                    budget,
+<a href=#460 id=460 data-nosnippet>460</a>                    depth + <span class="number">1</span>,
+<a href=#461 id=461 data-nosnippet>461</a>                    references,
+<a href=#462 id=462 data-nosnippet>462</a>                )<span class="question-mark">?</span>);
+<a href=#463 id=463 data-nosnippet>463</a>            }
+<a href=#464 id=464 data-nosnippet>464</a>            <span class="prelude-val">Ok</span>(W::List(result))
+<a href=#465 id=465 data-nosnippet>465</a>        }
+<a href=#466 id=466 data-nosnippet>466</a>        (<span class="kw">_</span>, T::VocabularyNominal { .. } | T::Nominal(<span class="kw">_</span>)) =&gt; {
+<a href=#467 id=467 data-nosnippet>467</a>            <span class="kw">let </span>definition = catalogue.resolve(ty, budget)<span class="question-mark">?</span>;
+<a href=#468 id=468 data-nosnippet>468</a>            <span class="kw">match </span>(<span class="kw-2">&amp;</span>definition.body, value) {
+<a href=#469 id=469 data-nosnippet>469</a>                (CompositionBody::Record(fields), W::Record(values)) =&gt; materialize_record(
+<a href=#470 id=470 data-nosnippet>470</a>                    values,
+<a href=#471 id=471 data-nosnippet>471</a>                    fields,
+<a href=#472 id=472 data-nosnippet>472</a>                    catalogue,
+<a href=#473 id=473 data-nosnippet>473</a>                    budget,
+<a href=#474 id=474 data-nosnippet>474</a>                    depth + u64::from(!catalogue.project_depth),
+<a href=#475 id=475 data-nosnippet>475</a>                    references,
+<a href=#476 id=476 data-nosnippet>476</a>                ),
+<a href=#477 id=477 data-nosnippet>477</a>                (CompositionBody::Variant(alternatives), W::Variant { tag, payload }) =&gt; {
+<a href=#478 id=478 data-nosnippet>478</a>                    <span class="kw">if </span>tag.len() <span class="kw">as </span>u64 &gt; budget.limits.json.string_bytes {
+<a href=#479 id=479 data-nosnippet>479</a>                        <span class="kw">return </span><span class="prelude-val">Err</span>(E::Limit);
+<a href=#480 id=480 data-nosnippet>480</a>                    }
+<a href=#481 id=481 data-nosnippet>481</a>                    budget.key(tag.len(), alternatives.len())<span class="question-mark">?</span>;
+<a href=#482 id=482 data-nosnippet>482</a>                    <span class="kw">let </span>index = alternatives
+<a href=#483 id=483 data-nosnippet>483</a>                        .binary_search_by(|alternative| alternative.tag.cmp(tag))
+<a href=#484 id=484 data-nosnippet>484</a>                        .map_err(|<span class="kw">_</span>| E::InvalidDefault)<span class="question-mark">?</span>;
+<a href=#485 id=485 data-nosnippet>485</a>                    <span class="kw">let </span>alternative = <span class="kw-2">&amp;</span>alternatives[index];
+<a href=#486 id=486 data-nosnippet>486</a>                    <span class="prelude-val">Ok</span>(W::Variant {
+<a href=#487 id=487 data-nosnippet>487</a>                        tag: tag.try_clone().map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>,
+<a href=#488 id=488 data-nosnippet>488</a>                        payload: boxed(materialize_with(
+<a href=#489 id=489 data-nosnippet>489</a>                            payload,
+<a href=#490 id=490 data-nosnippet>490</a>                            <span class="kw-2">&amp;</span>alternative.ty,
+<a href=#491 id=491 data-nosnippet>491</a>                            catalogue,
+<a href=#492 id=492 data-nosnippet>492</a>                            budget,
+<a href=#493 id=493 data-nosnippet>493</a>                            depth + <span class="number">1</span>,
+<a href=#494 id=494 data-nosnippet>494</a>                            references,
+<a href=#495 id=495 data-nosnippet>495</a>                        )<span class="question-mark">?</span>)
+<a href=#496 id=496 data-nosnippet>496</a>                        .map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>,
+<a href=#497 id=497 data-nosnippet>497</a>                    })
+<a href=#498 id=498 data-nosnippet>498</a>                }
+<a href=#499 id=499 data-nosnippet>499</a>                <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(E::InvalidDefault),
+<a href=#500 id=500 data-nosnippet>500</a>            }
+<a href=#501 id=501 data-nosnippet>501</a>        }
+<a href=#502 id=502 data-nosnippet>502</a>        <span class="comment">// A closed default has no reference representation. Nullable Ref null
+<a href=#503 id=503 data-nosnippet>503</a>        // was handled above and never creates a target edge.
+<a href=#504 id=504 data-nosnippet>504</a>        </span><span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(E::InvalidDefault),
+<a href=#505 id=505 data-nosnippet>505</a>    }
+<a href=#506 id=506 data-nosnippet>506</a>}
+<a href=#507 id=507 data-nosnippet>507</a>
+<a href=#508 id=508 data-nosnippet>508</a><span class="doccomment">/// Applies required/optional/defaulted field policies without conflating absence and null.
+<a href=#509 id=509 data-nosnippet>509</a></span><span class="kw">fn </span>materialize_record&lt;R: TryClone&gt;(
+<a href=#510 id=510 data-nosnippet>510</a>    values: <span class="kw-2">&amp;</span>[(String, <span class="prelude-ty">Option</span>&lt;W&lt;R&gt;&gt;)],
+<a href=#511 id=511 data-nosnippet>511</a>    fields: <span class="kw-2">&amp;</span>[CompositionField],
+<a href=#512 id=512 data-nosnippet>512</a>    catalogue: <span class="kw-2">&amp;</span>Catalogue&lt;<span class="lifetime">'_</span>&gt;,
+<a href=#513 id=513 data-nosnippet>513</a>    budget: <span class="kw-2">&amp;mut </span>Budget&lt;<span class="lifetime">'_</span>&gt;,
+<a href=#514 id=514 data-nosnippet>514</a>    depth: u64,
+<a href=#515 id=515 data-nosnippet>515</a>    references: <span class="kw-2">&amp;</span><span class="kw">impl </span>Fn(<span class="kw-2">&amp;</span>R, <span class="kw-2">&amp;</span>T, <span class="kw-2">&amp;mut </span>Budget&lt;<span class="lifetime">'_</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), E&gt;,
+<a href=#516 id=516 data-nosnippet>516</a>) -&gt; <span class="prelude-ty">Result</span>&lt;W&lt;R&gt;, E&gt; {
+<a href=#517 id=517 data-nosnippet>517</a>    budget.depth(depth, budget.limits.value_depth)<span class="question-mark">?</span>;
+<a href=#518 id=518 data-nosnippet>518</a>    <span class="kw">super</span>::check_count(values.len(), budget.limits.json.fields)<span class="question-mark">?</span>;
+<a href=#519 id=519 data-nosnippet>519</a>    <span class="kw">super</span>::check_count(fields.len(), budget.limits.json.fields)<span class="question-mark">?</span>;
+<a href=#520 id=520 data-nosnippet>520</a>    <span class="kw">super</span>::check_count(
+<a href=#521 id=521 data-nosnippet>521</a>        fields.len(),
+<a href=#522 id=522 data-nosnippet>522</a>        budget.limits.value_nodes.saturating_sub(budget.value_nodes),
+<a href=#523 id=523 data-nosnippet>523</a>    )<span class="question-mark">?</span>;
+<a href=#524 id=524 data-nosnippet>524</a>    budget.step(values.len() <span class="kw">as </span>u64 + fields.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
+<a href=#525 id=525 data-nosnippet>525</a>    <span class="kw">let </span><span class="kw-2">mut </span>supplied = BTreeMap::new();
+<a href=#526 id=526 data-nosnippet>526</a>    <span class="kw">for </span>(name, value) <span class="kw">in </span>values {
+<a href=#527 id=527 data-nosnippet>527</a>        budget.step(<span class="number">1</span>)<span class="question-mark">?</span>;
+<a href=#528 id=528 data-nosnippet>528</a>        budget.key(name.len(), values.len())<span class="question-mark">?</span>;
+<a href=#529 id=529 data-nosnippet>529</a>        budget.step(supplied.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
+<a href=#530 id=530 data-nosnippet>530</a>        <span class="kw">if </span>supplied
+<a href=#531 id=531 data-nosnippet>531</a>            .insert(name.as_str(), value)
+<a href=#532 id=532 data-nosnippet>532</a>            .map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?
+<a href=#533 id=533 data-nosnippet>533</a>            </span>.is_some()
+<a href=#534 id=534 data-nosnippet>534</a>            || fields
+<a href=#535 id=535 data-nosnippet>535</a>                .binary_search_by(|field| field.name.as_str().cmp(name))
+<a href=#536 id=536 data-nosnippet>536</a>                .is_err()
+<a href=#537 id=537 data-nosnippet>537</a>        {
+<a href=#538 id=538 data-nosnippet>538</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(E::InvalidDefault);
+<a href=#539 id=539 data-nosnippet>539</a>        }
+<a href=#540 id=540 data-nosnippet>540</a>    }
+<a href=#541 id=541 data-nosnippet>541</a>    <span class="kw">let </span><span class="kw-2">mut </span>result = Vec::new();
+<a href=#542 id=542 data-nosnippet>542</a>    result.try_retain(fields.len()).map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>;
+<a href=#543 id=543 data-nosnippet>543</a>    <span class="kw">for </span>field <span class="kw">in </span>fields {
+<a href=#544 id=544 data-nosnippet>544</a>        budget.step(<span class="number">1</span>)<span class="question-mark">?</span>;
+<a href=#545 id=545 data-nosnippet>545</a>        <span class="kw">let </span>restrictions = validate_restrictions(field, budget)<span class="question-mark">?</span>;
+<a href=#546 id=546 data-nosnippet>546</a>        <span class="kw">let </span>provided = supplied
+<a href=#547 id=547 data-nosnippet>547</a>            .get(field.name.as_str())
+<a href=#548 id=548 data-nosnippet>548</a>            .and_then(|value| value.as_ref());
+<a href=#549 id=549 data-nosnippet>549</a>        <span class="kw">let </span>child_depth = depth + <span class="number">1</span>;
+<a href=#550 id=550 data-nosnippet>550</a>        <span class="kw">let </span>value = <span class="kw">match </span>provided {
+<a href=#551 id=551 data-nosnippet>551</a>            <span class="prelude-val">Some</span>(value) =&gt; <span class="prelude-val">Some</span>(materialize_with(
+<a href=#552 id=552 data-nosnippet>552</a>                value,
+<a href=#553 id=553 data-nosnippet>553</a>                <span class="kw-2">&amp;</span>field.ty,
+<a href=#554 id=554 data-nosnippet>554</a>                catalogue,
+<a href=#555 id=555 data-nosnippet>555</a>                budget,
+<a href=#556 id=556 data-nosnippet>556</a>                child_depth,
+<a href=#557 id=557 data-nosnippet>557</a>                references,
+<a href=#558 id=558 data-nosnippet>558</a>            )<span class="question-mark">?</span>),
+<a href=#559 id=559 data-nosnippet>559</a>            <span class="prelude-val">None </span>=&gt; <span class="kw">match </span>field.presence {
+<a href=#560 id=560 data-nosnippet>560</a>                FieldPresence::Required =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(E::InvalidDefault),
+<a href=#561 id=561 data-nosnippet>561</a>                FieldPresence::Optional =&gt; {
+<a href=#562 id=562 data-nosnippet>562</a>                    budget.value_node()<span class="question-mark">?</span>;
+<a href=#563 id=563 data-nosnippet>563</a>                    <span class="prelude-val">None
+<a href=#564 id=564 data-nosnippet>564</a>                </span>}
+<a href=#565 id=565 data-nosnippet>565</a>                FieldPresence::Defaulted =&gt; {
+<a href=#566 id=566 data-nosnippet>566</a>                    <span class="kw">let </span>default = lift_closed(
+<a href=#567 id=567 data-nosnippet>567</a>                        field.default.as_ref().ok_or(E::InvalidDefault)<span class="question-mark">?</span>,
+<a href=#568 id=568 data-nosnippet>568</a>                        budget,
+<a href=#569 id=569 data-nosnippet>569</a>                        child_depth,
+<a href=#570 id=570 data-nosnippet>570</a>                    )<span class="question-mark">?</span>;
+<a href=#571 id=571 data-nosnippet>571</a>                    <span class="prelude-val">Some</span>(materialize_with(
+<a href=#572 id=572 data-nosnippet>572</a>                        <span class="kw-2">&amp;</span>default,
+<a href=#573 id=573 data-nosnippet>573</a>                        <span class="kw-2">&amp;</span>field.ty,
+<a href=#574 id=574 data-nosnippet>574</a>                        catalogue,
+<a href=#575 id=575 data-nosnippet>575</a>                        budget,
+<a href=#576 id=576 data-nosnippet>576</a>                        child_depth,
+<a href=#577 id=577 data-nosnippet>577</a>                        references,
+<a href=#578 id=578 data-nosnippet>578</a>                    )<span class="question-mark">?</span>)
+<a href=#579 id=579 data-nosnippet>579</a>                }
+<a href=#580 id=580 data-nosnippet>580</a>            },
+<a href=#581 id=581 data-nosnippet>581</a>        };
+<a href=#582 id=582 data-nosnippet>582</a>        <span class="kw">if let </span><span class="prelude-val">Some</span>(value) = <span class="kw-2">&amp;</span>value {
+<a href=#583 id=583 data-nosnippet>583</a>            check_restrictions(<span class="kw-2">&amp;</span>restrictions, value, budget)<span class="question-mark">?</span>;
+<a href=#584 id=584 data-nosnippet>584</a>        }
+<a href=#585 id=585 data-nosnippet>585</a>        result.push((field.name.try_clone().map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>, value));
+<a href=#586 id=586 data-nosnippet>586</a>    }
+<a href=#587 id=587 data-nosnippet>587</a>    <span class="prelude-val">Ok</span>(W::Record(result))
+<a href=#588 id=588 data-nosnippet>588</a>}
+<a href=#589 id=589 data-nosnippet>589</a>
+<a href=#590 id=590 data-nosnippet>590</a><span class="doccomment">/// Copies a closed default into a reference-capable representation without inventing a target.
+<a href=#591 id=591 data-nosnippet>591</a></span><span class="kw">fn </span>lift_closed&lt;R&gt;(value: <span class="kw-2">&amp;</span>V, budget: <span class="kw-2">&amp;mut </span>Budget&lt;<span class="lifetime">'_</span>&gt;, depth: u64) -&gt; <span class="prelude-ty">Result</span>&lt;W&lt;R&gt;, E&gt; {
+<a href=#592 id=592 data-nosnippet>592</a>    budget.depth(depth, budget.limits.value_depth)<span class="question-mark">?</span>;
+<a href=#593 id=593 data-nosnippet>593</a>    budget.step(scalar_size(value))<span class="question-mark">?</span>;
+<a href=#594 id=594 data-nosnippet>594</a>    <span class="prelude-val">Ok</span>(<span class="kw">match </span>value {
+<a href=#595 id=595 data-nosnippet>595</a>        V::Number(value) =&gt; W::Number(value.try_clone().map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>),
+<a href=#596 id=596 data-nosnippet>596</a>        V::String(value) =&gt; W::String(value.try_clone().map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>),
+<a href=#597 id=597 data-nosnippet>597</a>        V::Bool(value) =&gt; W::Bool(<span class="kw-2">*</span>value),
+<a href=#598 id=598 data-nosnippet>598</a>        V::Url(value) =&gt; W::Url(value.try_clone().map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>),
+<a href=#599 id=599 data-nosnippet>599</a>        V::Path(value) =&gt; W::Path(value.try_clone().map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>),
+<a href=#600 id=600 data-nosnippet>600</a>        V::Null =&gt; W::Null,
+<a href=#601 id=601 data-nosnippet>601</a>        V::Reference(never) =&gt; <span class="kw">match </span><span class="kw-2">*</span>never {},
+<a href=#602 id=602 data-nosnippet>602</a>        V::List(items) =&gt; {
+<a href=#603 id=603 data-nosnippet>603</a>            <span class="kw">super</span>::check_count(items.len(), budget.limits.json.array_items())<span class="question-mark">?</span>;
+<a href=#604 id=604 data-nosnippet>604</a>            <span class="kw">let </span><span class="kw-2">mut </span>result = Vec::new();
+<a href=#605 id=605 data-nosnippet>605</a>            result.try_retain(items.len()).map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>;
+<a href=#606 id=606 data-nosnippet>606</a>            <span class="kw">for </span>item <span class="kw">in </span>items {
+<a href=#607 id=607 data-nosnippet>607</a>                result.push(lift_closed(item, budget, depth + <span class="number">1</span>)<span class="question-mark">?</span>);
+<a href=#608 id=608 data-nosnippet>608</a>            }
+<a href=#609 id=609 data-nosnippet>609</a>            W::List(result)
+<a href=#610 id=610 data-nosnippet>610</a>        }
+<a href=#611 id=611 data-nosnippet>611</a>        V::Record(fields) =&gt; {
+<a href=#612 id=612 data-nosnippet>612</a>            <span class="kw">super</span>::check_count(fields.len(), budget.limits.json.fields())<span class="question-mark">?</span>;
+<a href=#613 id=613 data-nosnippet>613</a>            <span class="kw">let </span><span class="kw-2">mut </span>result = Vec::new();
+<a href=#614 id=614 data-nosnippet>614</a>            result.try_retain(fields.len()).map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>;
+<a href=#615 id=615 data-nosnippet>615</a>            <span class="kw">for </span>(name, value) <span class="kw">in </span>fields {
+<a href=#616 id=616 data-nosnippet>616</a>                budget.step(name.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
+<a href=#617 id=617 data-nosnippet>617</a>                result.push((
+<a href=#618 id=618 data-nosnippet>618</a>                    name.try_clone().map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>,
+<a href=#619 id=619 data-nosnippet>619</a>                    value
+<a href=#620 id=620 data-nosnippet>620</a>                        .as_ref()
+<a href=#621 id=621 data-nosnippet>621</a>                        .map(|value| lift_closed(value, budget, depth + <span class="number">1</span>))
+<a href=#622 id=622 data-nosnippet>622</a>                        .transpose()<span class="question-mark">?</span>,
+<a href=#623 id=623 data-nosnippet>623</a>                ));
+<a href=#624 id=624 data-nosnippet>624</a>            }
+<a href=#625 id=625 data-nosnippet>625</a>            W::Record(result)
+<a href=#626 id=626 data-nosnippet>626</a>        }
+<a href=#627 id=627 data-nosnippet>627</a>        V::Variant { tag, payload } =&gt; {
+<a href=#628 id=628 data-nosnippet>628</a>            budget.step(tag.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
+<a href=#629 id=629 data-nosnippet>629</a>            W::Variant {
+<a href=#630 id=630 data-nosnippet>630</a>                tag: tag.try_clone().map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>,
+<a href=#631 id=631 data-nosnippet>631</a>                payload: boxed(lift_closed(payload, budget, depth + <span class="number">1</span>)<span class="question-mark">?</span>)
+<a href=#632 id=632 data-nosnippet>632</a>                    .map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>,
+<a href=#633 id=633 data-nosnippet>633</a>            }
 <a href=#634 id=634 data-nosnippet>634</a>        }
-<a href=#635 id=635 data-nosnippet>635</a>        V::Variant { tag, payload } =&gt; {
-<a href=#636 id=636 data-nosnippet>636</a>            budget.step(tag.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
-<a href=#637 id=637 data-nosnippet>637</a>            W::Variant {
-<a href=#638 id=638 data-nosnippet>638</a>                tag: tag.try_clone().map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>,
-<a href=#639 id=639 data-nosnippet>639</a>                payload: boxed(lift_closed(payload, budget, depth + <span class="number">1</span>)<span class="question-mark">?</span>)
-<a href=#640 id=640 data-nosnippet>640</a>                    .map_err(|<span class="kw">_</span>| E::Allocation)<span class="question-mark">?</span>,
-<a href=#641 id=641 data-nosnippet>641</a>            }
-<a href=#642 id=642 data-nosnippet>642</a>        }
-<a href=#643 id=643 data-nosnippet>643</a>    })
-<a href=#644 id=644 data-nosnippet>644</a>}
+<a href=#635 id=635 data-nosnippet>635</a>    })
+<a href=#636 id=636 data-nosnippet>636</a>}
+<a href=#637 id=637 data-nosnippet>637</a>
+<a href=#638 id=638 data-nosnippet>638</a><span class="attr">#[cfg(test)]
+<a href=#639 id=639 data-nosnippet>639</a>#[path = <span class="string">"../../tests/composition/values.rs"</span>]
+<a href=#640 id=640 data-nosnippet>640</a></span><span class="kw">mod </span>tests;
 </code></pre></div></section></main></body></html>

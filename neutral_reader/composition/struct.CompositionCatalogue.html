@@ -1,5 +1,16 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Immutable public inspection surface over a fully validated complete catalogue."><title>CompositionCatalogue in neutral_reader::composition - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-1ed95124.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="neutral_reader" data-themes="" data-resource-suffix="" data-rustdoc-version="1.98.1 (48a229cea 2026-09-01)" data-channel="1.98.1" data-search-js="search-9944d736.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="sidebar-items.js"></script><script defer src="../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"><!-- SPDX-License-Identifier: Apache-2.0 -->
 <style>
+  :root {
+    --neutral-ui-font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --neutral-header-height: 3.65rem;
+    scroll-padding-top: calc(var(--neutral-header-height) + 0.75rem);
+  }
+
+  /* Keep Rustdoc's explicit sans-serif setting while improving the default prose font. */
+  :root:not(.sans-serif-fonts) {
+    --font-family: var(--neutral-ui-font);
+  }
+
   :root,
   :root:not([data-theme]),
   :root[data-theme="light"] {
@@ -93,7 +104,7 @@
   }
 
   body.rustdoc {
-    padding-top: 3.65rem;
+    padding-top: var(--neutral-header-height);
   }
 
   #neutral-docs-nav {
@@ -101,7 +112,7 @@
     inset: 0 0 auto;
     z-index: 10000;
     display: flex;
-    min-height: 3.65rem;
+    min-height: var(--neutral-header-height);
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
@@ -123,7 +134,7 @@
     min-width: 0;
     gap: 0.7rem;
     color: var(--main-color);
-    font: 650 0.9rem/1.2 var(--font-family);
+    font: 650 0.9rem/1.2 var(--neutral-ui-font);
     text-decoration: none;
   }
 
@@ -154,32 +165,40 @@
     gap: 0.4rem;
   }
 
-  .neutral-docs-actions a {
+  .neutral-docs-actions a,
+  .neutral-docs-actions button {
     min-height: 2.15rem;
     padding: 0.46rem 0.78rem;
     color: var(--main-color);
     background: var(--neutral-surface-raised);
     border: 1px solid var(--neutral-nav-border);
     border-radius: 0.5rem;
-    font: 600 0.8rem/1.2 var(--font-family);
+    font: 600 0.8rem/1.2 var(--neutral-ui-font);
     text-decoration: none;
+    cursor: pointer;
   }
 
-  .neutral-docs-actions a:hover {
+  .neutral-docs-actions a:hover,
+  .neutral-docs-actions button:hover,
+  .neutral-docs-actions button[aria-pressed="true"] {
     color: var(--neutral-accent);
     border-color: var(--neutral-accent);
   }
 
   .sidebar {
-    top: 3.65rem;
-    height: calc(100vh - 3.65rem);
+    top: var(--neutral-header-height);
+    height: calc(100vh - var(--neutral-header-height));
     border-right-color: var(--neutral-nav-border);
   }
 
   .sidebar-resizer {
-    top: 3.65rem;
-    height: calc(100% - 3.65rem);
+    top: var(--neutral-header-height);
+    height: calc(100% - var(--neutral-header-height));
     color: var(--neutral-nav-border);
+  }
+
+  .src #sidebar-button {
+    top: calc(var(--neutral-header-height) + 0.5rem);
   }
 
   .sidebar-crate {
@@ -317,6 +336,12 @@
     border-color: var(--neutral-accent);
   }
 
+  .impl > .rightside,
+  .method > .rightside,
+  .trait-impl > .rightside {
+    margin: 0.42rem 0.5rem 0 0.75rem;
+  }
+
   .stab {
     padding: 0.2rem 0.45rem;
     color: var(--neutral-muted);
@@ -350,17 +375,17 @@
     outline-offset: 3px;
   }
 
-  :target {
-    scroll-margin-top: 5rem;
+  body.rustdoc [id] {
+    scroll-margin-top: 0.75rem;
   }
 
   @media (max-width: 700px) {
-    body.rustdoc {
-      padding-top: 3.35rem;
+    :root {
+      --neutral-header-height: 3.35rem;
+      scroll-padding-top: calc(var(--neutral-header-height) + var(--topbar-height) + 0.75rem);
     }
 
     #neutral-docs-nav {
-      min-height: 3.35rem;
       padding: 0.42rem 0.65rem;
     }
 
@@ -374,18 +399,34 @@
       display: none;
     }
 
-    .neutral-docs-actions a {
+    .neutral-docs-brand {
+      flex-shrink: 0;
+    }
+
+    .neutral-docs-actions {
+      min-width: 0;
+      flex-shrink: 1;
+      overflow-x: auto;
+    }
+
+    .neutral-docs-actions > * {
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .neutral-docs-actions a,
+    .neutral-docs-actions button {
       min-height: 2rem;
       padding: 0.4rem 0.62rem;
     }
 
     rustdoc-topbar {
-      top: 3.35rem;
+      top: var(--neutral-header-height);
     }
 
     .sidebar {
-      top: calc(3.35rem + var(--topbar-height));
-      height: calc(100vh - 3.35rem - var(--topbar-height));
+      top: calc(var(--neutral-header-height) + var(--topbar-height));
+      height: calc(100vh - var(--neutral-header-height) - var(--topbar-height));
     }
 
     body.rustdoc > main {
@@ -452,13 +493,59 @@
 
     const actions = document.createElement("div");
     actions.className = "neutral-docs-actions";
+    for (const [label, direction] of [["←", -1], ["→", 1]]) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = label;
+      button.dataset.history = direction;
+      button.setAttribute("aria-label", direction < 0 ? "Back" : "Forward");
+      button.title = direction < 0 ? "Previous browser history entry" : "Next browser history entry";
+      button.addEventListener("click", navigateDocumentationHistory);
+      actions.append(button);
+    }
     const workspace = document.createElement("a");
     workspace.href = `${rootPath}index.html`;
     workspace.textContent = "Workspace";
     actions.append(workspace);
 
+    const map = document.createElement("a");
+    map.href = `${rootPath}index.html#codebase-map`;
+    map.textContent = "Codebase map";
+    actions.append(map);
+
+    const themeToggle = document.createElement("button");
+    themeToggle.id = "neutral-theme-toggle";
+    themeToggle.type = "button";
+    themeToggle.textContent = "Dark mode";
+
+    /** Reflects Rustdoc theme changes, including changes made in its settings. */
+    function syncThemeToggle() {
+      const theme = document.documentElement.dataset.theme;
+      themeToggle.setAttribute("aria-pressed", String(theme === "dark" || theme === "ayu"));
+    }
+
+    /** Applies and persists the requested theme through Rustdoc's settings API. */
+    function toggleNeutralTheme() {
+      const dark = themeToggle.getAttribute("aria-pressed") === "true";
+      updateLocalStorage("use-system-theme", "false");
+      switchTheme(dark ? "light" : "dark", true);
+    }
+
+    themeToggle.addEventListener("click", toggleNeutralTheme);
+    new MutationObserver(syncThemeToggle).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+    syncThemeToggle();
+    actions.append(themeToggle);
+
     navigation.append(brand, actions);
     document.body.prepend(navigation);
+  }
+
+  /** Restores the previous or next page, anchor, or search using browser history. */
+  function navigateDocumentationHistory(event) {
+    window.history.go(Number(event.currentTarget.dataset.history));
   }
 
   document.addEventListener("DOMContentLoaded", configureNeutralDocumentation);
@@ -471,12 +558,12 @@
 </div></details><details class="toggle method-toggle" open><summary><section id="method.from_shared" class="method"><a class="src rightside" href="../../src/neutral_reader/composition.rs.html#103-105">Source</a><h4 class="code-header">pub fn <a href="#method.from_shared" class="fn">from_shared</a>(catalogue: <a class="struct" href="../../neutral_core/allocation/struct.Shared.html" title="struct neutral_core::allocation::Shared">Arc</a>&lt;<a class="struct" href="../../neutral_vocabulary/composition/struct.ValidatedComposition.html" title="struct neutral_vocabulary::composition::ValidatedComposition">ValidatedComposition</a>&gt;) -&gt; Self</h4></section></summary><div class="docblock"><p>Opens an immutable validated catalogue without copying contracts or linking the compiler.</p>
 <p>Validation cannot be bypassed: raw composition structures cannot construct
 <a href="../../neutral_vocabulary/composition/struct.ValidatedComposition.html" title="struct neutral_vocabulary::composition::ValidatedComposition"><code>ValidatedComposition</code></a>. Sharing does not expose mutable catalogue access.</p>
-</div></details><details class="toggle method-toggle" open><summary><section id="method.vocabularies" class="method"><a class="src rightside" href="../../src/neutral_reader/composition.rs.html#108-113">Source</a><h4 class="code-header">pub fn <a href="#method.vocabularies" class="fn">vocabularies</a>(&amp;self) -&gt; impl <a class="trait" href="https://doc.rust-lang.org/1.98.1/core/iter/traits/iterator/trait.Iterator.html" title="trait core::iter::traits::iterator::Iterator">Iterator</a>&lt;Item = &amp;VocabularyIdentity&gt;</h4></section></summary><div class="docblock"><p>Enumerates exact canonical identity/revision/schema/feature/content facts in order.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.vocabularies" class="method"><a class="src rightside" href="../../src/neutral_reader/composition.rs.html#108-113">Source</a><h4 class="code-header">pub fn <a href="#method.vocabularies" class="fn">vocabularies</a>(&amp;self) -&gt; impl <a class="trait" href="https://doc.rust-lang.org/1.98.1/core/iter/traits/iterator/trait.Iterator.html" title="trait core::iter::traits::iterator::Iterator">Iterator</a>&lt;Item = &amp;<a class="struct" href="../../neutral_ir/symbol/struct.VocabularyIdentity.html" title="struct neutral_ir::symbol::VocabularyIdentity">VocabularyIdentity</a>&gt;</h4></section></summary><div class="docblock"><p>Enumerates exact canonical identity/revision/schema/feature/content facts in order.</p>
 </div></details><details class="toggle method-toggle" open><summary><section id="method.public_types" class="method"><a class="src rightside" href="../../src/neutral_reader/composition.rs.html#119-129">Source</a><h4 class="code-header">pub fn <a href="#method.public_types" class="fn">public_types</a>(
     &amp;self,
     identity: &amp;<a class="primitive" href="https://doc.rust-lang.org/1.98.1/std/primitive.str.html">str</a>,
     version: &amp;<a class="primitive" href="https://doc.rust-lang.org/1.98.1/std/primitive.str.html">str</a>,
-) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.98.1/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;impl <a class="trait" href="https://doc.rust-lang.org/1.98.1/core/iter/traits/iterator/trait.Iterator.html" title="trait core::iter::traits::iterator::Iterator">Iterator</a>&lt;Item = &amp;CompositionDefinition&gt;, <a class="enum" href="enum.CompositionLookupError.html" title="enum neutral_reader::composition::CompositionLookupError">CompositionLookupError</a>&gt;</h4></section></summary><div class="docblock"><p>Enumerates every public nominal contract for one exact canonical owner.</p>
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.98.1/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;impl <a class="trait" href="https://doc.rust-lang.org/1.98.1/core/iter/traits/iterator/trait.Iterator.html" title="trait core::iter::traits::iterator::Iterator">Iterator</a>&lt;Item = &amp;<a class="struct" href="../../neutral_ir/composition/struct.CompositionDefinition.html" title="struct neutral_ir::composition::CompositionDefinition">CompositionDefinition</a>&gt;, <a class="enum" href="enum.CompositionLookupError.html" title="enum neutral_reader::composition::CompositionLookupError">CompositionLookupError</a>&gt;</h4></section></summary><div class="docblock"><p>Enumerates every public nominal contract for one exact canonical owner.</p>
 <h5 id="errors-1"><a class="doc-anchor" href="#errors-1">§</a>Errors</h5>
 <p>Rejects unknown identities or mismatched semantic revisions.</p>
 </div></details><details class="toggle method-toggle" open><summary><section id="method.public_type" class="method"><a class="src rightside" href="../../src/neutral_reader/composition.rs.html#135-144">Source</a><h4 class="code-header">pub fn <a href="#method.public_type" class="fn">public_type</a>(
@@ -484,20 +571,20 @@
     identity: &amp;<a class="primitive" href="https://doc.rust-lang.org/1.98.1/std/primitive.str.html">str</a>,
     version: &amp;<a class="primitive" href="https://doc.rust-lang.org/1.98.1/std/primitive.str.html">str</a>,
     name: &amp;<a class="primitive" href="https://doc.rust-lang.org/1.98.1/std/primitive.str.html">str</a>,
-) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.98.1/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;&amp;CompositionDefinition, <a class="enum" href="enum.CompositionLookupError.html" title="enum neutral_reader::composition::CompositionLookupError">CompositionLookupError</a>&gt;</h4></section></summary><div class="docblock"><p>Returns a complete public record/variant contract including every alternative and default.</p>
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.98.1/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;&amp;<a class="struct" href="../../neutral_ir/composition/struct.CompositionDefinition.html" title="struct neutral_ir::composition::CompositionDefinition">CompositionDefinition</a>, <a class="enum" href="enum.CompositionLookupError.html" title="enum neutral_reader::composition::CompositionLookupError">CompositionLookupError</a>&gt;</h4></section></summary><div class="docblock"><p>Returns a complete public record/variant contract including every alternative and default.</p>
 <h5 id="errors-2"><a class="doc-anchor" href="#errors-2">§</a>Errors</h5>
 <p>Rejects unknown owners/revisions or an absent/private type.</p>
 </div></details><details class="toggle method-toggle" open><summary><section id="method.dependencies" class="method"><a class="src rightside" href="../../src/neutral_reader/composition.rs.html#150-156">Source</a><h4 class="code-header">pub fn <a href="#method.dependencies" class="fn">dependencies</a>(
     &amp;self,
     identity: &amp;<a class="primitive" href="https://doc.rust-lang.org/1.98.1/std/primitive.str.html">str</a>,
     version: &amp;<a class="primitive" href="https://doc.rust-lang.org/1.98.1/std/primitive.str.html">str</a>,
-) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.98.1/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;&amp;[CompositionDependency], <a class="enum" href="enum.CompositionLookupError.html" title="enum neutral_reader::composition::CompositionLookupError">CompositionLookupError</a>&gt;</h4></section></summary><div class="docblock"><p>Returns exactly locked dependencies, never aliases or acquisition locators.</p>
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.98.1/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;&amp;[<a class="struct" href="../../neutral_ir/composition/struct.CompositionDependency.html" title="struct neutral_ir::composition::CompositionDependency">CompositionDependency</a>], <a class="enum" href="enum.CompositionLookupError.html" title="enum neutral_reader::composition::CompositionLookupError">CompositionLookupError</a>&gt;</h4></section></summary><div class="docblock"><p>Returns exactly locked dependencies, never aliases or acquisition locators.</p>
 <h5 id="errors-3"><a class="doc-anchor" href="#errors-3">§</a>Errors</h5>
 <p>Rejects unknown identities or mismatched semantic revisions.</p>
 </div></details><details class="toggle method-toggle" open><summary><section id="method.materialize" class="method"><a class="src rightside" href="../../src/neutral_reader/composition.rs.html#165-180">Source</a><h4 class="code-header">pub fn <a href="#method.materialize" class="fn">materialize</a>(
     &amp;self,
     owner: (&amp;<a class="primitive" href="https://doc.rust-lang.org/1.98.1/std/primitive.str.html">str</a>, &amp;<a class="primitive" href="https://doc.rust-lang.org/1.98.1/std/primitive.str.html">str</a>, &amp;<a class="primitive" href="https://doc.rust-lang.org/1.98.1/std/primitive.str.html">str</a>),
-    supplied: &amp;ClosedValue,
+    supplied: &amp;<a class="type" href="../../neutral_ir/composition/type.ClosedValue.html" title="type neutral_ir::composition::ClosedValue">ClosedValue</a>,
     limits: <a class="struct" href="struct.ProjectCompositionLimits.html" title="struct neutral_reader::composition::ProjectCompositionLimits">CompositionLimits</a>,
     cancellation: &amp;<a class="struct" href="../../neutral_core/struct.CancellationToken.html" title="struct neutral_core::CancellationToken">CancellationToken</a>,
 ) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.98.1/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="../../neutral_vocabulary/composition/supplied/struct.ValidatedCompositionValue.html" title="struct neutral_vocabulary::composition::supplied::ValidatedCompositionValue">ValidatedCompositionValue</a>, <a class="enum" href="../../neutral_vocabulary/composition/enum.CompositionError.html" title="enum neutral_vocabulary::composition::CompositionError">CompositionError</a>&gt;</h4></section></summary><div class="docblock"><p>Checks supplied closed data and returns meaning plus safe origins using the shared validator.</p>
